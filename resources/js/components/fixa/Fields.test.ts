@@ -4,6 +4,7 @@ import { expectAccessible } from '@/test/axe';
 import Checkbox from './Checkbox.vue';
 import Select from './Select.vue';
 import Switch from './Switch.vue';
+import TextArea from './TextArea.vue';
 import TextField from './TextField.vue';
 
 describe('form fields', () => {
@@ -28,6 +29,25 @@ describe('form fields', () => {
         );
         expect(input.element.value).toBe('a@b.com');
         expect(input.attributes('aria-describedby')).toBeDefined();
+        await expectAccessible(wrapper.element);
+    });
+
+    it('TextArea links label, value and error', async () => {
+        const wrapper = mount(TextArea, {
+            props: {
+                label: 'Conteúdo da aula',
+                modelValue: 'I have worked here.',
+                error: 'Cole o texto da aula.',
+            },
+            attachTo: document.body,
+        });
+        const textarea = wrapper.get('textarea');
+
+        expect(wrapper.get('label').attributes('for')).toBe(
+            textarea.attributes('id'),
+        );
+        expect(textarea.element.value).toBe('I have worked here.');
+        expect(textarea.attributes('aria-invalid')).toBe('true');
         await expectAccessible(wrapper.element);
     });
 

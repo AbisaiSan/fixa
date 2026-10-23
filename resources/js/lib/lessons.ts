@@ -28,6 +28,13 @@ export function sourceLabel(
         : t('lessons.sourcePdfPages', { n: pages });
 }
 
+/**
+ * Conta palavras como o servidor (WordCounter): sequências de letras e números.
+ */
+export function countWords(text: string): number {
+    return text.match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu)?.length ?? 0;
+}
+
 export function isProcessing(status: LessonStatus): boolean {
     return ['queued', 'extracting', 'generating', 'validating'].includes(
         status,

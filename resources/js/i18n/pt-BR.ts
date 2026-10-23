@@ -145,9 +145,44 @@ export const ptBR = {
     },
     upload: {
         title: 'Enviar aula',
-        soonTitle: 'O envio de aulas chega na próxima etapa',
-        soonBody:
-            'Em breve você envia texto colado ou PDF e recebe revisão, flashcards e atividades.',
+        heading: 'O que você estudou na aula?',
+        intro: 'Texto colado ou PDF. A IA usa só este material para criar sua revisão e suas atividades.',
+        formatLabel: 'Formato do material',
+        tabText: 'Texto',
+        tabPdf: 'PDF',
+        textLabel: 'Conteúdo da aula',
+        textPlaceholder:
+            'Cole aqui as anotações, o texto da apostila ou o que o professor passou.',
+        words: '{n} palavras · mínimo {min}',
+        wordsOne: '1 palavra · mínimo {min}',
+        wordsMissing:
+            'Ainda faltam {n} palavras. Precisamos de pelo menos {min} palavras legíveis para gerar a revisão.',
+        textRequired: 'Cole o conteúdo da aula para continuar.',
+        pdfPick: 'Escolher PDF',
+        pdfHint: 'até {mb} MB e {pages} páginas',
+        pdfRemove: 'Remover arquivo',
+        pdfSize: '{size} MB',
+        pdfReady: 'PDF escolhido. Conferimos as páginas e o texto ao enviar.',
+        pdfTooBig:
+            'Este arquivo passa do limite de {mb} MB e {pages} páginas por envio. Envie só as páginas da aula ou divida o arquivo.',
+        pdfRequired: 'Escolha um arquivo para continuar.',
+        titleLabel: 'Título da aula',
+        titlePlaceholder: 'Ex.: Present Perfect e entrevista',
+        dateLabel: 'Data da aula',
+        languageLabel: 'Idioma estudado',
+        rightsStart:
+            'Declaro que tenho direito de usar este material nos meus estudos, conforme os',
+        rightsTerms: 'termos de uso',
+        rightsEnd: '. Ele fica privado e só você tem acesso.',
+        submit: 'Gerar revisão',
+        submitHint:
+            'Leva menos de 1 minuto. Você pode sair da tela enquanto geramos.',
+        networkTitle: 'Não conseguimos enviar agora.',
+        networkBody:
+            'Verifique a conexão e tente de novo. O que você preencheu continua aqui.',
+        tooManyTitle: 'Muitos envios seguidos.',
+        tooManyBody:
+            'Espere um minuto e tente de novo. O que você preencheu continua aqui.',
     },
     lessons: {
         count: '{n} aulas enviadas. Tudo o que você pratica vem daqui.',

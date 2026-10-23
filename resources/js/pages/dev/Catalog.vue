@@ -16,6 +16,7 @@ import StatusChip from '@/components/fixa/StatusChip.vue';
 import type { StatusKind } from '@/components/fixa/StatusChip.vue';
 import Switch from '@/components/fixa/Switch.vue';
 import TargetText from '@/components/fixa/TargetText.vue';
+import TextArea from '@/components/fixa/TextArea.vue';
 import TextField from '@/components/fixa/TextField.vue';
 import Toast from '@/components/fixa/Toast.vue';
 import { t } from '@/i18n';
@@ -67,6 +68,7 @@ const colors = [
 const email = ref('marina.alves@email.com');
 const password = ref('123');
 const level = ref('a2');
+const notes = ref('I have worked here since 2022.');
 const declared = ref(true);
 const reminder = ref(true);
 const sheetOpen = ref(false);
@@ -159,6 +161,12 @@ const sheetOpen = ref(false);
                         label="Senha"
                         type="password"
                         error="Use pelo menos 8 caracteres."
+                    />
+                    <TextArea
+                        v-model="notes"
+                        label="Conteúdo da aula"
+                        hint="12 palavras · mínimo 50"
+                        :rows="4"
                     />
                     <Select
                         v-model="level"

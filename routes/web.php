@@ -1,10 +1,12 @@
 <?php
 
+use App\Domain\Lessons\Extraction\TextExtractor;
 use App\Http\Controllers\Lessons\ItemReportController;
 use App\Http\Controllers\Lessons\LessonController;
 use App\Http\Controllers\Lessons\LessonFileController;
 use App\Http\Controllers\Lessons\LessonGenerationController;
 use App\Http\Controllers\Lessons\LessonReviewController;
+use App\Http\Requests\Lessons\StoreLessonRequest;
 use Illuminate\Support\Facades\Route;
 
 // Sem página pública de apresentação por enquanto: quem entra vai para Hoje.
@@ -14,7 +16,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // As abas ainda não têm conteúdo: o contrato de estados chega como "empty" até a J2.
     Route::inertia('hoje', 'app/Today', ['status' => 'empty'])->name('today');
     Route::get('aulas', [LessonController::class, 'index'])->name('lessons.index');
-    Route::inertia('aulas/enviar', 'app/LessonUpload')->name('lessons.create');
+    Route::inertia('aulas/enviar', 'app/LessonUpload', ['limits' => [
+        'max_megabytes' => StoreLessonRequest::MAX_FILE_KILOBYTES / 1024,
+        'max_pages' => StoreLessonRequest::MAX_PAGES,
+        'min_words' => TextExtractor::MIN_WORDS,
+    ], 'upcomingLanguages' => config('fixa.upcoming_languages')])->name('lessons.create');
     Route::post('aulas', [LessonController::class, 'store'])->middleware('throttle:lesson-uploads')->name('lessons.store');
     Route::get('aulas/{lesson}', [LessonController::class, 'show'])->name('lessons.show');
     Route::patch('aulas/{lesson}', [LessonController::class, 'update'])->name('lessons.update');

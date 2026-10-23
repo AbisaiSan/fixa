@@ -36,9 +36,13 @@ test('signing in lands on today', function () {
         ->assertRedirect(route('today', absolute: false));
 });
 
-test('the upload placeholder is reachable from the empty states', function () {
+test('the upload page is reachable from the empty states and carries the limits', function () {
     $this->actingAs(User::factory()->create())
         ->get(route('lessons.create'))
         ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page->component('app/LessonUpload'));
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('app/LessonUpload')
+            ->where('limits.max_megabytes', 10)
+            ->where('limits.max_pages', 20)
+            ->where('limits.min_words', 50));
 });

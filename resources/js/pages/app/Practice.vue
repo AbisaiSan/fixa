@@ -2,6 +2,7 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import Button from '@/components/fixa/Button.vue';
+import AiLimitBanner from '@/components/practice/AiLimitBanner.vue';
 import Card from '@/components/fixa/Card.vue';
 import EmptyState from '@/components/fixa/EmptyState.vue';
 import Icon from '@/components/fixa/Icon.vue';
@@ -149,6 +150,8 @@ const entries = computed<Entry[]>(() => {
     <Head :title="t('nav.practice')" />
 
     <h1 class="m-0 type-display-l">{{ t('nav.practice') }}</h1>
+
+    <AiLimitBanner />
 
     <PageState :status="status">
         <template #empty>

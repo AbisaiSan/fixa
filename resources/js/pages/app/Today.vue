@@ -2,6 +2,7 @@
 import { Head, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import Button from '@/components/fixa/Button.vue';
+import AiLimitBanner from '@/components/practice/AiLimitBanner.vue';
 import Card from '@/components/fixa/Card.vue';
 import Icon from '@/components/fixa/Icon.vue';
 import OriginTag from '@/components/fixa/OriginTag.vue';
@@ -80,6 +81,8 @@ const steps = computed(() => [
     <Head :title="t('nav.today')" />
 
     <h1 class="m-0 type-display-l">{{ greeting }}</h1>
+
+    <AiLimitBanner />
 
     <PageState :status="status">
         <Card

@@ -16,6 +16,9 @@ return [
 
     'upcoming_languages' => ['es', 'fr'],
 
+    // Nome dos idiomas usado nos prompts da IA (o frontend tem o próprio arquivo de strings).
+    'language_names' => ['en' => 'inglês', 'es' => 'espanhol', 'fr' => 'francês'],
+
     /*
     | Fusos oferecidos em Configurações (GAM-06). O padrão é America/Sao_Paulo.
     */

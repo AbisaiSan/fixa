@@ -6,6 +6,7 @@ use App\Domain\Lessons\CreateLesson;
 use App\Domain\Lessons\LessonSource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lessons\StoreLessonRequest;
+use App\Jobs\ProcessLesson;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -35,6 +36,8 @@ class LessonController extends Controller
             files: $files,
         );
 
+        ProcessLesson::dispatch($lesson->id)->afterCommit();
+
         return redirect()->route('lessons.show', $lesson);
     }
 
@@ -50,6 +53,15 @@ class LessonController extends Controller
                 'source' => $lesson->source->value,
                 'status' => $lesson->status->value,
                 'failure_reason' => $lesson->failure_reason,
+                'word_count' => $lesson->word_count,
+            ],
+            'review' => $lesson->review === null ? null : [
+                'ulid' => $lesson->review->ulid,
+                'summary' => $lesson->review->summary,
+                'concepts' => $lesson->review->concepts,
+                'common_mistakes' => $lesson->review->common_mistakes,
+                'can_do' => $lesson->review->can_do,
+                'reported' => $lesson->review->reported,
             ],
         ]);
     }

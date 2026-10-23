@@ -51,6 +51,9 @@ class AppServiceProvider extends ServiceProvider
         // Respostas aos cartões: uma sessão rápida tem algumas por minuto (ACE-05).
         RateLimiter::for('card-reviews', fn (Request $request) => Limit::perMinute(120)->by('card-review|'.$request->user()?->getKey()));
 
+        // Palavras adicionadas pelo aluno, que podem chamar a IA (ATV-05).
+        RateLimiter::for('word-additions', fn (Request $request) => Limit::perMinute(10)->by('word-add|'.$request->user()?->getKey()));
+
         // Nova geração e "tentar de novo" chamam a IA (REV-04, IAS-03).
         RateLimiter::for('lesson-generations', fn (Request $request) => [
             Limit::perMinute(3)->by('generation|'.$request->user()?->getKey()),

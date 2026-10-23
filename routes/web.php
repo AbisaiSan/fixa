@@ -10,6 +10,7 @@ use App\Http\Controllers\Lessons\LessonFileController;
 use App\Http\Controllers\Lessons\LessonGenerationController;
 use App\Http\Controllers\Lessons\LessonReviewController;
 use App\Http\Controllers\TodayController;
+use App\Http\Controllers\Vocabulary\WordController;
 use App\Http\Requests\Lessons\StoreLessonRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('cartoes/{card}/reportes', [CardReportController::class, 'store'])->name('cards.reports.store');
     Route::delete('cartoes/{card}/reportes/{report}', [CardReportController::class, 'destroy'])->name('cards.reports.destroy');
     Route::inertia('vocabulario', 'app/Vocabulary', ['status' => 'empty'])->name('vocabulary.index');
+    Route::post('vocabulario', [WordController::class, 'store'])->middleware('throttle:word-additions')->name('words.store');
     Route::inertia('progresso', 'app/Progress', ['status' => 'empty'])->name('progress');
 });
 

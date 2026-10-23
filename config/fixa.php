@@ -72,7 +72,12 @@ return [
         'prompts' => [
             'lesson_review' => 'v1',
             'cards' => 'v2',
+            'word_details' => 'v1',
         ],
+
+        // Pedidos de IA feitos pelo aluno por dia, como correções e
+        // "completar com IA" no vocabulário (ATV-05).
+        'daily_student_limit' => (int) env('FIXA_AI_DAILY_STUDENT_LIMIT', 30),
 
         // Cartões novos por aula (FLA-02).
         'max_cards_per_lesson' => 30,

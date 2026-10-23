@@ -72,6 +72,39 @@ const remaining = computed(() => {
     });
 });
 
+// Fim de sessão (J3-F4): resumo, XP e o próximo passo, sem voltar à home.
+// O XP segue o protótipo (2 por resposta e 10 por sessão concluída) e é
+// registrado de verdade na J5, a partir de card_reviews (GAM-03).
+const XP_PER_ANSWER = 2;
+const XP_PER_SESSION = 10;
+
+const summary = computed(() =>
+    [
+        t('flashcards.again'),
+        t('flashcards.hard'),
+        t('flashcards.good'),
+        t('flashcards.easy'),
+    ].map((label, offset) => ({
+        rating: offset + 1,
+        label,
+        count: answers.value.filter((answer) => answer.rating === offset + 1)
+            .length,
+    })),
+);
+
+const xp = computed(
+    () => answers.value.length * XP_PER_ANSWER + XP_PER_SESSION,
+);
+
+const nextStep = computed(() =>
+    props.lesson
+        ? {
+              label: t('flashcards.nextLesson'),
+              href: `/aulas/${props.lesson.ulid}`,
+          }
+        : { label: t('flashcards.nextVocabulary'), href: '/vocabulario' },
+);
+
 type ReviewResponse = {
     card: string;
     interval_days: number;
@@ -219,7 +252,34 @@ onBeforeUnmount(() => {
                         : t('flashcards.doneBody')
                 }}
             </p>
-            <Button @click="exit">{{ t('flashcards.backToday') }}</Button>
+            <ul
+                class="m-0 grid w-full list-none grid-cols-4 gap-2 p-0"
+                :aria-label="t('flashcards.summaryLabel')"
+            >
+                <li
+                    v-for="stat in summary"
+                    :key="stat.rating"
+                    class="flex flex-col items-center rounded-m bg-sf2 px-2 py-3"
+                >
+                    <strong class="type-title">{{ stat.count }}</strong>
+                    <span class="text-sm text-ink2">{{ stat.label }}</span>
+                </li>
+            </ul>
+            <p
+                class="m-0 inline-flex items-center gap-1.5 rounded-full bg-ambt px-3 py-1.5 font-extrabold text-ambd"
+            >
+                <Icon name="star" filled :size="20" />{{
+                    t('flashcards.xp', { n: xp })
+                }}
+            </p>
+            <div class="flex w-full flex-col gap-2">
+                <Button block :href="nextStep.href" icon="arrow_forward">{{
+                    nextStep.label
+                }}</Button>
+                <Button variant="secondary" block href="/hoje">{{
+                    t('flashcards.backToday')
+                }}</Button>
+            </div>
         </Card>
     </template>
 

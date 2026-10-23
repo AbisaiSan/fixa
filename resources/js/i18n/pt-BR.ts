@@ -373,6 +373,10 @@ export const ptBR = {
         doneBody:
             'Você fez as revisões de agora. Os próximos cartões voltam no tempo certo.',
         backToday: 'Voltar para Hoje',
+        summaryLabel: 'Suas respostas nesta sessão',
+        xp: '+{n} XP',
+        nextLesson: 'Próximo: rever a revisão da aula',
+        nextVocabulary: 'Próximo: ver o vocabulário',
         sendError:
             'Não conseguimos salvar esta resposta. Ela fica guardada e vai assim que der.',
     },

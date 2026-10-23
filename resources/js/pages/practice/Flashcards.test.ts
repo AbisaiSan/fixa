@@ -149,3 +149,52 @@ describe('Flashcards rush mode', () => {
         expect(wrapper.text()).toContain('Nenhuma revisão vencida agora');
     });
 });
+
+describe('Flashcards end of session', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+        vi.unstubAllGlobals();
+    });
+
+    it('shows the summary, XP and the next step without going home', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(
+                async () =>
+                    new Response(
+                        JSON.stringify({
+                            card: 'x',
+                            interval_days: 2,
+                            preview: [0, 1, 2, 4],
+                        }),
+                    ),
+            ),
+        );
+        const wrapper = mount(Flashcards, {
+            props: {
+                mode: 'normal',
+                lesson: { ulid: '01jaula', title: 'Aula' },
+                cards: [card('a', true), card('b', true)],
+            },
+            attachTo: document.body,
+        });
+
+        for (const key of ['3', '4']) {
+            await wrapper
+                .get('[role="button"]')
+                .trigger('keydown', { key: ' ' });
+            window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+            await flushPromises();
+        }
+
+        const stats = wrapper.findAll('ul li').map((item) => item.text());
+
+        expect(wrapper.text()).toContain('Flashcards em dia');
+        expect(stats).toEqual(['0Errei', '0Difícil', '1Bom', '1Fácil']);
+        expect(wrapper.text()).toContain('+14 XP');
+        expect(wrapper.get('a[href="/aulas/01jaula"]').text()).toContain(
+            'Próximo: rever a revisão da aula',
+        );
+        await expectAccessible(wrapper.element);
+    });
+});

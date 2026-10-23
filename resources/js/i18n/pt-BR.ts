@@ -16,6 +16,9 @@ export const ptBR = {
         vocabulary: 'Vocabulário',
         progress: 'Progresso',
         settings: 'Configurações',
+        profile: 'Perfil e configurações',
+        upload: 'Enviar aula',
+        skipToContent: 'Pular para o conteúdo',
     },
     status: {
         nova: 'Nova',

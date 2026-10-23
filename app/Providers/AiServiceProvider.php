@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Domain\Ai\Contracts\AiProvider;
+use App\Domain\Ai\Prompts\PromptLibrary;
 use App\Domain\Ai\Providers\FakeAiProvider;
 use App\Domain\Ai\Providers\GeminiProvider;
 use Illuminate\Http\Client\Factory as Http;
@@ -17,6 +18,7 @@ class AiServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(FakeAiProvider::class);
+        $this->app->singleton(PromptLibrary::class, fn () => new PromptLibrary(resource_path('prompts')));
 
         $this->app->singleton(AiProvider::class, fn ($app) => match (config('fixa.ai.provider')) {
             'fake' => $app->make(FakeAiProvider::class),

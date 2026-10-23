@@ -50,6 +50,11 @@ return [
     */
     'ai' => [
         'provider' => env('FIXA_AI_PROVIDER', 'fake'),
+
+        // Versão vigente de cada prompt em resources/prompts. Mudou o texto, crie v2.
+        'prompts' => [
+            'lesson_review' => 'v1',
+        ],
     ],
 
 ];

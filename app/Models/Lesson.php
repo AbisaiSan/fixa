@@ -32,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $failure_reason
  * @property string|null $extracted_text
  * @property int|null $word_count
+ * @property int $regenerations
  * @property Carbon $rights_declared_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -43,9 +44,12 @@ class Lesson extends Model
     /** @use HasFactory<LessonFactory> */
     use BelongsToUser, HasFactory, HasPublicUlid;
 
+    public const RETRYABLE_FAILURES = ['ai_invalid_output', 'ai_unavailable', 'ai_budget_reached', 'processing_failed'];
+
     /** @var array<string, mixed> */
     protected $attributes = [
         'status' => 'queued',
+        'regenerations' => 0,
     ];
 
     protected function casts(): array
@@ -56,6 +60,7 @@ class Lesson extends Model
             'status' => LessonStatus::class,
             'extracted_text' => 'encrypted',
             'word_count' => 'integer',
+            'regenerations' => 'integer',
             'rights_declared_at' => 'datetime',
         ];
     }
@@ -82,6 +87,40 @@ class Lesson extends Model
     public function review(): HasOne
     {
         return $this->hasOne(LessonReview::class);
+    }
+
+    /**
+     * Reports dos itens gerados a partir desta aula (MAT-05).
+     *
+     * @return HasMany<ItemReport, $this>
+     */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(ItemReport::class, 'source_lesson_id');
+    }
+
+    /**
+     * Motivos de falha que outra tentativa pode resolver. Os demais pedem um
+     * novo envio (material curto, PDF sem texto, vírus, arquivo ilegível).
+     */
+    public function canRetry(): bool
+    {
+        return $this->status === LessonStatus::Failed
+            && in_array($this->failure_reason, self::RETRYABLE_FAILURES, true)
+            && $this->regenerationsLeft() > 0;
+    }
+
+    public function canRegenerate(): bool
+    {
+        return $this->status === LessonStatus::Ready && $this->regenerationsLeft() > 0;
+    }
+
+    /**
+     * Novas gerações que o aluno ainda pode pedir (REV-04).
+     */
+    public function regenerationsLeft(): int
+    {
+        return max(0, (int) config('fixa.ai.max_regenerations_per_lesson') - $this->regenerations);
     }
 
     /**

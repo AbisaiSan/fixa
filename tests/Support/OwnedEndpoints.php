@@ -2,13 +2,18 @@
 
 namespace Tests\Support;
 
+use App\Domain\Lessons\LessonStatus;
+use App\Domain\Lessons\Reports\ReportReason;
+use App\Domain\Lessons\Reports\ReportReviewItem;
 use App\Models\Lesson;
 use App\Models\LessonFile;
+use App\Models\LessonReview;
 use App\Models\User;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -39,6 +44,15 @@ final class OwnedEndpoints
             // J2: aulas e arquivos de aula.
             'ver aula' => self::endpoint('get', 'lessons.show', self::makeLesson(...)),
             'baixar arquivo da aula' => self::endpoint('get', 'lessons.files.show', self::makeLessonFile(...), signed: true),
+            'editar aula' => self::endpoint('patch', 'lessons.update', self::makeLesson(...), ['title' => 'invadido', 'lesson_date' => '2026-10-20']),
+            'apagar aula' => self::endpoint('delete', 'lessons.destroy', self::makeLesson(...)),
+            'regenerar revisão' => self::endpoint('post', 'lessons.regenerate', self::makeReadyLesson(...)),
+            'tentar de novo' => self::endpoint('post', 'lessons.retry', self::makeFailedLesson(...)),
+            'editar resumo' => self::endpoint('patch', 'lessons.review.update', self::makeReview(...), ['summary' => 'invadido']),
+            'editar conceito' => self::endpoint('patch', 'lessons.review.concepts.update', self::makeConcept(...), ['explanation' => 'invadido']),
+            'remover conceito' => self::endpoint('delete', 'lessons.review.concepts.destroy', self::makeConcept(...)),
+            'reportar item' => self::endpoint('post', 'lessons.reports.store', self::makeReview(...), ['item' => 'summary', 'reason' => 'other']),
+            'desfazer report' => self::endpoint('delete', 'lessons.reports.destroy', self::makeReport(...)),
         ];
     }
 
@@ -123,6 +137,72 @@ final class OwnedEndpoints
         $lesson = Lesson::factory()->forUser($owner)->create(['title' => 'nota da aluna A']);
 
         return ['resource' => $lesson, 'params' => [$lesson->ulid], 'numeric' => [$lesson->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeReadyLesson(User $owner): array
+    {
+        Queue::fake();
+        [$lesson] = self::reviewFor($owner);
+
+        return ['resource' => $lesson, 'params' => [$lesson->ulid], 'numeric' => [$lesson->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeFailedLesson(User $owner): array
+    {
+        Queue::fake();
+        $lesson = Lesson::factory()->forUser($owner)->status(LessonStatus::Failed)->create(['failure_reason' => 'ai_unavailable']);
+
+        return ['resource' => $lesson, 'params' => [$lesson->ulid], 'numeric' => [$lesson->id]];
+    }
+
+    /**
+     * A revisão é o dado conferido: o pedido do outro aluno não pode mudá-la.
+     *
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeReview(User $owner): array
+    {
+        [$lesson, $review] = self::reviewFor($owner);
+
+        return ['resource' => $review, 'params' => [$lesson->ulid], 'numeric' => [$lesson->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeConcept(User $owner): array
+    {
+        [$lesson, $review] = self::reviewFor($owner);
+        $key = $review->concepts[0]['key'];
+
+        return ['resource' => $review, 'params' => [$lesson->ulid, $key], 'numeric' => [$lesson->id, $key]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeReport(User $owner): array
+    {
+        [$lesson, $review] = self::reviewFor($owner);
+        $report = app(ReportReviewItem::class)->handle($review, LessonReview::SUMMARY, ReportReason::Other, 'nota da aluna A');
+
+        return ['resource' => $report, 'params' => [$lesson->ulid, $report->ulid], 'numeric' => [$lesson->id, $report->id]];
+    }
+
+    /**
+     * @return array{0: Lesson, 1: LessonReview}
+     */
+    private static function reviewFor(User $owner): array
+    {
+        $lesson = Lesson::factory()->forUser($owner)->status(LessonStatus::Ready)->create();
+
+        return [$lesson, LessonReview::factory()->for($lesson)->create()];
     }
 
     /**

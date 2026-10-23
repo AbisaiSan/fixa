@@ -64,6 +64,10 @@ return [
             'gemini-3.8-flash' => ['input' => env('PRICE_GEMINI_FLASH_INPUT', 0), 'output' => env('PRICE_GEMINI_FLASH_OUTPUT', 0)],
         ],
 
+        // Novas gerações por aula pedidas pelo aluno, somando "regenerar" e
+        // "tentar de novo" (REV-04). A primeira geração não conta.
+        'max_regenerations_per_lesson' => (int) env('FIXA_AI_MAX_REGENERATIONS', 3),
+
         // Versão vigente de cada prompt em resources/prompts. Mudou o texto, crie v2.
         'prompts' => [
             'lesson_review' => 'v1',

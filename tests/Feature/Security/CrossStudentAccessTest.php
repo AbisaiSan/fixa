@@ -40,9 +40,12 @@ test('another student cannot read, change or delete the data', function (array $
 test('the owner still has access, so the denial above is real', function (array $endpoint) {
     ['params' => $params] = ($endpoint['make'])($this->alice);
 
-    $this->actingAs($this->alice)
-        ->{$endpoint['method']}(endpointUrl($endpoint, $params), $endpoint['payload'])
-        ->assertSuccessful();
+    $response = $this->actingAs($this->alice)
+        ->{$endpoint['method']}(endpointUrl($endpoint, $params), $endpoint['payload']);
+
+    // Ações de formulário respondem com redirect; sem erro de validação, valeu.
+    expect($response->getStatusCode())->toBeLessThan(400);
+    $response->assertSessionHasNoErrors();
 })->with('owned endpoints');
 
 test('the numeric id never works as a route key', function (array $endpoint) {

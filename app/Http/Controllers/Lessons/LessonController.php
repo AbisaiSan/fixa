@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Lessons;
 
 use App\Domain\Lessons\CreateLesson;
+use App\Domain\Lessons\DeleteLesson;
 use App\Domain\Lessons\LessonSource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lessons\StoreLessonRequest;
+use App\Http\Requests\Lessons\UpdateLessonRequest;
 use App\Jobs\ProcessLesson;
+use App\Models\ItemReport;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -41,6 +44,26 @@ class LessonController extends Controller
         return redirect()->route('lessons.show', $lesson);
     }
 
+    public function update(UpdateLessonRequest $request, Lesson $lesson): RedirectResponse
+    {
+        Gate::authorize('update', $lesson);
+
+        $lesson->update($request->validated());
+
+        return back()->with('status', 'lesson-updated');
+    }
+
+    public function destroy(Lesson $lesson, DeleteLesson $deleteLesson): RedirectResponse
+    {
+        Gate::authorize('delete', $lesson);
+
+        /** @var User $user */
+        $user = request()->user();
+        $deleteLesson->handle($user, $lesson);
+
+        return redirect()->route('lessons.index')->with('status', 'lesson-deleted');
+    }
+
     public function show(Lesson $lesson): Response
     {
         Gate::authorize('view', $lesson);
@@ -54,6 +77,9 @@ class LessonController extends Controller
                 'status' => $lesson->status->value,
                 'failure_reason' => $lesson->failure_reason,
                 'word_count' => $lesson->word_count,
+                'can_regenerate' => $lesson->canRegenerate(),
+                'can_retry' => $lesson->canRetry(),
+                'regenerations_left' => $lesson->regenerationsLeft(),
             ],
             'review' => $lesson->review === null ? null : [
                 'ulid' => $lesson->review->ulid,
@@ -62,6 +88,10 @@ class LessonController extends Controller
                 'common_mistakes' => $lesson->review->common_mistakes,
                 'can_do' => $lesson->review->can_do,
                 'reported' => $lesson->review->reported,
+                // Itens em análise (MAT-05): chave do item e o report, para "Desfazer".
+                'open_reports' => $lesson->review->reports()->open()->get(['ulid', 'item_key'])
+                    ->map(fn (ItemReport $report) => ['ulid' => $report->ulid, 'item' => $report->item_key])
+                    ->all(),
             ],
         ]);
     }

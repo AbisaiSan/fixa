@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Listeners\RecordAuthenticationEvents;
+use App\Models\LessonReview;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -32,10 +34,19 @@ class AppServiceProvider extends ServiceProvider
 
         Event::subscribe(RecordAuthenticationEvents::class);
 
+        // Nome estável dos itens reportáveis no banco, sem depender da classe (MAT-05).
+        Relation::morphMap(['lesson_review' => LessonReview::class]);
+
         // Envio de aulas (ACE-05): evita abuso de armazenamento e de IA.
         RateLimiter::for('lesson-uploads', fn (Request $request) => [
             Limit::perMinute(5)->by('upload|'.$request->user()?->getKey()),
             Limit::perDay(30)->by('upload-day|'.$request->user()?->getKey()),
+        ]);
+
+        // Nova geração e "tentar de novo" chamam a IA (REV-04, IAS-03).
+        RateLimiter::for('lesson-generations', fn (Request $request) => [
+            Limit::perMinute(3)->by('generation|'.$request->user()?->getKey()),
+            Limit::perDay(20)->by('generation-day|'.$request->user()?->getKey()),
         ]);
     }
 

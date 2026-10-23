@@ -35,7 +35,7 @@ test('a lesson goes from queued to ready with its review stored', function () {
     expect($lesson->status)->toBe(LessonStatus::Ready)
         ->and($lesson->word_count)->toBe(72)
         ->and($review->summary)->toBe(AiFixtures::lessonReview()['summary'])
-        ->and($review->concepts)->toBe(AiFixtures::lessonReview()['concepts'])
+        ->and(array_map(fn (array $concept) => array_diff_key($concept, ['key' => true]), $review->concepts))->toBe(AiFixtures::lessonReview()['concepts'])
         ->and($review->provider)->toBe('fake')
         ->and($review->prompt_version)->toBe('v1');
 });

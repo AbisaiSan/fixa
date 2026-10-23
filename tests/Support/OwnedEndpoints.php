@@ -72,6 +72,8 @@ final class OwnedEndpoints
             'reportar palavra' => self::endpoint('post', 'words.reports.store', self::makeWord(...), ['reason' => 'other']),
             'desfazer report da palavra' => self::endpoint('delete', 'words.reports.destroy', self::makeWordReport(...)),
             // J4: prática.
+            'abrir escrita' => self::endpoint('get', 'practice.writing', self::makeWritingSession(...)),
+            'reportar item de prática' => self::endpoint('post', 'practice.items.reports.store', self::makePracticeItem(...), ['reason' => 'other']),
             'responder item' => self::endpoint('post', 'practice.attempts.store', self::makePracticeItem(...), ['answer' => 'ever']),
             'salvar palavra da leitura' => self::endpoint('post', 'practice.reading.words.store', self::makeReading(...), ['form' => 'applied']),
             'desfazer report' => self::endpoint('delete', 'lessons.reports.destroy', self::makeReport(...)),
@@ -187,6 +189,17 @@ final class OwnedEndpoints
         $item->save();
 
         return ['resource' => $session, 'params' => [$item->ulid], 'numeric' => [$item->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeWritingSession(User $owner): array
+    {
+        ['resource' => $session] = self::makePracticeItem($owner);
+        /** @var PracticeSession $session */
+
+        return ['resource' => $session, 'params' => [$session->ulid], 'numeric' => [$session->id]];
     }
 
     /**

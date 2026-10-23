@@ -73,6 +73,9 @@ const textPairs: [string, string][] = [
     ['ink', 'ambt'],
     ['ink', 'okt'],
     ['ambd', 'ambt'],
+    // Escrita (J4-F3): XP e marcações da correção.
+    ['ambd', 'sf'],
+    ['ambd', 'bg'],
 ];
 
 // Anel de foco e elementos gráficos: mínimo 3:1.

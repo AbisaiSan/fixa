@@ -7,6 +7,7 @@ import Button from '@/components/fixa/Button.vue';
 import Card from '@/components/fixa/Card.vue';
 import Checkbox from '@/components/fixa/Checkbox.vue';
 import EmptyState from '@/components/fixa/EmptyState.vue';
+import FeedbackPanel from '@/components/fixa/FeedbackPanel.vue';
 import Flashcard from '@/components/fixa/Flashcard.vue';
 import OriginTag from '@/components/fixa/OriginTag.vue';
 import RateBar from '@/components/fixa/RateBar.vue';
@@ -215,6 +216,18 @@ const cardFlipped = ref(false);
                     />
                     <RateBar :preview="[0, 1, 6, 35]" />
                 </div>
+            </Card>
+
+            <Card>
+                <h2 class="mt-0 mb-4 type-subtitle">FeedbackPanel</h2>
+                <FeedbackPanel
+                    verdict="partial"
+                    :xp="6"
+                    answer="I work here since 2021."
+                    corrected="I have worked here since 2021."
+                    natural="I've been working here since 2021."
+                    explanation="Com since, a ação continua até agora: use have mais o particípio."
+                />
             </Card>
 
             <Card>

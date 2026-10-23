@@ -47,7 +47,17 @@ Os comandos `npm` e o `composer test` rodam no host, não no container: o Vite+ 
 - Branch principal `main`. Uma branch por jornada.
 - Nada de "inglês" fixo no código: o idioma estudado é parâmetro (`targetLang`).
 - Dependência nova só com justificativa (mantida, popular, necessária), registrada no commit (SEG-05). Versões travadas por `composer.lock` e `package-lock.json`. O gerenciador JS é o npm.
-- Horários em UTC.
+- Horários em UTC, na aplicação e na conexão com o PostgreSQL.
+
+## Padrões de dados e segurança da aplicação
+
+- **ULID público:** modelos expostos ao aluno usam `HasPublicUlid` (coluna `ulid`, chave de rota). O `id` numérico é interno e nunca aparece em URL, JSON ou tela.
+- **Dono do dado:** todo modelo de conteúdo usa `BelongsToUser` e tem `user_id`. O escopo global filtra pelo aluno autenticado e, sem login, não retorna nada. Em filas e comandos use `Modelo::forUser($user)`. Nunca coloque `user_id` em `$fillable`, e nunca remova o escopo `OwnedByAuthenticatedUser` fora de um ponto revisado.
+- **Cabeçalhos e CSP:** `App\Http\Middleware\SecurityHeaders`. Script inline só com `nonce="{{ Vite::cspNonce() }}"`. Origem externa nova (fonte, CDN, API no navegador) exige mudança na CSP com justificativa.
+- **Logs:** canais em JSON com `request_id` e o ULID do usuário. O processador `RedactSensitiveData` apaga chaves como `password`, `token`, `text`, `content`, `answer`, `material` e `prompt`, e reduz exceções a classe e local. Ainda assim, nunca passe texto do aluno para o log; registre IDs.
+- **Auditoria:** `app(AuditLog::class)->record('acao.em_ingles', $user, [...metadados])` para login, exclusão, exportação e ações de administrador. Só IDs e metadados escalares.
+- **Erros:** páginas genéricas em `resources/views/errors/`, em pt-BR e sem detalhes.
+- **Rotina semanal:** `docs/seguranca/rotina-semanal.md`.
 
 ## Regras de segurança (nunca quebrar)
 

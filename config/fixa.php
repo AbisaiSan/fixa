@@ -44,4 +44,12 @@ return [
         'privacy' => '2026-10-23',
     ],
 
+    /*
+    | Inteligência artificial (ADR 0002). "fake" é o padrão até haver chave,
+    | e é sempre o usado nos testes.
+    */
+    'ai' => [
+        'provider' => env('FIXA_AI_PROVIDER', 'fake'),
+    ],
+
 ];

@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    // IA (ADR 0002). A chave só existe no .env de cada ambiente (DAD-04).
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY', ''),
+        'url' => env('GEMINI_API_URL', 'https://generativelanguage.googleapis.com/v1beta'),
+        'models' => [
+            'strong' => env('GEMINI_MODEL_STRONG', 'gemini-3.8-flash'),
+            'light' => env('GEMINI_MODEL_LIGHT', 'gemini-3.5-flash-lite'),
+        ],
+        'timeout' => (int) env('GEMINI_TIMEOUT', 60),
+    ],
+
 ];

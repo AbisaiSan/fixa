@@ -23,6 +23,9 @@ export type LessonDetail = {
     title: string;
     lesson_date: string;
     source: LessonSource;
+    pages: number | null;
+    language: string;
+    level: string | null;
     status: LessonStatus;
     failure_reason: string | null;
     word_count: number | null;
@@ -44,6 +47,7 @@ export type LessonReview = {
     concepts: ReviewConcept[];
     common_mistakes: { wrong: string; right: string; why: string }[];
     can_do: string[];
+    can_do_done: number[];
     reported: boolean;
     open_reports: { ulid: string; item: string }[];
 };

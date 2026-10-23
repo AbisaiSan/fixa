@@ -236,3 +236,17 @@ test('removing a lesson deletes its review, reports and files and is audited', f
         ->and(DB::table('audit_logs')->where('action', 'lesson.deleted')->exists())->toBeTrue();
     Storage::disk(LessonFile::DISK)->assertMissing($path);
 });
+
+test('the student marks what they can already do, and regenerating clears it', function () {
+    $this->put(route('lessons.review.can-do', $this->lesson), ['done' => [2, 0, 0, 7]])->assertRedirect();
+
+    expect($this->review->fresh()->can_do_done)->toBe([0, 2]);
+
+    $this->get(route('lessons.show', $this->lesson))
+        ->assertInertia(fn (Assert $page) => $page->where('review.can_do_done', [0, 2]));
+
+    app(FakeAiProvider::class)->respondWith(AiTask::LessonReview, AiFixtures::lessonReview());
+    $this->post(route('lessons.regenerate', $this->lesson));
+
+    expect($this->review->fresh()->can_do_done)->toBeNull();
+});

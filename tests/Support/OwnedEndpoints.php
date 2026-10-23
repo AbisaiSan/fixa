@@ -49,6 +49,7 @@ final class OwnedEndpoints
             'regenerar revisão' => self::endpoint('post', 'lessons.regenerate', self::makeReadyLesson(...)),
             'tentar de novo' => self::endpoint('post', 'lessons.retry', self::makeFailedLesson(...)),
             'editar resumo' => self::endpoint('patch', 'lessons.review.update', self::makeReview(...), ['summary' => 'invadido']),
+            'marcar você consegue' => self::endpoint('put', 'lessons.review.can-do', self::makeReview(...), ['done' => [0, 1]]),
             'editar conceito' => self::endpoint('patch', 'lessons.review.concepts.update', self::makeConcept(...), ['explanation' => 'invadido']),
             'remover conceito' => self::endpoint('delete', 'lessons.review.concepts.destroy', self::makeConcept(...)),
             'reportar item' => self::endpoint('post', 'lessons.reports.store', self::makeReview(...), ['item' => 'summary', 'reason' => 'other']),

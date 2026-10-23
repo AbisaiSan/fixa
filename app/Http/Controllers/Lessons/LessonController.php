@@ -32,6 +32,7 @@ class LessonController extends Controller
 
         return Inertia::render('app/Lessons', [
             'status' => $lessons->isEmpty() ? 'empty' : 'ready',
+            'flash' => session('status'),
             'lessons' => $lessons->map(fn (Lesson $lesson) => [
                 'ulid' => $lesson->ulid,
                 'title' => $lesson->title,
@@ -94,11 +95,15 @@ class LessonController extends Controller
         Gate::authorize('view', $lesson);
 
         return Inertia::render('app/LessonShow', [
+            'flash' => session('status'),
             'lesson' => [
                 'ulid' => $lesson->ulid,
                 'title' => $lesson->title,
                 'lesson_date' => $lesson->lesson_date->toDateString(),
                 'source' => $lesson->source->value,
+                'pages' => $lesson->source === LessonSource::Pdf ? (int) $lesson->files()->sum('pages') : null,
+                'language' => $lesson->language,
+                'level' => $lesson->enrollment?->level,
                 'status' => $lesson->status->value,
                 'failure_reason' => $lesson->failure_reason,
                 'word_count' => $lesson->word_count,
@@ -112,6 +117,7 @@ class LessonController extends Controller
                 'concepts' => $lesson->review->concepts,
                 'common_mistakes' => $lesson->review->common_mistakes,
                 'can_do' => $lesson->review->can_do,
+                'can_do_done' => $lesson->review->can_do_done ?? [],
                 'reported' => $lesson->review->reported,
                 // Itens em análise (MAT-05): chave do item e o report, para "Desfazer".
                 'open_reports' => $lesson->review->reports()->open()->get(['ulid', 'item_key'])

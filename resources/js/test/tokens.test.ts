@@ -60,6 +60,14 @@ const textPairs: [string, string][] = [
     ['infod', 'infot'],
     ['errd', 'sf'],
     ['onpri', 'errd'],
+    // Revisão da aula (J2-F4): exemplos, erros comuns e item em análise.
+    ['ink2', 'sf2'],
+    ['errd', 'sf2'],
+    ['okd', 'sf2'],
+    ['okd', 'sf'],
+    ['ink', 'infot'],
+    ['ink2', 'infot'],
+    ['ink', 'prit'],
 ];
 
 // Anel de foco e elementos gráficos: mínimo 3:1.

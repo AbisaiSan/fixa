@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:lesson-generations')
         ->name('lessons.retry');
     Route::patch('aulas/{lesson}/revisao', [LessonReviewController::class, 'update'])->name('lessons.review.update');
+    Route::put('aulas/{lesson}/revisao/consigo', [LessonReviewController::class, 'updateCanDo'])->name('lessons.review.can-do');
     Route::patch('aulas/{lesson}/revisao/conceitos/{concept}', [LessonReviewController::class, 'updateConcept'])
         ->where('concept', '[a-z0-9]+')
         ->name('lessons.review.concepts.update');

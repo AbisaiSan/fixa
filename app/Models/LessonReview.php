@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
  * @property list<array{key: string, name: string, explanation: string, examples: list<array{target: string, translation: string}>}> $concepts
  * @property list<array{wrong: string, right: string, why: string}> $common_mistakes
  * @property list<string> $can_do
+ * @property list<int>|null $can_do_done
  * @property string $provider
  * @property string $model
  * @property string $prompt_version
@@ -51,6 +52,7 @@ class LessonReview extends Model
             'concepts' => 'encrypted:array',
             'common_mistakes' => 'encrypted:array',
             'can_do' => 'encrypted:array',
+            'can_do_done' => 'array',
             'reported' => 'boolean',
         ];
     }

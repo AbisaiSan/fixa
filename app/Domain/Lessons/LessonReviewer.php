@@ -42,6 +42,7 @@ final class LessonReviewer
                 'concepts' => LessonReview::withConceptKeys($response->data['concepts']),
                 'common_mistakes' => $response->data['common_mistakes'],
                 'can_do' => $response->data['can_do'],
+                'can_do_done' => null,
                 'provider' => $response->provider,
                 'model' => $response->model,
                 'prompt_version' => config('fixa.ai.prompts.lesson_review', 'v1'),

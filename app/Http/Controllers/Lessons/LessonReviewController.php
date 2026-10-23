@@ -8,6 +8,7 @@ use App\Http\Requests\Lessons\UpdateReviewItemRequest;
 use App\Models\Lesson;
 use App\Models\LessonReview;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 /**
@@ -35,6 +36,20 @@ class LessonReviewController extends Controller
         }
 
         return back()->with('status', 'review-updated');
+    }
+
+    public function updateCanDo(Request $request, Lesson $lesson, EditLessonReview $edit): RedirectResponse
+    {
+        $review = $this->review($lesson);
+
+        $validated = $request->validate([
+            'done' => ['present', 'array', 'max:10'],
+            'done.*' => ['integer', 'min:0', 'max:9'],
+        ]);
+
+        $edit->markCanDo($review, array_map(intval(...), $validated['done']));
+
+        return back();
     }
 
     public function destroyConcept(Lesson $lesson, string $concept, EditLessonReview $edit): RedirectResponse

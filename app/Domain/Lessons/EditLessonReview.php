@@ -28,6 +28,19 @@ final class EditLessonReview
     }
 
     /**
+     * Marca o que o aluno já consegue fazer na lista "você consegue?".
+     *
+     * @param  list<int>  $done
+     */
+    public function markCanDo(LessonReview $review, array $done): void
+    {
+        $valid = array_values(array_unique(array_filter($done, fn (int $index) => isset($review->can_do[$index]))));
+        sort($valid);
+
+        $review->forceFill(['can_do_done' => $valid])->save();
+    }
+
+    /**
      * O conceito sai da revisão e da rotina. Report aberto dele perde o objeto.
      */
     public function removeConcept(LessonReview $review, string $key): void

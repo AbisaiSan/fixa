@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Consent;
 use App\Models\User;
+use App\Support\Audit\AuditLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,13 +32,14 @@ class LegalController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, AuditLog $audit): RedirectResponse
     {
         $request->validate(['terms' => ['accepted']]);
 
         /** @var User $user */
         $user = $request->user();
         Consent::acceptCurrent($user, $request->ip());
+        $audit->record('legal.accepted', $user, config('fixa.legal'));
 
         return redirect()->intended(config('fortify.home'));
     }

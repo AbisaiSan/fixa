@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Http\Responses\PasswordResetLinkFailedResponse;
 use Closure;
+use Illuminate\Auth\Events\Lockout;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -122,8 +123,13 @@ class FortifyServiceProvider extends ServiceProvider
      */
     private function tooMany(string $field): Closure
     {
-        return fn (Request $request, array $headers) => back()
-            ->withInput($request->except('password', 'password_confirmation', 'code', 'recovery_code'))
-            ->withErrors([$field => __('auth.throttle', ['seconds' => $headers['Retry-After'] ?? 60])]);
+        return function (Request $request, array $headers) use ($field) {
+            // O middleware throttle não dispara o evento; a auditoria precisa dele (OPE-03).
+            event(new Lockout($request));
+
+            return back()
+                ->withInput($request->except('password', 'password_confirmation', 'code', 'recovery_code'))
+                ->withErrors([$field => __('auth.throttle', ['seconds' => $headers['Retry-After'] ?? 60])]);
+        };
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\Audit\AuditLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ class SessionController extends Controller
      * Apaga as outras sessões do aluno e troca o token de "lembrar de mim",
      * para que nenhum cookie antigo volte a entrar.
      */
-    public function destroyOthers(Request $request): RedirectResponse
+    public function destroyOthers(Request $request, AuditLog $audit): RedirectResponse
     {
         $request->validate([
             'password' => ['required', 'string', 'current_password'],
@@ -26,12 +27,14 @@ class SessionController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        DB::table(config('session.table', 'sessions'))
+        $ended = DB::table(config('session.table', 'sessions'))
             ->where('user_id', $user->getKey())
             ->where('id', '!=', $request->session()->getId())
             ->delete();
 
         $user->forceFill(['remember_token' => Str::random(60)])->save();
+
+        $audit->record('auth.other_sessions_ended', $user, ['sessions' => $ended]);
 
         return back()->with('status', 'other-sessions-ended');
     }

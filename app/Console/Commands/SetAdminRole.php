@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\Role;
 use App\Models\User;
+use App\Support\Audit\AuditLog;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -12,7 +13,7 @@ use Illuminate\Console\Command;
 #[Description('Torna uma conta administradora, ou revoga, pelo terminal (J1-B5)')]
 class SetAdminRole extends Command
 {
-    public function handle(): int
+    public function handle(AuditLog $audit): int
     {
         $user = User::where('email', strtolower((string) $this->argument('email')))->first();
 
@@ -24,6 +25,8 @@ class SetAdminRole extends Command
 
         $user->role = $this->option('revoke') ? Role::Student : Role::Admin;
         $user->save();
+
+        $audit->record('admin.role_changed', null, ['target' => $user->ulid, 'role' => $user->role->value, 'via' => 'console']);
 
         $this->info($user->isAdmin()
             ? 'Conta agora é administradora. Ela precisa ativar o 2FA no próximo acesso.'

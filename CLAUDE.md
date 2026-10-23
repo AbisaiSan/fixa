@@ -59,6 +59,17 @@ Os comandos `npm` e o `composer test` rodam no host, não no container: o Vite+ 
 - **Erros:** páginas genéricas em `resources/views/errors/`, em pt-BR e sem detalhes.
 - **Rotina semanal:** `docs/seguranca/rotina-semanal.md`.
 
+## Frontend e sistema de design
+
+- **Tokens:** `resources/css/tokens.css` (cores, sombras, espaço, tipo, movimento) e `app.css` (raio e curva em `@theme static`, cores em `@theme inline`). Use as utilidades dos tokens (`bg-sf`, `text-ink2`, `text-prid`, `rounded-l`, `shadow-sh1`, `type-title`, `type-target`), nunca cor fixa. `--pri` é só para anéis e barras; texto e botões usam `--prid`. `--ink3` é decorativo.
+- **Tema:** `data-theme="light|dark"` no `<html>`; "Automático" segue o sistema. Variante `dark:` do Tailwind segue o atributo.
+- **Fontes:** servidas pelo app via `@fonts` (Fontsource travado no `package-lock.json`). Nunca CDN: a CSP bloqueia.
+- **Componentes do produto:** `resources/js/components/fixa/` (Button, TextField, Select, Checkbox, Switch, Card, StatusChip, OriginTag, Toast, Banner, Skeleton, EmptyState, Sheet, Icon, TargetText, AppShell). `components/ui/` é o shadcn-vue do kit, usado pelas telas do kit até a J1.
+- **Ícones:** `<Icon name="today" />` (Material Symbols Rounded, sempre `aria-hidden`); `filled` para o estado ativo. Ícone nunca é o único portador de significado.
+- **Textos:** toda string de interface em `resources/js/i18n/pt-BR.ts`, via `t('chave')`. Idioma estudado só por `useTargetLang()`; conteúdo nesse idioma sempre dentro de `<TargetText>`.
+- **Catálogo:** `http://localhost:8080/dev/componentes` (só com `APP_ENV=local`). Componente novo ou alterado entra no catálogo e é conferido nos dois temas contra o protótipo.
+- **Testes de componente:** `*.test.ts` ao lado do componente, com `@vue/test-utils` e `expectAccessible()` (axe) de `resources/js/test/axe.ts`. Contraste é testado em `resources/js/test/tokens.test.ts`; par de tokens novo usado em texto entra lá.
+
 ## Regras de segurança (nunca quebrar)
 
 - Nunca commitar `.env`, chaves, tokens, dumps nem material real de aulas. Segredos só em variáveis de ambiente (DAD-04). Não peça nem aceite chaves de API no chat.

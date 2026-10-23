@@ -79,3 +79,10 @@ Para conferir se o pacote já saiu: `./vendor/bin/sail root-shell -c "apt-get up
 | vite-plus (Vite, Vitest, Oxlint e Oxfmt) | 1.3.0 | exata |
 | vitest | 5.0.5 | |
 | vue-tsc | 3.3.13 | `~3.3.0` |
+| @fontsource/plus-jakarta-sans | 5.3.0 | exata |
+| @fontsource/gloock | 5.3.0 | exata |
+| @fontsource/source-serif-4 | 5.3.1 | exata |
+| @fontsource-variable/material-symbols-rounded | 5.3.9 | exata |
+| @vue/test-utils | 2.5.1 | exata |
+| jsdom | 30.1.3 | exata |
+| axe-core | 4.14.0 | exata |

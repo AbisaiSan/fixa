@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Domain\Ai\DailyAiAllowance;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -44,6 +45,8 @@ class HandleInertiaRequests extends Middleware
             'targetLang' => [
                 'code' => $request->user()?->activeEnrollment->target_language ?? config('fixa.target_language'),
             ],
+            // Correções por IA do dia (J4-B5, ATV-05). Só calculado quando a tela pede.
+            'aiLimit' => fn () => $request->user() === null ? null : app(DailyAiAllowance::class)->summary($request->user()),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

@@ -21,6 +21,14 @@ declare module '@inertiajs/core' {
             auth: Auth;
             sidebarOpen: boolean;
             targetLang: { code: string };
+            // Correções por IA do dia (J4-B5, ATV-05).
+            aiLimit: {
+                used: number;
+                limit: number;
+                left: number;
+                reached: boolean;
+                resets_at: string;
+            } | null;
             [key: string]: unknown;
         };
     }

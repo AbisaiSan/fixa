@@ -73,6 +73,7 @@ final class OwnedEndpoints
             'desfazer report da palavra' => self::endpoint('delete', 'words.reports.destroy', self::makeWordReport(...)),
             // J4: prática.
             'responder item' => self::endpoint('post', 'practice.attempts.store', self::makePracticeItem(...), ['answer' => 'ever']),
+            'salvar palavra da leitura' => self::endpoint('post', 'practice.reading.words.store', self::makeReading(...), ['form' => 'applied']),
             'desfazer report' => self::endpoint('delete', 'lessons.reports.destroy', self::makeReport(...)),
         ];
     }
@@ -186,6 +187,22 @@ final class OwnedEndpoints
         $item->save();
 
         return ['resource' => $session, 'params' => [$item->ulid], 'numeric' => [$item->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeReading(User $owner): array
+    {
+        $session = (new PracticeSession)->forceFill([
+            'user_id' => $owner->id, 'kind' => SessionKind::Reading,
+            'content' => ['title' => 'nota da aluna A', 'paragraphs' => [], 'glossary' => [
+                ['form' => 'applied', 'term' => 'to apply for', 'part_of_speech' => 'verbo', 'translation' => 'candidatar-se a'],
+            ]],
+        ]);
+        $session->save();
+
+        return ['resource' => $session, 'params' => [$session->ulid], 'numeric' => [$session->id]];
     }
 
     /**

@@ -76,6 +76,8 @@ test('the weak point page builds the session from the notebook', function () {
 
 test('with nothing due the weak point goes back to practice', function () {
     $this->get(route('practice.weak-point'))->assertRedirect(route('practice'));
+
+    $this->get(route('practice'))->assertInertia(fn (Assert $page) => $page->where('flash', 'weak-point-empty'));
 });
 
 test('a correction can be reported (MAT-05)', function () {

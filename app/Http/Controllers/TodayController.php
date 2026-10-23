@@ -54,6 +54,7 @@ class TodayController extends Controller
 
         return Inertia::render('app/Practice', [
             'status' => Lesson::query()->exists() ? 'ready' : 'empty',
+            'flash' => session('status'),
             'flashcards' => [
                 'due' => $cards->whereNotNull('first_reviewed_at')->count(),
                 'new' => $cards->whereNull('first_reviewed_at')->count(),

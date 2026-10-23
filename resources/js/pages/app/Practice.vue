@@ -31,6 +31,7 @@ const props = defineProps<{
     } | null;
     weakPoint?: { due: number; point: string | null };
     mistakes?: { open: number; priority: number };
+    flash?: string | null;
 }>();
 
 const page = usePage();
@@ -170,6 +171,13 @@ const entries = computed<Entry[]>(() => {
             </Card>
         </template>
 
+        <p
+            v-if="flash === 'weak-point-empty'"
+            role="status"
+            class="m-0 rounded-m bg-okt px-4 py-3 font-bold text-okd"
+        >
+            {{ t('practice.weakPointNone') }}
+        </p>
         <p class="m-0 text-ink2">{{ t('practice.intro') }}</p>
         <ul class="m-0 grid list-none gap-3 p-0 md:grid-cols-2">
             <li v-for="entry in entries" :key="entry.key">

@@ -41,14 +41,12 @@ class AppServiceProvider extends ServiceProvider
             app()->isProduction(),
         );
 
-        Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(12)
-                ->mixedCase()
-                ->letters()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()
-            : null,
-        );
+        // Regra única em todo ambiente, como o protótipo informa ao aluno (ACE-02).
+        // Em produção, também recusa senhas que apareceram em vazamentos.
+        Password::defaults(function (): Password {
+            $rule = Password::min(8)->letters()->numbers();
+
+            return app()->isProduction() ? $rule->uncompromised() : $rule;
+        });
     }
 }

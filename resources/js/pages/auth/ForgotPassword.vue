@@ -1,66 +1,58 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
-import InputError from '@/components/InputError.vue';
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
+import { Form, Link } from '@inertiajs/vue3';
+import Banner from '@/components/fixa/Banner.vue';
+import Button from '@/components/fixa/Button.vue';
+import Icon from '@/components/fixa/Icon.vue';
+import TextField from '@/components/fixa/TextField.vue';
+import { t } from '@/i18n';
+import { focusFirstError } from '@/lib/forms';
 import { login } from '@/routes';
 import { email } from '@/routes/password';
 
 defineOptions({
     layout: {
-        title: 'Forgot password',
-        description: 'Enter your email to receive a password reset link',
+        title: t('auth.recoverTitle'),
+        description: t('auth.recoverBody'),
     },
 });
 
-defineProps<{
-    status?: string;
-}>();
+defineProps<{ status?: string }>();
 </script>
 
 <template>
-    <Head title="Forgot password" />
-
-    <div
+    <Banner
         v-if="status"
-        class="mb-4 text-center text-sm font-medium text-green-600"
+        tone="info"
+        icon="forward_to_inbox"
+        :title="t('auth.recoverSentTitle')"
     >
-        {{ status }}
-    </div>
+        {{ t('auth.recoverSentBody') }}
+    </Banner>
 
-    <div class="space-y-6">
-        <Form v-bind="email.form()" v-slot="{ errors, processing }">
-            <div class="grid gap-2">
-                <Label for="email">Email address</Label>
-                <Input
-                    id="email"
-                    type="email"
-                    name="email"
-                    autocomplete="off"
-                    v-focus
-                    placeholder="email@example.com"
-                />
-                <InputError :message="errors.email" />
-            </div>
+    <Form
+        v-bind="email.form()"
+        v-slot="{ errors, processing }"
+        class="flex flex-col gap-4.5"
+        @error="focusFirstError()"
+    >
+        <TextField
+            :label="t('auth.email')"
+            name="email"
+            type="email"
+            required
+            autofocus
+            autocomplete="email"
+            :error="errors.email"
+        />
+        <Button type="submit" icon="send" :loading="processing" block>{{
+            t('auth.recoverAction')
+        }}</Button>
+    </Form>
 
-            <div class="my-6 flex items-center justify-start">
-                <Button
-                    class="w-full"
-                    :disabled="processing"
-                    data-test="email-password-reset-link-button"
-                >
-                    <Spinner v-if="processing" />
-                    Email password reset link
-                </Button>
-            </div>
-        </Form>
-
-        <div class="space-x-1 text-center text-sm text-muted-foreground">
-            <span>Or, return to</span>
-            <TextLink :href="login()">log in</TextLink>
-        </div>
-    </div>
+    <Link
+        :href="login()"
+        class="flex min-h-11 items-center gap-1.5 self-start font-bold text-prid"
+    >
+        <Icon name="arrow_back" :size="20" />{{ t('auth.backToLogin') }}
+    </Link>
 </template>

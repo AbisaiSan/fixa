@@ -1,143 +1,104 @@
 <script setup lang="ts">
-import { Form, Head } from '@inertiajs/vue3';
-import InputError from '@/components/InputError.vue';
-import PasswordInput from '@/components/PasswordInput.vue';
-import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
+import { Form, Link } from '@inertiajs/vue3';
+import Button from '@/components/fixa/Button.vue';
+import Checkbox from '@/components/fixa/Checkbox.vue';
+import Icon from '@/components/fixa/Icon.vue';
+import PasswordField from '@/components/fixa/PasswordField.vue';
+import TextField from '@/components/fixa/TextField.vue';
+import { t } from '@/i18n';
+import { focusFirstError } from '@/lib/forms';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
-defineProps<{
-    passwordRules: string;
-}>();
+defineProps<{ passwordRules: string }>();
 
 defineOptions({
     layout: {
-        title: 'Create an account',
-        description: 'Enter your details below to create your account',
+        title: t('auth.registerTitle'),
+        description: t('auth.registerBody'),
     },
 });
 </script>
 
 <template>
-    <Head title="Register" />
-
     <Form
         v-bind="store.form()"
         :reset-on-success="['password', 'password_confirmation']"
         v-slot="{ errors, processing }"
-        class="flex flex-col gap-6"
+        class="flex flex-col gap-4.5"
+        @error="focusFirstError()"
     >
-        <div class="grid gap-6">
-            <div class="grid gap-2">
-                <Label for="name">Name</Label>
-                <Input
-                    id="name"
-                    type="text"
-                    required
-                    v-focus
-                    :tabindex="1"
-                    autocomplete="name"
-                    name="name"
-                    placeholder="Full name"
-                />
-                <InputError :message="errors.name" />
-            </div>
+        <TextField
+            :label="t('auth.name')"
+            name="name"
+            required
+            autofocus
+            autocomplete="name"
+            :error="errors.name"
+        />
+        <TextField
+            :label="t('auth.email')"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            :error="errors.email"
+        />
+        <PasswordField
+            :label="t('auth.password')"
+            name="password"
+            required
+            autocomplete="new-password"
+            :passwordrules="passwordRules"
+            :hint="t('auth.passwordHint')"
+            :error="errors.password"
+        />
+        <PasswordField
+            :label="t('auth.passwordConfirmation')"
+            name="password_confirmation"
+            required
+            autocomplete="new-password"
+            :error="errors.password_confirmation"
+        />
 
-            <div class="grid gap-2">
-                <Label for="email">Email address</Label>
-                <Input
-                    id="email"
-                    type="email"
-                    required
-                    :tabindex="2"
-                    autocomplete="email"
-                    name="email"
-                    placeholder="email@example.com"
-                />
-                <InputError :message="errors.email" />
-            </div>
-
-            <div class="grid gap-2">
-                <Label for="password">Password</Label>
-                <PasswordInput
-                    id="password"
-                    required
-                    :tabindex="3"
-                    autocomplete="new-password"
-                    name="password"
-                    placeholder="Password"
-                    :passwordrules="passwordRules"
-                />
-                <InputError :message="errors.password" />
-            </div>
-
-            <div class="grid gap-2">
-                <Label for="password_confirmation">Confirm password</Label>
-                <PasswordInput
-                    id="password_confirmation"
-                    required
-                    :tabindex="4"
-                    autocomplete="new-password"
-                    name="password_confirmation"
-                    placeholder="Confirm password"
-                    :passwordrules="passwordRules"
-                />
-                <InputError :message="errors.password_confirmation" />
-            </div>
-
-            <div class="grid gap-2">
-                <label class="flex items-start gap-3 text-sm">
-                    <input
-                        type="checkbox"
-                        name="terms"
-                        value="1"
-                        required
-                        class="mt-0.5 size-5 accent-prid"
-                    />
-                    <span>
-                        Li e aceito os
-                        <a
-                            href="/termos"
-                            target="_blank"
-                            class="font-bold text-prid"
-                            >termos de uso</a
-                        >
-                        e a
-                        <a
-                            href="/privacidade"
-                            target="_blank"
-                            class="font-bold text-prid"
-                            >política de privacidade</a
-                        >.
-                    </span>
-                </label>
-                <InputError :message="errors.terms" />
-            </div>
-
-            <Button
-                type="submit"
-                class="mt-2 w-full"
-                tabindex="5"
-                :disabled="processing"
-                data-test="register-user-button"
+        <div>
+            <Checkbox
+                name="terms"
+                value="1"
+                required
+                :aria-invalid="errors.terms ? 'true' : undefined"
+                :aria-describedby="errors.terms ? 'terms-error' : undefined"
             >
-                <Spinner v-if="processing" />
-                Create account
-            </Button>
+                {{ t('legal.acceptLabelStart') }}
+                <a href="/termos" target="_blank" class="font-bold text-prid">{{
+                    t('legal.terms')
+                }}</a>
+                {{ t('legal.and') }}
+                <a
+                    href="/privacidade"
+                    target="_blank"
+                    class="font-bold text-prid"
+                    >{{ t('legal.privacy') }}</a
+                >.
+            </Checkbox>
+            <p
+                v-if="errors.terms"
+                id="terms-error"
+                class="m-0 flex items-center gap-1.5 text-[13.5px] font-semibold text-errd"
+            >
+                <Icon name="error" :size="17" />{{ errors.terms }}
+            </p>
         </div>
 
-        <div class="text-center text-sm text-muted-foreground">
-            Already have an account?
-            <TextLink
-                :href="login()"
-                class="underline underline-offset-4"
-                :tabindex="6"
-                >Log in</TextLink
-            >
-        </div>
+        <Button type="submit" :loading="processing" block>{{
+            t('auth.createAccount')
+        }}</Button>
+
+        <p class="m-0 text-center text-sm text-ink2">
+            {{ t('auth.haveAccount') }}
+            <Link :href="login()" class="font-bold text-prid">{{
+                t('auth.loginAction')
+            }}</Link>
+        </p>
     </Form>
 </template>

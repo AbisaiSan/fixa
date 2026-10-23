@@ -41,7 +41,7 @@ function contrast(a: string, b: string): number {
     return (light + 0.05) / (dark + 0.05);
 }
 
-const light = block(':root');
+const light = block("[data-theme='light']");
 const dark = { ...light, ...block("[data-theme='dark']") };
 
 // Texto sobre fundo: mínimo 4,5:1.

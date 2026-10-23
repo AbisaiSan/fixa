@@ -8,7 +8,8 @@
   --ink3 é decorativo (placeholder, ícone inativo), nunca texto essencial.
 */
 
-:root {
+:root,
+[data-theme='light'] {
     color-scheme: light;
 
     --bg: #f6f8fb;

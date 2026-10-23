@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Lessons;
 
+use App\Domain\Lessons\Reports\ReportItem;
 use App\Domain\Lessons\Reports\ReportReason;
-use App\Domain\Lessons\Reports\ReportReviewItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Lessons\StoreItemReportRequest;
 use App\Models\ItemReport;
@@ -17,7 +17,7 @@ use Illuminate\Validation\ValidationException;
  */
 class ItemReportController extends Controller
 {
-    public function store(StoreItemReportRequest $request, Lesson $lesson, ReportReviewItem $report): RedirectResponse
+    public function store(StoreItemReportRequest $request, Lesson $lesson, ReportItem $report): RedirectResponse
     {
         Gate::authorize('update', $lesson);
 
@@ -40,7 +40,7 @@ class ItemReportController extends Controller
         return back()->with('status', 'item-reported');
     }
 
-    public function destroy(Lesson $lesson, ItemReport $report, ReportReviewItem $reports): RedirectResponse
+    public function destroy(Lesson $lesson, ItemReport $report, ReportItem $reports): RedirectResponse
     {
         Gate::authorize('update', $lesson);
         Gate::authorize('update', $report);

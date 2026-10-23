@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\Lessons\Reports\Reportable;
 use App\Models\Concerns\BelongsToUser;
 use App\Models\Concerns\HasPublicUlid;
 use App\Models\Scopes\OwnedByAuthenticatedUser;
@@ -36,7 +37,7 @@ use Illuminate\Support\Str;
  * @property bool $reported
  * @property Carbon|null $created_at
  */
-class LessonReview extends Model
+class LessonReview extends Model implements Reportable
 {
     /** @use HasFactory<LessonReviewFactory> */
     use BelongsToUser, HasFactory, HasPublicUlid;
@@ -110,6 +111,11 @@ class LessonReview extends Model
             ...array_map(fn (array $concept) => self::conceptItem($concept['key']), $this->concepts),
             self::COMMON_MISTAKES,
         ];
+    }
+
+    public function sourceLessonId(): ?int
+    {
+        return $this->lesson_id;
     }
 
     public function hasConcept(string $key): bool

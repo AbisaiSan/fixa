@@ -3,8 +3,8 @@
 namespace Tests\Support;
 
 use App\Domain\Lessons\LessonStatus;
+use App\Domain\Lessons\Reports\ReportItem;
 use App\Domain\Lessons\Reports\ReportReason;
-use App\Domain\Lessons\Reports\ReportReviewItem;
 use App\Models\Card;
 use App\Models\Lesson;
 use App\Models\LessonFile;
@@ -56,6 +56,12 @@ final class OwnedEndpoints
             'reportar item' => self::endpoint('post', 'lessons.reports.store', self::makeReview(...), ['item' => 'summary', 'reason' => 'other']),
             // J3: flashcards.
             'responder cartão' => self::endpoint('post', 'cards.reviews.store', self::makeCard(...), ['rating' => 3]),
+            'editar cartão' => self::endpoint('patch', 'cards.update', self::makeCard(...), ['front' => 'invadido', 'back' => 'invadido']),
+            'apagar cartão' => self::endpoint('delete', 'cards.destroy', self::makeCard(...)),
+            'suspender cartão' => self::endpoint('post', 'cards.suspend', self::makeCard(...)),
+            'reativar cartão' => self::endpoint('delete', 'cards.resume', self::makeCard(...)),
+            'reportar cartão' => self::endpoint('post', 'cards.reports.store', self::makeCard(...), ['reason' => 'other']),
+            'desfazer report do cartão' => self::endpoint('delete', 'cards.reports.destroy', self::makeCardReport(...)),
             'desfazer report' => self::endpoint('delete', 'lessons.reports.destroy', self::makeReport(...)),
         ];
     }
@@ -157,6 +163,18 @@ final class OwnedEndpoints
     /**
      * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
      */
+    private static function makeCardReport(User $owner): array
+    {
+        ['resource' => $card] = self::makeCard($owner);
+        /** @var Card $card */
+        $report = app(ReportItem::class)->handle($card, Card::ITEM, ReportReason::Other, 'nota da aluna A');
+
+        return ['resource' => $report, 'params' => [$card->ulid, $report->ulid], 'numeric' => [$card->id, $report->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
     private static function makeReadyLesson(User $owner): array
     {
         Queue::fake();
@@ -205,7 +223,7 @@ final class OwnedEndpoints
     private static function makeReport(User $owner): array
     {
         [$lesson, $review] = self::reviewFor($owner);
-        $report = app(ReportReviewItem::class)->handle($review, LessonReview::SUMMARY, ReportReason::Other, 'nota da aluna A');
+        $report = app(ReportItem::class)->handle($review, LessonReview::SUMMARY, ReportReason::Other, 'nota da aluna A');
 
         return ['resource' => $report, 'params' => [$lesson->ulid, $report->ulid], 'numeric' => [$lesson->id, $report->id]];
     }

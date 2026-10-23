@@ -1,6 +1,8 @@
 <?php
 
 use App\Domain\Lessons\Extraction\TextExtractor;
+use App\Http\Controllers\Cards\CardController;
+use App\Http\Controllers\Cards\CardReportController;
 use App\Http\Controllers\Cards\CardReviewController;
 use App\Http\Controllers\Lessons\ItemReportController;
 use App\Http\Controllers\Lessons\LessonController;
@@ -52,6 +54,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('praticar/flashcards/{card}/respostas', [CardReviewController::class, 'store'])
         ->middleware('throttle:card-reviews')
         ->name('cards.reviews.store');
+    Route::post('cartoes', [CardController::class, 'store'])->name('cards.store');
+    Route::patch('cartoes/{card}', [CardController::class, 'update'])->name('cards.update');
+    Route::delete('cartoes/{card}', [CardController::class, 'destroy'])->name('cards.destroy');
+    Route::post('cartoes/{card}/suspender', [CardController::class, 'suspend'])->name('cards.suspend');
+    Route::delete('cartoes/{card}/suspender', [CardController::class, 'resume'])->name('cards.resume');
+    Route::post('cartoes/{card}/reportes', [CardReportController::class, 'store'])->name('cards.reports.store');
+    Route::delete('cartoes/{card}/reportes/{report}', [CardReportController::class, 'destroy'])->name('cards.reports.destroy');
     Route::inertia('vocabulario', 'app/Vocabulary', ['status' => 'empty'])->name('vocabulary.index');
     Route::inertia('progresso', 'app/Progress', ['status' => 'empty'])->name('progress');
 });

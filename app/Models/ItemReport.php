@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $ulid
  * @property int $user_id
- * @property int $source_lesson_id
+ * @property int|null $source_lesson_id
  * @property string $reportable_type
  * @property int $reportable_id
  * @property string $item_key

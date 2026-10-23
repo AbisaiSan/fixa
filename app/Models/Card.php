@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Domain\Cards\CardIdentity;
 use App\Domain\Cards\CardKind;
+use App\Domain\Lessons\Reports\Reportable;
 use App\Models\Concerns\BelongsToUser;
 use App\Models\Concerns\HasPublicUlid;
+use App\Models\Scopes\OwnedByAuthenticatedUser;
 use Database\Factories\CardFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -46,7 +48,7 @@ use Illuminate\Support\Facades\DB;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class Card extends Model
+class Card extends Model implements Reportable
 {
     /** @use HasFactory<CardFactory> */
     use BelongsToUser, HasFactory, HasPublicUlid;
@@ -117,11 +119,43 @@ class Card extends Model
         return DB::table('card_lesson')->where('lesson_id', $lesson->id)->select('card_id');
     }
 
+    public const ITEM = 'card';
+
     /**
+     * Ponto revisado: os reports do cartão são do dono do cartão. Sem o
+     * escopo, a relação funciona fora de uma requisição.
+     *
      * @return MorphMany<ItemReport, $this>
      */
     public function reports(): MorphMany
     {
-        return $this->morphMany(ItemReport::class, 'reportable');
+        return $this->morphMany(ItemReport::class, 'reportable')
+            ->withoutGlobalScope(OwnedByAuthenticatedUser::class)
+            ->where('item_reports.user_id', $this->user_id);
+    }
+
+    /**
+     * O cartão é reportado inteiro (MAT-05).
+     *
+     * @return list<string>
+     */
+    public function itemKeys(): array
+    {
+        return [self::ITEM];
+    }
+
+    public function sourceLessonId(): ?int
+    {
+        return $this->source_lesson_id;
+    }
+
+    public function refreshReported(): void
+    {
+        $this->forceFill(['reported' => $this->reports()->open()->exists()])->save();
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->suspended_at !== null;
     }
 }

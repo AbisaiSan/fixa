@@ -95,7 +95,8 @@ final class ItemCorrector
             corrected: (string) ($content['corrected'] ?? ''),
             natural: (string) ($content['natural'] ?? ''),
             error: trim($answer),
-            category: ErrorCategory::Grammar,
+            // No ponto fraco, o erro volta na categoria em que foi anotado.
+            category: ErrorCategory::tryFrom((string) ($content['category'] ?? '')) ?? ErrorCategory::Grammar,
             point: (string) ($content['point'] ?? ''),
         );
     }

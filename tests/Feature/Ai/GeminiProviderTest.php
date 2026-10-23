@@ -1,6 +1,5 @@
 <?php
 
-use App\Domain\Ai\AiImage;
 use App\Domain\Ai\AiRequest;
 use App\Domain\Ai\AiTask;
 use App\Domain\Ai\Contracts\AiProvider;
@@ -20,7 +19,7 @@ beforeEach(function () {
     app()->forgetInstance(AiProvider::class);
 });
 
-function geminiRequest(AiTask $task = AiTask::LessonReview, array $images = []): AiRequest
+function geminiRequest(AiTask $task = AiTask::LessonReview): AiRequest
 {
     return new AiRequest(
         task: $task,
@@ -28,7 +27,6 @@ function geminiRequest(AiTask $task = AiTask::LessonReview, array $images = []):
         instructions: 'Instruções do sistema.',
         material: '<material>texto da aula</material>',
         schema: ['type' => 'OBJECT', 'properties' => ['summary' => ['type' => 'STRING']]],
-        images: $images,
     );
 }
 
@@ -75,16 +73,6 @@ test('light tasks use the light model', function () {
     $response = app(AiProvider::class)->generate(geminiRequest(AiTask::TextCorrection));
 
     expect($response->model)->toBe('gemini-light');
-});
-
-test('images go inline next to the material', function () {
-    Http::fake(['*' => Http::response(geminiAnswer(['text' => 'lido']))]);
-
-    app(AiProvider::class)->generate(geminiRequest(AiTask::TextExtraction, [new AiImage('image/jpeg', 'YWJj')]));
-
-    Http::assertSent(fn (Request $request) => $request->data()['contents'][0]['parts'][1] === [
-        'inline_data' => ['mime_type' => 'image/jpeg', 'data' => 'YWJj'],
-    ]);
 });
 
 test('failures become provider exceptions without student text', function (array|string $fake, bool $retryable) {

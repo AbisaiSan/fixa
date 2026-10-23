@@ -27,14 +27,12 @@ final class StructuredGenerator
 
     /**
      * @param  array<string, string>  $variables
-     * @param  list<AiImage>  $images
      */
     public function generate(
         AiTask $task,
         OutputSchema $schema,
         string $material,
         array $variables = [],
-        array $images = [],
     ): AiResponse {
         $prompt = $this->prompts->build($task, $material, $variables);
         $request = new AiRequest(
@@ -43,7 +41,6 @@ final class StructuredGenerator
             instructions: $prompt->instructions,
             material: $prompt->material,
             schema: $schema->providerSchema(),
-            images: $images,
         );
 
         $failed = [];

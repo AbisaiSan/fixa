@@ -1,6 +1,5 @@
 <?php
 
-use App\Domain\Ai\AiTask;
 use App\Domain\Ai\Providers\FakeAiProvider;
 use App\Domain\Lessons\Extraction\PdfInspector;
 use App\Domain\Lessons\Extraction\TextExtractor;
@@ -25,11 +24,6 @@ beforeEach(function () {
         public function text(string $path): ?string
         {
             return $this->test->pdfText;
-        }
-
-        public function pagesAsImages(string $path, int $maxPages): array
-        {
-            return ['pagina-1', 'pagina-2'];
         }
     });
 });
@@ -76,20 +70,19 @@ test('a pdf with text is read by poppler, without AI', function () {
     expect(LessonFile::withoutGlobalScopes()->sole()->scanned_at)->not->toBeNull();
 });
 
-test('a scanned pdf is read by the AI page by page', function () {
-    $this->pdfText = 'quase nada';
-    $this->ai->respondWith(AiTask::TextExtraction, ['text' => $this->pdfText.str_repeat(' palavra lida', 60), 'legible' => true]);
+test('a pdf without selectable text is refused with its own reason', function () {
+    $this->pdfText = '  ';
 
-    app(TextExtractor::class)->extract(lessonWithFile(LessonSource::Pdf));
-
-    expect($this->ai->sent(AiTask::TextExtraction)[0]->images)->toHaveCount(2);
+    expect(fn () => app(TextExtractor::class)->extract(lessonWithFile(LessonSource::Pdf)))
+        ->toThrow(fn (LessonRejected $e) => expect($e->reason)->toBe('pdf_without_text'));
+    $this->ai->assertSentCount(0);
 });
 
-test('photos are read by the AI and illegible ones are refused', function () {
-    $this->ai->respondWith(AiTask::TextExtraction, ['text' => '', 'legible' => false]);
+test('a pdf with some text but under 50 words is too short', function () {
+    $this->pdfText = str_repeat('palavra ', 30);
 
-    expect(fn () => app(TextExtractor::class)->extract(lessonWithFile(LessonSource::Image, 'jpeg', 'image/jpeg')))
-        ->toThrow(fn (LessonRejected $e) => expect($e->reason)->toBe('illegible'));
+    expect(fn () => app(TextExtractor::class)->extract(lessonWithFile(LessonSource::Pdf)))
+        ->toThrow(fn (LessonRejected $e) => expect($e->reason)->toBe('too_short'));
 });
 
 test('an infected file is refused and deleted', function () {

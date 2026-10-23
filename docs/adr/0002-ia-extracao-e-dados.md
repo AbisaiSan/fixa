@@ -19,8 +19,8 @@ A Jornada 2 transforma o material da aula em revisão com IA. O material pode se
 
 **Extração de texto**
 
-- PDF com texto: **poppler** (`pdftotext`, `pdfinfo`) no container, local e gratuito.
-- Foto do caderno e PDF escaneado: **Gemini com visão**. O Tesseract foi descartado por ser fraco com letra de mão e acrescentar manutenção com pouco ganho. O teste de extração (J2-B1) confirma ou revê esta escolha com material real.
+- O MVP aceita **texto colado e PDF com texto**, lido pelo **poppler** (`pdftotext`, `pdfinfo`) no container, local, gratuito e sem IA. A aula real de teste (PDF do Google Docs, 12 páginas) rendeu 1.172 palavras pelo poppler.
+- **Revisão em 23/10/2026:** foto do caderno e PDF escaneado saíram do MVP. Eram o maior risco de qualidade da jornada (leitura ruim de letra de mão gera revisão errada), custavam tokens de visão e mandavam imagens para fora do servidor. PDF sem texto selecionável é recusado com o motivo `pdf_without_text`. Se voltarem, o caminho previsto é o Gemini com visão; o Tesseract foi descartado por ser fraco com letra de mão.
 - Antivírus: **ClamAV em container próprio** no Sail, com atualização automática das assinaturas, isolado do app.
 - Extração na fila, com limite de tempo e de memória por processo (UPL-03).
 
@@ -32,6 +32,5 @@ A Jornada 2 transforma o material da aula em revisão com IA. O material pode se
 ## Consequências
 
 - No plano gratuito, o Google pode usar o que é enviado para melhorar os modelos. Até o plano pago (decisão da J6), só material próprio vai para a IA.
-- O Gemini também lê as fotos, então a imagem do caderno sai do servidor; está descrito na política de privacidade.
 - Trocar de provedor é configuração. O `ai:compare` grava saídas lado a lado para decidir com aulas reais.
 - O Llama local continua possível sem mudar o produto, quando a máquina puder ser usada para isso.

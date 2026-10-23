@@ -10,7 +10,6 @@ final readonly class AiRequest
 {
     /**
      * @param  array<string, mixed>  $schema  Esquema da resposta no formato do provedor (OpenAPI).
-     * @param  list<AiImage>  $images
      */
     public function __construct(
         public AiTask $task,
@@ -18,6 +17,5 @@ final readonly class AiRequest
         public string $instructions,
         public string $material,
         public array $schema,
-        public array $images = [],
     ) {}
 }

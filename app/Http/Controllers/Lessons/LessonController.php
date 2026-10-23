@@ -23,7 +23,6 @@ class LessonController extends Controller
 
         $files = match ($source) {
             LessonSource::Pdf => [$request->file('pdf')],
-            LessonSource::Image => array_values($request->file('images', [])),
             LessonSource::Text => [],
         };
 

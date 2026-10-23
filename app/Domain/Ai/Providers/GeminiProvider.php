@@ -98,15 +98,9 @@ final class GeminiProvider implements AiProvider
      */
     private function payload(AiRequest $request): array
     {
-        $parts = [['text' => $request->material]];
-
-        foreach ($request->images as $image) {
-            $parts[] = ['inline_data' => ['mime_type' => $image->mimeType, 'data' => $image->base64]];
-        }
-
         return [
             'systemInstruction' => ['parts' => [['text' => $request->instructions]]],
-            'contents' => [['role' => 'user', 'parts' => $parts]],
+            'contents' => [['role' => 'user', 'parts' => [['text' => $request->material]]]],
             'generationConfig' => [
                 'responseMimeType' => 'application/json',
                 'responseSchema' => $request->schema,

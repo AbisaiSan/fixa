@@ -107,21 +107,11 @@ test('a file over 10 MB is refused', function () {
         ->assertSessionHasErrors('pdf');
 });
 
-test('photos are accepted by real image type and kept in order', function () {
-    upload(['source' => 'image', 'images' => [
-        UploadedFile::fake()->image('pagina1.jpg'),
-        UploadedFile::fake()->image('pagina2.png'),
-    ]])->assertSessionHasNoErrors();
+test('photos are not accepted in the MVP', function () {
+    upload(['source' => 'image', 'images' => [UploadedFile::fake()->image('pagina1.jpg')]])
+        ->assertSessionHasErrors('source');
 
-    $files = LessonFile::forUser($this->user)->orderBy('position')->get();
-
-    expect($files->pluck('mime_type')->all())->toBe(['image/jpeg', 'image/png'])
-        ->and($files->pluck('position')->all())->toBe([1, 2]);
-});
-
-test('a non image renamed to jpg is refused', function () {
-    upload(['source' => 'image', 'images' => [realUpload('foto.jpg', '<?php echo 1;')]])
-        ->assertSessionHasErrors(['images.0' => 'Envie fotos em JPG, PNG, WEBP ou HEIC.']);
+    expect(Lesson::forUser($this->user)->count())->toBe(0);
 });
 
 test('uploads are rate limited per student', function () {

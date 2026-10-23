@@ -149,7 +149,7 @@ O aluno envia uma aula e recebe a revisão pronta, baseada só no material dele.
 
 | ID | Tarefa | Regras |
 | --- | --- | --- |
-| J2-B1 | Teste de extração (1 dia): 5 fotos reais do caderno e 3 PDFs pelo poppler, pelo Tesseract e por um modelo multimódal. Registrar qualidade e custo em um ADR e escolher o caminho | UPL-03 |
+| J2-B1 | Teste de extração com PDFs reais pelo poppler. Foto do caderno e PDF escaneado saíram do MVP (ADR 0002), então o teste com fotos e modelo multimódal fica para quando voltarem | UPL-03 |
 | J2-B2 | Modelo `lessons` (título, data, idioma, origem, status, texto extraído) e máquina de estados: na fila, extraindo, gerando, validando, pronta ou falhou | MAT-01 |
 | J2-B3 | Upload: validar o tipo real do arquivo, 10 MB e 20 páginas, nome aleatório, disco privado e entrega por link temporário e autenticado | MAT-02, UPL-01, UPL-02 |
 | J2-B4 | Antivírus (ClamAV) e extração de texto em processo isolado, com limite de tempo e de memória | UPL-03 |
@@ -168,7 +168,7 @@ O aluno envia uma aula e recebe a revisão pronta, baseada só no material dele.
 | ID | Tarefa | Referência |
 | --- | --- | --- |
 | J2-F1 | `/aulas`: lista de aulas com origem, data, resumo de cartões e status | Protótipo, tela 5 |
-| J2-F2 | `/aulas/enviar`: abas Texto, PDF e Foto, título, data e idioma, limite de 10 MB e 20 páginas, declaração de direito de uso e aviso de material curto | Protótipo, tela 4, MAT-07 |
+| J2-F2 | `/aulas/enviar`: abas Texto e PDF, título, data e idioma, limite de 10 MB e 20 páginas, declaração de direito de uso e aviso de material curto | Protótipo, tela 4, MAT-07 |
 | J2-F3 | Tela de geração com skeleton em 4 etapas e `aria-busy`. O aluno pode sair e voltar | Sistema de design |
 | J2-F4 | `/aulas/:id`: revisão com `OriginTag`, editar, remover, regenerar e `ReportButton` | Protótipo, tela 5 |
 | J2-F5 | Estados: erro de envio que preserva o preenchido, banner de falha da IA com "tentar de novo" e estado de item em análise | Sistema de design |
@@ -178,7 +178,7 @@ Sugestão fora das regras atuais: mostrar ao aluno o texto extraído de uma foto
 
 ### Critérios de pronto
 
-- [ ] 5 aulas reais (texto, PDF e foto) viram revisões que você aprova
+- [ ] 5 aulas reais (texto e PDF) viram revisões que você aprova
 - [ ] Comparação Gemini e Claude registrada e provedor inicial escolhido
 - [ ] Material com "ignore as instruções" não muda a saída (teste automatizado)
 - [ ] Arquivo com extensão trocada ou PDF enorme é recusado

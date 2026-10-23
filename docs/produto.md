@@ -65,7 +65,7 @@ Cada regra tem um código para servir de referência no plano de desenvolvimento
 ### Material da aula (MAT)
 
 1. **MAT-01.** Cada envio vira uma aula com título, data e idioma estudado. O aluno pode editar título e data.
-2. **MAT-02.** Formatos aceitos no MVP: texto colado, PDF e imagem (foto do caderno). Limite inicial de 10 MB por arquivo e 20 páginas por envio.
+2. **MAT-02.** Formatos aceitos no MVP: texto colado e PDF com texto selecionável. Limite inicial de 10 MB por arquivo e 20 páginas por envio. Foto do caderno e PDF escaneado ficaram fora do MVP em 23/10/2026 (ver ADR 0002) e podem voltar depois.
 3. **MAT-03.** Todo conteúdo gerado guarda a aula de origem e a exibe na tela ("Da aula de 21/10").
 4. **MAT-04.** A IA gera conteúdo apenas a partir do material enviado. Se o texto legível tiver menos de 50 palavras, a plataforma avisa e não gera.
 5. **MAT-05.** O conteúdo gerado entra direto na rotina e o aluno pode editar, remover ou regenerar qualquer item. Um botão de "reportar erro" fica em todo item gerado.

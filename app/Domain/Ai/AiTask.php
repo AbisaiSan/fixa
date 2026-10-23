@@ -12,10 +12,9 @@ enum AiTask: string
     case Cards = 'cards';
     case Activities = 'activities';
     case TextCorrection = 'text_correction';
-    case TextExtraction = 'text_extraction';
 
     /**
-     * Revisões e extração usam o modelo mais forte; correções curtas, o leve.
+     * Revisões usam o modelo mais forte; correções curtas, o leve.
      */
     public function tier(): ModelTier
     {

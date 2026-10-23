@@ -39,35 +39,6 @@ class PdfInspector
     }
 
     /**
-     * Páginas como imagens JPEG, para ler PDFs escaneados com a IA.
-     *
-     * @return list<string> conteúdo binário de cada página
-     */
-    public function pagesAsImages(string $path, int $maxPages): array
-    {
-        $directory = sys_get_temp_dir().'/fixa-pages-'.bin2hex(random_bytes(8));
-        mkdir($directory, 0700);
-
-        try {
-            $result = Process::timeout(self::TIMEOUT_SECONDS * 3)->run($this->limited([
-                'pdftoppm', '-r', '150', '-jpeg', '-f', '1', '-l', (string) $maxPages, $path, "{$directory}/page",
-            ]));
-
-            if ($result->failed()) {
-                return [];
-            }
-
-            $files = glob("{$directory}/page*.jpg") ?: [];
-            sort($files, SORT_NATURAL);
-
-            return array_map(fn (string $file) => (string) file_get_contents($file), $files);
-        } finally {
-            array_map('unlink', glob("{$directory}/*") ?: []);
-            rmdir($directory);
-        }
-    }
-
-    /**
      * No Linux (container e servidor), limita a memória do processo (UPL-03).
      *
      * @param  list<string>  $command

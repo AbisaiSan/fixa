@@ -6,7 +6,7 @@ use RuntimeException;
 
 /**
  * A aula não pode seguir. O motivo é um código, nunca conteúdo (IAS-04):
- * virus_found, unreadable_file, illegible, too_short.
+ * virus_found, unreadable_file, pdf_without_text, too_short.
  */
 class LessonRejected extends RuntimeException
 {

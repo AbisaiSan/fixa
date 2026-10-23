@@ -51,7 +51,7 @@ final class CreateLesson
                         'path' => $path,
                         'mime_type' => (string) $file->getMimeType(),
                         'size_bytes' => (int) $file->getSize(),
-                        'pages' => $source === LessonSource::Pdf ? $this->pdf->pages($file->getRealPath()) : 1,
+                        'pages' => $this->pdf->pages($file->getRealPath()),
                         'position' => $index + 1,
                         'sha256' => (string) hash_file('sha256', $file->getRealPath()),
                     ])->save();
@@ -68,18 +68,10 @@ final class CreateLesson
 
     private function store(User $user, Lesson $lesson, UploadedFile $file): string
     {
-        $extension = match ($file->getMimeType()) {
-            'application/pdf' => 'pdf',
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/webp' => 'webp',
-            default => 'heic',
-        };
-
         $path = Storage::disk(LessonFile::DISK)->putFileAs(
             "{$user->ulid}/{$lesson->ulid}",
             $file,
-            Str::random(40).".{$extension}",
+            Str::random(40).'.pdf',
         );
 
         if ($path === false) {

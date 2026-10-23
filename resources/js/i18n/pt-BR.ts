@@ -410,6 +410,22 @@ export const ptBR = {
         backPractice: 'Praticar mais um pouco',
         backToday: 'Voltar para Hoje',
     },
+    reading: {
+        title: 'Leitura',
+        back: 'Voltar para Praticar',
+        fromLesson: 'Da aula de {date}',
+        minutes: '{words} palavras · {minutes} min',
+        tapHint:
+            'Toque numa palavra marcada para ver a tradução e salvar no vocabulário.',
+        wordLabel: 'Ver {word}',
+        save: 'Salvar no vocabulário',
+        saved: 'No seu vocabulário',
+        known: 'Você já tem esta palavra',
+        saveError: 'Não conseguimos salvar agora. Tente de novo.',
+        questions: 'Perguntas',
+        check: 'Verificar',
+        score: '{n} de {total} certas',
+    },
     aiLimit: {
         close: 'Fechar',
         title: 'Você usou as {n} correções de IA de hoje',

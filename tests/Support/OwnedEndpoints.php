@@ -75,6 +75,7 @@ final class OwnedEndpoints
             'abrir escrita' => self::endpoint('get', 'practice.writing', self::makeWritingSession(...)),
             'reportar item de prática' => self::endpoint('post', 'practice.items.reports.store', self::makePracticeItem(...), ['reason' => 'other']),
             'responder item' => self::endpoint('post', 'practice.attempts.store', self::makePracticeItem(...), ['answer' => 'ever']),
+            'abrir leitura' => self::endpoint('get', 'practice.reading', self::makeReading(...)),
             'salvar palavra da leitura' => self::endpoint('post', 'practice.reading.words.store', self::makeReading(...), ['form' => 'applied']),
             'desfazer report' => self::endpoint('delete', 'lessons.reports.destroy', self::makeReport(...)),
         ];

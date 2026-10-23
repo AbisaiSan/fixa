@@ -55,3 +55,14 @@ test('the answer returns the new preview for a card that comes back', function (
     $this->postJson(route('cards.reviews.store', $card), ['rating' => 1])
         ->assertJson(['interval_days' => 0, 'preview' => [0, 1, 2, 4]]);
 });
+
+test('rush mode brings only due cards (PLA-04)', function () {
+    Card::factory()->forLesson($this->lesson)->create();
+    $due = Card::factory()->forLesson($this->lesson)->create([
+        'front' => 'strength', 'back' => 'ponto forte',
+        'repetitions' => 2, 'interval_days' => 6, 'due_at' => now()->subHour(), 'first_reviewed_at' => now()->subDays(8),
+    ]);
+
+    $this->get(route('flashcards', ['modo' => 'corrida']))
+        ->assertInertia(fn (Assert $page) => $page->where('mode', 'rush')->has('cards', 1)->where('cards.0.ulid', $due->ulid));
+});

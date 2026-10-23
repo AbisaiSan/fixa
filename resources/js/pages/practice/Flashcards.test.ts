@@ -109,3 +109,43 @@ describe('Flashcards session', () => {
         await expectAccessible(wrapper.element);
     });
 });
+
+describe('Flashcards rush mode', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+        vi.useRealTimers();
+    });
+
+    it('counts down five minutes and ends the session when time is up', async () => {
+        vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
+        const wrapper = mount(Flashcards, {
+            props: {
+                mode: 'rush',
+                lesson: null,
+                cards: [card('a', false), card('b', false)],
+            },
+            attachTo: document.body,
+        });
+
+        expect(wrapper.get('[role="timer"]').attributes('aria-label')).toBe(
+            'Tempo restante: 5:00',
+        );
+        await expectAccessible(wrapper.element);
+
+        await vi.advanceTimersByTimeAsync(61_000);
+        expect(wrapper.get('[role="timer"]').attributes('aria-label')).toBe(
+            'Tempo restante: 3:59',
+        );
+
+        await vi.advanceTimersByTimeAsync(240_000);
+        expect(wrapper.text()).toContain('Corrida concluída');
+    });
+
+    it('explains when there is nothing due', () => {
+        const wrapper = mount(Flashcards, {
+            props: { mode: 'rush', lesson: null, cards: [] },
+        });
+
+        expect(wrapper.text()).toContain('Nenhuma revisão vencida agora');
+    });
+});

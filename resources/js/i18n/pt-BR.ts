@@ -361,6 +361,14 @@ export const ptBR = {
             'Seus cartões voltam no tempo certo. Envie uma aula nova ou volte mais tarde.',
         emptyLessonBody:
             'Os cartões desta aula já estão em dia. Eles voltam no tempo certo.',
+        rushTitle: 'Modo corrida',
+        rushTime: 'Tempo restante: {time}',
+        rushEmptyTitle: 'Nenhuma revisão vencida agora',
+        rushEmptyBody:
+            'O modo corrida usa só cartões vencidos. Volte mais tarde ou faça a sessão normal.',
+        rushDoneTitle: 'Corrida concluída',
+        rushDoneBody:
+            'Seu dia já conta para a sequência. Os próximos cartões voltam no tempo certo.',
         doneTitle: 'Flashcards em dia',
         doneBody:
             'Você fez as revisões de agora. Os próximos cartões voltam no tempo certo.',

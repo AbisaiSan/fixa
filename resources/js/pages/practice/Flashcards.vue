@@ -34,9 +34,25 @@ const answers = ref<Answer[]>([]);
 const sendError = ref(false);
 const shownAt = ref(Date.now());
 
+// Modo corrida (J3-F3, PLA-04): 5 minutos, só vencidos.
+const RUSH_SECONDS = 5 * 60;
+const rush = computed(() => props.mode === 'rush');
+const secondsLeft = ref(RUSH_SECONDS);
+const timeUp = ref(false);
+let timer: ReturnType<typeof setInterval> | undefined;
+
+const clock = computed(() => {
+    const minutes = Math.floor(secondsLeft.value / 60);
+    const seconds = String(secondsLeft.value % 60).padStart(2, '0');
+
+    return `${minutes}:${seconds}`;
+});
+
 const current = computed(() => queue.value[index.value]);
 const done = computed(
-    () => queue.value.length > 0 && index.value >= queue.value.length,
+    () =>
+        queue.value.length > 0 &&
+        (timeUp.value || index.value >= queue.value.length),
 );
 
 const remaining = computed(() => {
@@ -128,8 +144,33 @@ function onKey(event: KeyboardEvent): void {
     }
 }
 
-onMounted(() => window.addEventListener('keydown', onKey));
-onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
+function tick(): void {
+    if (done.value) {
+        clearInterval(timer);
+
+        return;
+    }
+
+    secondsLeft.value -= 1;
+
+    if (secondsLeft.value <= 0) {
+        timeUp.value = true;
+        clearInterval(timer);
+    }
+}
+
+onMounted(() => {
+    window.addEventListener('keydown', onKey);
+
+    if (rush.value && queue.value.length > 0) {
+        timer = setInterval(tick, 1000);
+    }
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', onKey);
+    clearInterval(timer);
+});
 </script>
 
 <template>
@@ -137,11 +178,20 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
 
     <template v-if="queue.length === 0">
         <Card>
-            <EmptyState icon="style" :title="t('flashcards.emptyTitle')">
+            <EmptyState
+                icon="style"
+                :title="
+                    rush
+                        ? t('flashcards.rushEmptyTitle')
+                        : t('flashcards.emptyTitle')
+                "
+            >
                 {{
-                    lesson
-                        ? t('flashcards.emptyLessonBody')
-                        : t('flashcards.emptyBody')
+                    rush
+                        ? t('flashcards.rushEmptyBody')
+                        : lesson
+                          ? t('flashcards.emptyLessonBody')
+                          : t('flashcards.emptyBody')
                 }}
                 <template #action>
                     <Button variant="secondary" class="mt-2" @click="exit">{{
@@ -155,15 +205,38 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
     <template v-else-if="done">
         <Card class="flex flex-col items-start gap-3">
             <Icon name="task_alt" :size="36" class="text-okd" />
-            <h1 class="m-0 type-title">{{ t('flashcards.doneTitle') }}</h1>
-            <p class="m-0 text-ink2">{{ t('flashcards.doneBody') }}</p>
+            <h1 class="m-0 type-title">
+                {{
+                    rush
+                        ? t('flashcards.rushDoneTitle')
+                        : t('flashcards.doneTitle')
+                }}
+            </h1>
+            <p class="m-0 text-ink2">
+                {{
+                    rush
+                        ? t('flashcards.rushDoneBody')
+                        : t('flashcards.doneBody')
+                }}
+            </p>
             <Button @click="exit">{{ t('flashcards.backToday') }}</Button>
         </Card>
     </template>
 
     <template v-else-if="current">
-        <h1 class="sr-only">{{ t('flashcards.title') }}</h1>
-        <SessionHeader :current="index" :total="queue.length" @exit="exit" />
+        <h1 class="sr-only">
+            {{ rush ? t('flashcards.rushTitle') : t('flashcards.title') }}
+        </h1>
+        <SessionHeader :current="index" :total="queue.length" @exit="exit">
+            <span
+                v-if="rush"
+                role="timer"
+                :aria-label="t('flashcards.rushTime', { time: clock })"
+                class="inline-flex items-center gap-1 rounded-full bg-ambt px-2.5 py-1 text-sm font-bold text-ambd tabular-nums"
+            >
+                <Icon name="timer" :size="17" />{{ clock }}
+            </span>
+        </SessionHeader>
 
         <div class="flex flex-wrap items-center gap-2">
             <span

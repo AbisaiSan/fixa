@@ -1,0 +1,11 @@
+# Falsos positivos revisados: senhas de mentira em testes, não segredos.
+# Cada linha é a impressão digital exata de um achado (commit:arquivo:regra:linha).
+# Antes de acrescentar uma linha, confira que o trecho não é um segredo real.
+c78161cb37f4c63cd80b01efe3405e631e7b6f57:tests/Feature/Auth/AccountAccessTest.php:generic-api-key:50
+c78161cb37f4c63cd80b01efe3405e631e7b6f57:tests/Feature/Auth/AccountAccessTest.php:generic-api-key:66
+f277238f56e8fbc4d2255c28a476da137531bcf9:tests/Feature/Auth/AuditTrailTest.php:generic-api-key:52
+f277238f56e8fbc4d2255c28a476da137531bcf9:tests/Feature/Auth/AuditTrailTest.php:generic-api-key:53
+tests/Feature/Auth/AccountAccessTest.php:generic-api-key:50
+tests/Feature/Auth/AccountAccessTest.php:generic-api-key:66
+tests/Feature/Auth/AuditTrailTest.php:generic-api-key:52
+tests/Feature/Auth/AuditTrailTest.php:generic-api-key:53

@@ -11,6 +11,7 @@ use App\Http\Controllers\Lessons\LessonFileController;
 use App\Http\Controllers\Lessons\LessonGenerationController;
 use App\Http\Controllers\Lessons\LessonReviewController;
 use App\Http\Controllers\Practice\AttemptController;
+use App\Http\Controllers\Practice\MistakeController;
 use App\Http\Controllers\Practice\PracticeItemReportController;
 use App\Http\Controllers\Practice\PracticeSessionController;
 use App\Http\Controllers\Practice\ReadingController;
@@ -64,6 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('cards.reviews.store');
     Route::get('praticar/escrita/{session}', [PracticeSessionController::class, 'writing'])->name('practice.writing');
     Route::get('praticar/leitura/{session}', [ReadingController::class, 'show'])->name('practice.reading');
+    Route::get('praticar/caderno-de-erros', [MistakeController::class, 'index'])->name('practice.mistakes');
     Route::get('praticar/ponto-fraco', [PracticeSessionController::class, 'weakPoint'])->name('practice.weak-point');
     Route::post('praticar/itens/{item}/reportes', [PracticeItemReportController::class, 'store'])->name('practice.items.reports.store');
     Route::post('praticar/itens/{item}/respostas', [AttemptController::class, 'store'])

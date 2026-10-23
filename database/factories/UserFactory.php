@@ -18,6 +18,16 @@ class UserFactory extends Factory
     protected static ?string $password;
 
     /**
+     * Toda conta tem uma matrícula, como no cadastro real.
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            $user->enrollments()->create(['target_language' => 'en']);
+        });
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>

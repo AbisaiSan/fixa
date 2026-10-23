@@ -42,7 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user()?->toPublicArray(),
             ],
             'targetLang' => [
-                'code' => config('fixa.target_language'),
+                'code' => $request->user()?->activeEnrollment->target_language ?? config('fixa.target_language'),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

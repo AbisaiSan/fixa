@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\PreferencesController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use App\Http\Controllers\Settings\SessionController;
@@ -19,6 +20,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('settings/security', [SecurityController::class, 'edit'])
         ->middleware(RequirePassword::class)
         ->name('security.edit');
+
+    Route::patch('settings/study', [PreferencesController::class, 'updateStudy'])->name('preferences.study');
+    Route::patch('settings/preferences', [PreferencesController::class, 'updateAccount'])->name('preferences.account');
 
     Route::delete('settings/sessions', [SessionController::class, 'destroyOthers'])
         ->middleware('throttle:6,1')

@@ -9,4 +9,11 @@ return [
     */
     'target_language' => env('FIXA_TARGET_LANGUAGE', 'en'),
 
+    /*
+    | Idiomas que o aluno pode estudar hoje. Os demais aparecem como "em breve".
+    */
+    'available_languages' => ['en'],
+
+    'upcoming_languages' => ['es', 'fr'],
+
 ];

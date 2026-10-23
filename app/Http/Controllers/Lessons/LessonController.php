@@ -19,6 +19,31 @@ use Inertia\Response;
 
 class LessonController extends Controller
 {
+    /**
+     * Lista de aulas (J2-F1): origem, data, status e resumo do que foi gerado.
+     */
+    public function index(): Response
+    {
+        $lessons = Lesson::query()
+            ->with(['files:id,lesson_id,pages', 'review'])
+            ->latest('lesson_date')
+            ->latest('id')
+            ->get();
+
+        return Inertia::render('app/Lessons', [
+            'status' => $lessons->isEmpty() ? 'empty' : 'ready',
+            'lessons' => $lessons->map(fn (Lesson $lesson) => [
+                'ulid' => $lesson->ulid,
+                'title' => $lesson->title,
+                'lesson_date' => $lesson->lesson_date->toDateString(),
+                'source' => $lesson->source->value,
+                'pages' => $lesson->source === LessonSource::Pdf ? (int) $lesson->files->sum('pages') : null,
+                'status' => $lesson->status->value,
+                'concepts' => $lesson->review === null ? null : count($lesson->review->concepts),
+            ])->all(),
+        ]);
+    }
+
     public function store(StoreLessonRequest $request, CreateLesson $createLesson): RedirectResponse
     {
         /** @var User $user */

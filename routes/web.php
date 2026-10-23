@@ -13,7 +13,7 @@ Route::get('/', fn () => redirect()->route(auth()->check() ? 'today' : 'login'))
 Route::middleware(['auth', 'verified'])->group(function () {
     // As abas ainda não têm conteúdo: o contrato de estados chega como "empty" até a J2.
     Route::inertia('hoje', 'app/Today', ['status' => 'empty'])->name('today');
-    Route::inertia('aulas', 'app/Lessons', ['status' => 'empty'])->name('lessons.index');
+    Route::get('aulas', [LessonController::class, 'index'])->name('lessons.index');
     Route::inertia('aulas/enviar', 'app/LessonUpload')->name('lessons.create');
     Route::post('aulas', [LessonController::class, 'store'])->middleware('throttle:lesson-uploads')->name('lessons.store');
     Route::get('aulas/{lesson}', [LessonController::class, 'show'])->name('lessons.show');

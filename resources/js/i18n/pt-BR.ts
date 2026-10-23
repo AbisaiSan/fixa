@@ -117,7 +117,7 @@ export const ptBR = {
     today: {
         emptyTitle: 'Vamos começar pela sua aula',
         emptyBody:
-            'Envie o material da última aula: texto, PDF ou foto do caderno. Em menos de um minuto você tem revisão, flashcards e atividades prontos.',
+            'Envie o material da última aula: texto colado ou PDF. Em menos de um minuto você tem revisão, flashcards e atividades prontos.',
         emptyAction: 'Enviar minha primeira aula',
         stepsLabel: 'Como funciona',
         step1Title: 'Envie a aula.',
@@ -130,7 +130,7 @@ export const ptBR = {
     empty: {
         lessonsTitle: 'Nenhuma aula por aqui ainda',
         lessonsBody:
-            'Envie o material da sua última aula (texto, PDF ou foto do caderno) e a gente monta a revisão, os flashcards e as atividades.',
+            'Envie o material da sua última aula (texto colado ou PDF) e a gente monta a revisão, os flashcards e as atividades.',
         practiceTitle: 'Envie uma aula para liberar as atividades',
         practiceBody:
             'Tudo o que você pratica aqui vem do material das suas aulas.',
@@ -147,7 +147,22 @@ export const ptBR = {
         title: 'Enviar aula',
         soonTitle: 'O envio de aulas chega na próxima etapa',
         soonBody:
-            'Em breve você envia texto, PDF ou foto do caderno e recebe revisão, flashcards e atividades.',
+            'Em breve você envia texto colado ou PDF e recebe revisão, flashcards e atividades.',
+    },
+    lessons: {
+        count: '{n} aulas enviadas. Tudo o que você pratica vem daqui.',
+        countOne: '1 aula enviada. Tudo o que você pratica vem daqui.',
+        listLabel: 'Suas aulas',
+        dateLine: 'Aula de {date} · {source}',
+        sourceText: 'Texto colado',
+        sourcePdf: 'PDF',
+        sourcePdfPages: 'PDF · {n} páginas',
+        sourcePdfPage: 'PDF · 1 página',
+        concepts: '{n} conceitos na revisão',
+        conceptsOne: '1 conceito na revisão',
+        statusProcessing: 'Gerando a revisão',
+        statusReady: 'Revisão pronta',
+        statusFailed: 'Não deu certo',
     },
     settings: {
         title: 'Configurações',

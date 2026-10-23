@@ -10,6 +10,7 @@ use App\Http\Controllers\Lessons\LessonController;
 use App\Http\Controllers\Lessons\LessonFileController;
 use App\Http\Controllers\Lessons\LessonGenerationController;
 use App\Http\Controllers\Lessons\LessonReviewController;
+use App\Http\Controllers\Practice\AttemptController;
 use App\Http\Controllers\TodayController;
 use App\Http\Controllers\Vocabulary\WordController;
 use App\Http\Requests\Lessons\StoreLessonRequest;
@@ -57,6 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('praticar/flashcards/{card}/respostas', [CardReviewController::class, 'store'])
         ->middleware('throttle:card-reviews')
         ->name('cards.reviews.store');
+    Route::post('praticar/itens/{item}/respostas', [AttemptController::class, 'store'])
+        ->middleware('throttle:practice-answers')
+        ->name('practice.attempts.store');
     Route::post('cartoes', [CardController::class, 'store'])->name('cards.store');
     Route::patch('cartoes/{card}', [CardController::class, 'update'])->name('cards.update');
     Route::delete('cartoes/{card}', [CardController::class, 'destroy'])->name('cards.destroy');

@@ -5,10 +5,14 @@ namespace Tests\Support;
 use App\Domain\Lessons\LessonStatus;
 use App\Domain\Lessons\Reports\ReportItem;
 use App\Domain\Lessons\Reports\ReportReason;
+use App\Domain\Practice\ItemType;
+use App\Domain\Practice\SessionKind;
 use App\Models\Card;
 use App\Models\Lesson;
 use App\Models\LessonFile;
 use App\Models\LessonReview;
+use App\Models\PracticeItem;
+use App\Models\PracticeSession;
 use App\Models\User;
 use App\Models\Word;
 use Closure;
@@ -67,6 +71,8 @@ final class OwnedEndpoints
             'editar palavra' => self::endpoint('patch', 'words.update', self::makeWord(...), ['translation' => 'invadido']),
             'reportar palavra' => self::endpoint('post', 'words.reports.store', self::makeWord(...), ['reason' => 'other']),
             'desfazer report da palavra' => self::endpoint('delete', 'words.reports.destroy', self::makeWordReport(...)),
+            // J4: prática.
+            'responder item' => self::endpoint('post', 'practice.attempts.store', self::makePracticeItem(...), ['answer' => 'ever']),
             'desfazer report' => self::endpoint('delete', 'lessons.reports.destroy', self::makeReport(...)),
         ];
     }
@@ -163,6 +169,23 @@ final class OwnedEndpoints
         $card = Card::factory()->forLesson($lesson)->create(['back' => 'nota da aluna A']);
 
         return ['resource' => $card, 'params' => [$card->ulid], 'numeric' => [$card->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makePracticeItem(User $owner): array
+    {
+        $lesson = Lesson::factory()->forUser($owner)->create();
+        $session = (new PracticeSession)->forceFill(['user_id' => $owner->id, 'source_lesson_id' => $lesson->id, 'kind' => SessionKind::Writing]);
+        $session->save();
+        $item = (new PracticeItem)->forceFill([
+            'user_id' => $owner->id, 'practice_session_id' => $session->id, 'position' => 1, 'type' => ItemType::Fill,
+            'content' => ['sentence' => 'Have you ___ been to Chile?', 'accepted' => ['ever'], 'corrected' => 'nota da aluna A', 'natural' => 'x', 'why' => 'x'],
+        ]);
+        $item->save();
+
+        return ['resource' => $session, 'params' => [$item->ulid], 'numeric' => [$item->id]];
     }
 
     /**

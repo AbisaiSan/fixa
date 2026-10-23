@@ -47,7 +47,7 @@ class LessonReviewController extends Controller
             'done.*' => ['integer', 'min:0', 'max:9'],
         ]);
 
-        $edit->markCanDo($review, array_map(intval(...), $validated['done']));
+        $edit->markCanDo($review, array_values(array_map(intval(...), $validated['done'])));
 
         return back();
     }

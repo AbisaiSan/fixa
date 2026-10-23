@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Domain\Cards\Scheduling\ReviewScheduler;
+use App\Domain\Cards\Scheduling\Sm2Scheduler;
 use App\Listeners\RecordAuthenticationEvents;
 use App\Models\Card;
 use App\Models\LessonReview;
@@ -23,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Algoritmo de repetição espaçada (FLA-03). Trocar é mudar esta linha.
+        $this->app->bind(ReviewScheduler::class, Sm2Scheduler::class);
     }
 
     /**

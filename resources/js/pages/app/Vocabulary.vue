@@ -278,7 +278,7 @@ const practiceHref = computed(() =>
             role="tab"
             type="button"
             :aria-selected="tab === item.value"
-            class="inline-flex min-h-11 items-center gap-2 rounded-s px-4 font-bold"
+            class="inline-flex min-h-11 items-center gap-2 rounded-s px-3 font-bold whitespace-nowrap sm:px-4"
             :class="
                 tab === item.value ? 'bg-sf text-ink shadow-sh1' : 'text-ink2'
             "

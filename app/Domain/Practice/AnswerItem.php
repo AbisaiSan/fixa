@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class AnswerItem
 {
-    public function __construct(private ItemCorrector $corrector) {}
+    public function __construct(private ItemCorrector $corrector, private MistakeBook $mistakes) {}
 
     /**
      * @throws DailyLimitReached
@@ -48,6 +48,8 @@ final class AnswerItem
             $attempt->save();
 
             $this->advance($item, $now);
+            // Erros vão para o caderno (ERR-01).
+            $this->mistakes->record($user, $item, $answer, $correction);
 
             return $attempt;
         });

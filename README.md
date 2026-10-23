@@ -32,13 +32,13 @@ Nas próximas vezes, basta:
 npm run dev                     # Vite com recarga automática (opcional)
 ```
 
-| Serviço | Endereço |
-| --- | --- |
-| Aplicação | http://localhost:8080 |
-| Mailpit (e-mails) | http://localhost:8025 |
+| Serviço             | Endereço                                                 |
+| ------------------- | -------------------------------------------------------- |
+| Aplicação           | http://localhost:8080                                    |
+| Mailpit (e-mails)   | http://localhost:8025                                    |
 | RustFS (console S3) | http://localhost:9001 (usuário `sail`, senha `password`) |
-| PostgreSQL | `127.0.0.1:5432` (usuário `sail`, senha `password`) |
-| Redis | `127.0.0.1:6379` |
+| PostgreSQL          | `127.0.0.1:5432` (usuário `sail`, senha `password`)      |
+| Redis               | `127.0.0.1:6379`                                         |
 
 Todas as portas ficam só em `127.0.0.1`. Para parar: `./vendor/bin/sail down`.
 

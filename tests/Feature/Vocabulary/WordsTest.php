@@ -21,7 +21,8 @@ beforeEach(function () {
     $this->run = function (Lesson $lesson) {
         $this->ai->respondWith(AiTask::LessonReview, AiFixtures::lessonReview())
             ->respondWith(AiTask::Cards, AiFixtures::cards())
-            ->respondWith(AiTask::Activities, AiFixtures::activities());
+            ->respondWith(AiTask::Activities, AiFixtures::activities())
+            ->respondWith(AiTask::Reading, AiFixtures::reading());
         app()->call([new ProcessLesson($lesson->id), 'handle']);
     };
 });

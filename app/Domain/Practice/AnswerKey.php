@@ -29,6 +29,11 @@ final class AnswerKey
             }
         }
 
+        // Na escolha entre opções não existe erro de digitação.
+        if ($type === ItemType::Choice) {
+            return new AnswerCheck(Verdict::NoMatch);
+        }
+
         foreach ($candidates as $normalized => $original) {
             $distance = levenshtein($given, (string) $normalized);
 

@@ -11,6 +11,7 @@ enum AiTask: string
     case LessonReview = 'lesson_review';
     case Cards = 'cards';
     case Activities = 'activities';
+    case Reading = 'reading';
     case TextCorrection = 'text_correction';
     case WordDetails = 'word_details';
 

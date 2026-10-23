@@ -17,7 +17,8 @@ use Tests\Support\AiFixtures;
 beforeEach(function () {
     $this->ai = app(FakeAiProvider::class)
         ->respondWith(AiTask::LessonReview, AiFixtures::lessonReview())
-        ->respondWith(AiTask::Cards, AiFixtures::cards());
+        ->respondWith(AiTask::Cards, AiFixtures::cards())
+        ->respondWith(AiTask::Reading, AiFixtures::reading());
     $this->lesson = Lesson::factory()->create();
     $this->lesson->forceFill(['extracted_text' => str_repeat('I have worked here since 2022. ', 12)])->save();
     $this->run = fn () => app()->call([new ProcessLesson($this->lesson->id), 'handle']);
@@ -28,7 +29,7 @@ test('the lesson job creates a writing session with 5 to 8 items (ATV-01)', func
 
     ($this->run)();
 
-    $session = PracticeSession::forUser($this->lesson->user)->sole();
+    $session = PracticeSession::forUser($this->lesson->user)->where('kind', SessionKind::Writing)->sole();
     $items = $session->items()->get();
 
     expect($this->lesson->fresh()->status)->toBe(LessonStatus::Ready)
@@ -54,7 +55,7 @@ test('the item content is encrypted and never serialized', function () {
 
     ($this->run)();
 
-    $item = PracticeItem::forUser($this->lesson->user)->first();
+    $item = PracticeItem::forUser($this->lesson->user)->orderBy('id')->first();
 
     expect(DB::table('practice_items')->value('content'))->not->toContain('since 2021')
         ->and($item->toArray())->not->toHaveKey('content');
@@ -91,7 +92,7 @@ test('sessions out of the rules fail the lesson after one retry', function (call
     ($this->run)();
 
     expect($this->lesson->fresh()->failure_reason)->toBe('ai_invalid_output')
-        ->and(PracticeSession::withoutGlobalScopes()->count())->toBe(0);
+        ->and(PracticeSession::withoutGlobalScopes()->where('kind', 'writing')->count())->toBe(0);
 })->with([
     'menos de 5 itens' => [fn (array &$a) => $a['items'] = array_slice($a['items'], 0, 4)],
     'mais de 8 itens' => [fn (array &$a) => $a['items'] = [...$a['items'], ...$a['items']]],
@@ -119,6 +120,6 @@ test('regenerating the review does not create a second writing session', functio
     $this->ai->respondWith(AiTask::LessonReview, AiFixtures::lessonReview());
     ($this->run)();
 
-    expect(PracticeSession::withoutGlobalScopes()->count())->toBe(1);
+    expect(PracticeSession::withoutGlobalScopes()->where('kind', 'writing')->count())->toBe(1);
     $this->ai->assertSentCount(1, AiTask::Activities);
 });

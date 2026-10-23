@@ -126,4 +126,33 @@ final class AiFixtures
             ],
         ]];
     }
+
+    /**
+     * Texto de leitura de exemplo, o da Ana do protótipo (J4-B6).
+     *
+     * @return array<string, mixed>
+     */
+    public static function reading(): array
+    {
+        return [
+            'title' => "Ana's interview",
+            'paragraphs' => [
+                'Last month, Ana applied for a job at a design studio. She has worked as a junior designer for two years, and she has already built a small portfolio. Before the interview, she practiced common questions with her teacher.',
+                'What has been your biggest achievement so far? the interviewer asked. Ana talked about a project she has led for a local bakery. The online orders have doubled since the launch.',
+                'Then came the hard question about her main weakness. Ana was honest. She said she has struggled with deadlines in the past, but she has learned to plan her week on Mondays.',
+            ],
+            'glossary' => [
+                ['form' => 'applied', 'term' => 'to apply for', 'part_of_speech' => 'verbo', 'translation' => 'candidatar-se a'],
+                ['form' => 'portfolio', 'term' => 'portfolio', 'part_of_speech' => 'substantivo', 'translation' => 'portfólio'],
+                ['form' => 'achievement', 'term' => 'achievement', 'part_of_speech' => 'substantivo', 'translation' => 'conquista'],
+                ['form' => 'doubled', 'term' => 'to double', 'part_of_speech' => 'verbo', 'translation' => 'dobrar'],
+                ['form' => 'struggled', 'term' => 'to struggle', 'part_of_speech' => 'verbo', 'translation' => 'ter dificuldade'],
+            ],
+            'questions' => [
+                ['question' => 'How long has Ana worked as a junior designer?', 'options' => ['For one year', 'For two years', 'Since last month'], 'answer' => 1],
+                ['question' => 'What has happened to the online orders?', 'options' => ['They have doubled', 'They have stopped', 'They have moved'], 'answer' => 0],
+                ['question' => 'What has Ana learned to do?', 'options' => ['Work on weekends', 'Plan her week on Mondays', 'Say no to projects'], 'answer' => 1],
+            ],
+        ];
+    }
 }

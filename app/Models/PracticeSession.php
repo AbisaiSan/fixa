@@ -7,6 +7,7 @@ use App\Domain\Practice\SessionStatus;
 use App\Models\Concerns\BelongsToUser;
 use App\Models\Concerns\HasPublicUlid;
 use App\Models\Scopes\OwnedByAuthenticatedUser;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,10 +27,12 @@ use Illuminate\Support\Carbon;
  * @property string|null $model
  * @property string|null $prompt_version
  * @property bool $reported
+ * @property array<string, mixed>|null $content
  * @property Carbon|null $started_at
  * @property Carbon|null $completed_at
  * @property Carbon|null $created_at
  */
+#[Hidden(['content'])]
 class PracticeSession extends Model
 {
     use BelongsToUser, HasPublicUlid;
@@ -46,6 +49,7 @@ class PracticeSession extends Model
             'kind' => SessionKind::class,
             'status' => SessionStatus::class,
             'reported' => 'boolean',
+            'content' => 'encrypted:array',
             'started_at' => 'datetime',
             'completed_at' => 'datetime',
         ];

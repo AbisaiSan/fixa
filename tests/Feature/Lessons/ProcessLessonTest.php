@@ -16,7 +16,8 @@ use Tests\Support\AiFixtures;
 beforeEach(function () {
     $this->ai = app(FakeAiProvider::class)
         ->respondWith(AiTask::Cards, AiFixtures::cards())
-        ->respondWith(AiTask::Activities, AiFixtures::activities());
+        ->respondWith(AiTask::Activities, AiFixtures::activities())
+        ->respondWith(AiTask::Reading, AiFixtures::reading());
     $this->lesson = Lesson::factory()->create();
     $this->lesson->forceFill(['extracted_text' => str_repeat('I have worked here since 2022. ', 12)])->save();
 });

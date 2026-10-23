@@ -24,6 +24,7 @@ beforeEach(function () {
         'extracted_text' => str_repeat('I have worked here since 2022. ', 12),
         'cards_generated_at' => now(),
         'activities_generated_at' => now(),
+        'reading_generated_at' => now(),
     ])->save();
     $this->review = LessonReview::factory()->for($this->lesson)->create();
     $this->concept = $this->review->concepts[0]['key'];

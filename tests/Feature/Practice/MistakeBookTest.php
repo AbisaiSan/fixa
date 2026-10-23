@@ -10,6 +10,7 @@ use App\Models\Mistake;
 use App\Models\PracticeItem;
 use App\Models\PracticeSession;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Tests\Support\AiFixtures;
 
@@ -84,4 +85,32 @@ test('the mistake keeps the student text encrypted and the key has no student te
 
     expect($raw['content'])->not->toContain('worked')
         ->and($raw['point_key'])->toMatch('/^[a-f0-9]{64}$/');
+});
+
+test('with a frozen clock the mistake comes back after 1, 3 and 7 days and leaves after 3 correct answers (ERR-02, ERR-03)', function () {
+    $this->travelTo(CarbonImmutable::parse('2026-10-24 18:00:00', 'UTC'));
+    ($this->answer)($this->items[0], 'worked');
+    $dueDates = [Mistake::sole()->due_at->toIso8601String()];
+
+    foreach ([1, 4, 11] as $days) {
+        $this->travelTo(CarbonImmutable::parse('2026-10-24 18:00:00', 'UTC')->addDays($days));
+        ($this->answer)(($this->makeItems)()[0], 'have worked');
+        $dueDates[] = Mistake::sole()->due_at?->toIso8601String();
+    }
+
+    expect($dueDates)->toBe([
+        '2026-10-25T03:00:00+00:00',
+        '2026-10-28T03:00:00+00:00',
+        '2026-11-04T03:00:00+00:00',
+        null,
+    ])->and(Mistake::sole()->resolved_at)->not->toBeNull()
+        ->and(Mistake::open()->count())->toBe(0);
+});
+
+test('three repetitions give priority', function () {
+    foreach (range(1, 3) as $time) {
+        ($this->answer)(($this->makeItems)()[0], 'worked');
+    }
+
+    expect(Mistake::sole()->priority)->toBeTrue()->and(Mistake::sole()->repetitions)->toBe(3);
 });

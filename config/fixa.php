@@ -74,6 +74,7 @@ return [
             'cards' => 'v2',
             'word_details' => 'v1',
             'activities' => 'v1',
+            'text_correction' => 'v1',
         ],
 
         // Pedidos de IA feitos pelo aluno por dia, como correções e

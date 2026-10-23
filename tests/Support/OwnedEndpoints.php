@@ -10,6 +10,7 @@ use App\Models\Lesson;
 use App\Models\LessonFile;
 use App\Models\LessonReview;
 use App\Models\User;
+use App\Models\Word;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
@@ -62,6 +63,10 @@ final class OwnedEndpoints
             'reativar cartão' => self::endpoint('delete', 'cards.resume', self::makeCard(...)),
             'reportar cartão' => self::endpoint('post', 'cards.reports.store', self::makeCard(...), ['reason' => 'other']),
             'desfazer report do cartão' => self::endpoint('delete', 'cards.reports.destroy', self::makeCardReport(...)),
+            'ver palavra' => self::endpoint('get', 'words.show', self::makeWord(...)),
+            'editar palavra' => self::endpoint('patch', 'words.update', self::makeWord(...), ['translation' => 'invadido']),
+            'reportar palavra' => self::endpoint('post', 'words.reports.store', self::makeWord(...), ['reason' => 'other']),
+            'desfazer report da palavra' => self::endpoint('delete', 'words.reports.destroy', self::makeWordReport(...)),
             'desfazer report' => self::endpoint('delete', 'lessons.reports.destroy', self::makeReport(...)),
         ];
     }
@@ -158,6 +163,29 @@ final class OwnedEndpoints
         $card = Card::factory()->forLesson($lesson)->create(['back' => 'nota da aluna A']);
 
         return ['resource' => $card, 'params' => [$card->ulid], 'numeric' => [$card->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeWord(User $owner): array
+    {
+        $lesson = Lesson::factory()->forUser($owner)->create();
+        $word = Word::factory()->forLesson($lesson)->create(['definition' => 'nota da aluna A']);
+
+        return ['resource' => $word, 'params' => [$word->ulid], 'numeric' => [$word->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeWordReport(User $owner): array
+    {
+        ['resource' => $word] = self::makeWord($owner);
+        /** @var Word $word */
+        $report = app(ReportItem::class)->handle($word, Word::ITEM, ReportReason::Other, 'nota da aluna A');
+
+        return ['resource' => $report, 'params' => [$word->ulid, $report->ulid], 'numeric' => [$word->id, $report->id]];
     }
 
     /**

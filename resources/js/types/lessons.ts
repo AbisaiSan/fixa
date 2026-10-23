@@ -64,3 +64,23 @@ export type SessionCard = {
     is_new: boolean;
     preview: number[];
 };
+
+export type WordState = 'new' | 'learning' | 'mastered';
+
+export type WordListItem = {
+    ulid: string;
+    term: string;
+    part_of_speech: string | null;
+    translation: string;
+    state: WordState;
+};
+
+export type WordDetail = WordListItem & {
+    definition: string | null;
+    examples: { target: string; translation: string }[];
+    collocations: string[];
+    origin: 'lesson' | 'mine';
+    lesson: { ulid: string; lesson_date: string } | null;
+    generated: boolean;
+    report: string | null;
+};

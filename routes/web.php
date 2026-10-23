@@ -64,7 +64,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('cartoes/{card}/suspender', [CardController::class, 'resume'])->name('cards.resume');
     Route::post('cartoes/{card}/reportes', [CardReportController::class, 'store'])->name('cards.reports.store');
     Route::delete('cartoes/{card}/reportes/{report}', [CardReportController::class, 'destroy'])->name('cards.reports.destroy');
-    Route::inertia('vocabulario', 'app/Vocabulary', ['status' => 'empty'])->name('vocabulary.index');
+    Route::get('vocabulario', [WordController::class, 'index'])->name('vocabulary.index');
+    Route::get('vocabulario/{word}', [WordController::class, 'show'])->name('words.show');
+    Route::patch('vocabulario/{word}', [WordController::class, 'update'])->name('words.update');
+    Route::post('vocabulario/{word}/reportes', [WordController::class, 'report'])->name('words.reports.store');
+    Route::delete('vocabulario/{word}/reportes/{report}', [WordController::class, 'withdrawReport'])->name('words.reports.destroy');
     Route::post('vocabulario', [WordController::class, 'store'])->middleware('throttle:word-additions')->name('words.store');
     Route::inertia('progresso', 'app/Progress', ['status' => 'empty'])->name('progress');
 });

@@ -68,6 +68,8 @@ final class DailyQueue
         return Card::forUser($user)
             ->whereNull('suspended_at')
             ->where('reported', false)
+            // Palavra reportada fica fora dos flashcards até ser revisada (MAT-05).
+            ->whereNotIn('id', Card::idsOfReportedWords($user))
             ->when($lesson, fn (Builder $query, Lesson $lesson) => $query->where(
                 fn (Builder $query) => $query
                     ->where('source_lesson_id', $lesson->id)

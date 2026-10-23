@@ -135,6 +135,18 @@ class Card extends Model implements Reportable
     public const ITEM = 'card';
 
     /**
+     * Ids dos cartões cuja palavra está em análise (MAT-05).
+     */
+    public static function idsOfReportedWords(User $user): QueryBuilder
+    {
+        return DB::table('cards')
+            ->join('words', 'words.id', '=', 'cards.word_id')
+            ->where('cards.user_id', $user->id)
+            ->where('words.reported', true)
+            ->select('cards.id');
+    }
+
+    /**
      * Ponto revisado: os reports do cartão são do dono do cartão. Sem o
      * escopo, a relação funciona fora de uma requisição.
      *

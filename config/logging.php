@@ -1,5 +1,6 @@
 <?php
 
+use App\Logging\StructuredLogging;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -63,6 +64,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'tap' => [StructuredLogging::class],
         ],
 
         'daily' => [
@@ -71,6 +73,17 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'max_files' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
+            'tap' => [StructuredLogging::class],
+        ],
+
+        // Trilha de auditoria (OPE-03): arquivo próprio, retenção maior e só metadados.
+        'audit' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/audit.log'),
+            'level' => 'info',
+            'max_files' => env('LOG_AUDIT_DAYS', 365),
+            'replace_placeholders' => true,
+            'tap' => [StructuredLogging::class],
         ],
 
         'monthly' => [

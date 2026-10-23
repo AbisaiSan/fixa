@@ -43,7 +43,7 @@ return [
             'strong' => env('GEMINI_MODEL_STRONG', 'gemini-3.8-flash'),
             'light' => env('GEMINI_MODEL_LIGHT', 'gemini-3.5-flash-lite'),
         ],
-        'timeout' => (int) env('GEMINI_TIMEOUT', 60),
+        'timeout' => (int) env('GEMINI_TIMEOUT', 120),
     ],
 
 ];

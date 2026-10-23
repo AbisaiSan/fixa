@@ -405,8 +405,10 @@ export const ptBR = {
         xp: '+{n} XP',
         nextLesson: 'Próximo: rever a revisão da aula',
         nextVocabulary: 'Próximo: ver o vocabulário',
-        sendError:
-            'Não conseguimos salvar esta resposta. Ela fica guardada e vai assim que der.',
+        pending:
+            '{n} respostas guardadas no aparelho. Vão assim que a conexão voltar.',
+        pendingOne:
+            '1 resposta guardada no aparelho. Vai assim que a conexão voltar.',
     },
     vocabulary: {
         listsLabel: 'Listas de vocabulário',

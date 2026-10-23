@@ -250,3 +250,51 @@ describe('Flashcards card options', () => {
         ]);
     });
 });
+
+describe('Flashcards without connection', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+        localStorage.clear();
+        vi.unstubAllGlobals();
+    });
+
+    it('keeps answering offline and sends the answers when the connection is back', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async () => Promise.reject(new TypeError('offline'))),
+        );
+        const wrapper = render([
+            card('a', true),
+            card('b', true),
+            card('c', true),
+        ]);
+
+        for (const key of ['3', '4']) {
+            await wrapper
+                .get('[role="button"]')
+                .trigger('keydown', { key: ' ' });
+            window.dispatchEvent(new KeyboardEvent('keydown', { key }));
+            await flushPromises();
+        }
+
+        expect(wrapper.text()).toContain('front c');
+        expect(wrapper.text()).toContain('2 respostas guardadas no aparelho');
+
+        const fetch = vi.fn(
+            async () =>
+                new Response(
+                    JSON.stringify({
+                        card: 'a',
+                        interval_days: 2,
+                        preview: [0, 1, 2, 4],
+                    }),
+                ),
+        );
+        vi.stubGlobal('fetch', fetch);
+        window.dispatchEvent(new Event('online'));
+        await flushPromises();
+
+        expect(fetch).toHaveBeenCalledTimes(2);
+        expect(wrapper.text()).not.toContain('guardadas no aparelho');
+    });
+});

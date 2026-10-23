@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import Banner from '@/components/fixa/Banner.vue';
 import CardFormSheet from '@/components/cards/CardFormSheet.vue';
 import type { CardFields } from '@/components/cards/CardFormSheet.vue';
 import Button from '@/components/fixa/Button.vue';
@@ -17,7 +16,12 @@ import Toast from '@/components/fixa/Toast.vue';
 import ReportSheet from '@/components/lessons/ReportSheet.vue';
 import { t } from '@/i18n';
 import { ptBR } from '@/i18n/pt-BR';
-import { postJson } from '@/lib/http';
+import {
+    enqueueReview,
+    flushReviews,
+    pendingReviews,
+} from '@/lib/reviewOutbox';
+import type { SentReview } from '@/lib/reviewOutbox';
 import { shortDate } from '@/lib/lessons';
 import type { SessionCard } from '@/types/lessons';
 
@@ -37,7 +41,6 @@ const queue = ref<SessionCard[]>(props.cards.map((card) => ({ ...card })));
 const index = ref(0);
 const flipped = ref(false);
 const answers = ref<Answer[]>([]);
-const sendError = ref(false);
 const shownAt = ref(Date.now());
 
 // Modo corrida (J3-F3, PLA-04): 5 minutos, só vencidos.
@@ -111,12 +114,6 @@ const nextStep = computed(() =>
         : { label: t('flashcards.nextVocabulary'), href: '/vocabulario' },
 );
 
-type ReviewResponse = {
-    card: string;
-    interval_days: number;
-    preview: number[];
-};
-
 async function rate(rating: number): Promise<void> {
     const card = current.value;
 
@@ -134,30 +131,32 @@ async function rate(rating: number): Promise<void> {
 
     next();
 
-    try {
-        const saved = await postJson<ReviewResponse>(
-            `/praticar/flashcards/${card.ulid}/respostas`,
-            {
-                rating,
-                duration_ms: durationMs,
-                client_review_id: crypto.randomUUID(),
-            },
-        );
+    // Vai para a fila do aparelho e é enviada já, ou quando a conexão voltar (J3-F7).
+    enqueueReview({
+        card: card.ulid,
+        rating,
+        duration_ms: durationMs,
+        client_review_id: crypto.randomUUID(),
+    });
+    await send();
+}
 
-        if (rating === 1) {
-            const again = queue.value.findLast(
-                (item) => item.ulid === saved.card,
-            );
+const pending = ref(pendingReviews().length);
 
-            if (again) {
-                again.preview = saved.preview;
-            }
-        }
+function onSent(saved: SentReview): void {
+    // O cartão que voltou depois de "Errei" ganha a prévia certa.
+    const again = queue.value
+        .slice(index.value)
+        .findLast((item) => item.ulid === saved.card);
 
-        sendError.value = false;
-    } catch {
-        sendError.value = true;
+    if (again && !again.is_new) {
+        again.preview = saved.preview;
     }
+}
+
+async function send(): Promise<void> {
+    await flushReviews(onSent);
+    pending.value = pendingReviews().length;
 }
 
 function next(): void {
@@ -286,6 +285,9 @@ onMounted(() => {
         showToast(event.detail.page.props.flash as string | null),
     );
     window.addEventListener('keydown', onKey);
+    window.addEventListener('online', send);
+    // Respostas de uma sessão anterior que ficaram sem conexão.
+    void send();
 
     if (rush.value && queue.value.length > 0) {
         timer = setInterval(tick, 1000);
@@ -296,6 +298,7 @@ onBeforeUnmount(() => {
     removeListener?.();
     clearTimeout(toastTimer);
     window.removeEventListener('keydown', onKey);
+    window.removeEventListener('online', send);
     clearInterval(timer);
 });
 </script>
@@ -440,12 +443,17 @@ onBeforeUnmount(() => {
             }}</Button>
         </div>
 
-        <Banner
-            v-if="sendError"
-            tone="warning"
-            icon="cloud_off"
-            :title="t('flashcards.sendError')"
-        />
+        <p
+            v-if="pending > 0"
+            role="status"
+            class="m-0 flex items-center gap-1.5 text-sm text-ink2"
+        >
+            <Icon name="cloud_upload" :size="18" />{{
+                pending === 1
+                    ? t('flashcards.pendingOne')
+                    : t('flashcards.pending', { n: pending })
+            }}
+        </p>
 
         <Flashcard
             :key="`${current.ulid}-${index}`"

@@ -8,12 +8,16 @@ use App\Domain\Ai\Schemas\CardsSchema;
 use App\Domain\Ai\StructuredGenerator;
 use App\Models\Card;
 use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Gera os cartões da aula na mesma tarefa da revisão (J3-B1, FLA-01, FLA-02).
  * Só uma vez por aula: regenerar a revisão não recria cartões, que guardam
  * o histórico de revisões do aluno.
+ *
+ * Cartão que o aluno já tem (mesma frente e mesmo significado, FLA-05) não é
+ * recriado: só ganha a referência à nova aula.
  */
 final class CardGenerator
 {
@@ -38,8 +42,20 @@ final class CardGenerator
             new AiCallContext(userId: $lesson->user_id, lessonId: $lesson->id),
         );
 
-        DB::transaction(function () use ($lesson, $response, $max) {
+        $owner = User::query()->findOrFail($lesson->user_id);
+
+        DB::transaction(function () use ($lesson, $owner, $response, $max) {
             foreach (array_slice($response->data['cards'], 0, $max) as $item) {
+                $existing = Card::forUser($owner)
+                    ->where('dedupe_key', CardIdentity::key($item['front'], $item['back']))
+                    ->first();
+
+                if ($existing !== null) {
+                    $existing->lessons()->syncWithoutDetaching([$lesson->id]);
+
+                    continue;
+                }
+
                 $card = (new Card)->forceFill([
                     'user_id' => $lesson->user_id,
                     'source_lesson_id' => $lesson->id,

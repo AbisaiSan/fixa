@@ -104,3 +104,47 @@ test('removing a lesson removes its own cards and keeps the ones shared with ano
     expect(Card::withoutGlobalScopes()->pluck('front')->all())->toBe(['to apply for'])
         ->and($shared->fresh()->source_lesson_id)->toBe($other->id);
 });
+
+test('a card the student already has only gains the new lesson (FLA-05)', function () {
+    $first = Lesson::factory()->forUser($this->lesson->user)->status(LessonStatus::Ready)->create();
+    $existing = Card::factory()->forLesson($first)->create(['front' => 'Deadline', 'back' => 'prazo final']);
+    $existing->lessons()->attach($first->id);
+    $this->ai->respondWith(AiTask::Cards, AiFixtures::cards());
+
+    ($this->run)();
+
+    expect(Card::withoutGlobalScopes()->count())->toBe(3)
+        ->and($existing->fresh()->source_lesson_id)->toBe($first->id)
+        ->and(DB::table('card_lesson')->where('card_id', $existing->id)->orderBy('lesson_id')->pluck('lesson_id')->all())
+        ->toBe([$this->lesson->id, $first->id]);
+});
+
+test('the same word with another meaning becomes its own card', function () {
+    $first = Lesson::factory()->forUser($this->lesson->user)->create();
+    Card::factory()->forLesson($first)->create(['front' => 'deadline', 'back' => 'linha da morte']);
+    $this->ai->respondWith(AiTask::Cards, AiFixtures::cards());
+
+    ($this->run)();
+
+    expect(Card::withoutGlobalScopes()->where('front', 'deadline')->count())->toBe(2);
+});
+
+test('repeated cards inside one answer are created once', function () {
+    $answer = AiFixtures::cards();
+    $answer['cards'][] = $answer['cards'][0];
+    $this->ai->respondWith(AiTask::Cards, $answer);
+
+    ($this->run)();
+
+    expect(Card::withoutGlobalScopes()->count())->toBe(3);
+});
+
+test('another student having the same card does not affect this one', function () {
+    $stranger = Lesson::factory()->create();
+    Card::factory()->forLesson($stranger)->create();
+    $this->ai->respondWith(AiTask::Cards, AiFixtures::cards());
+
+    ($this->run)();
+
+    expect(Card::forUser($this->lesson->user)->count())->toBe(3);
+});

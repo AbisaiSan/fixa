@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domain\Cards\CardIdentity;
 use App\Domain\Cards\CardKind;
 use App\Models\Concerns\BelongsToUser;
 use App\Models\Concerns\HasPublicUlid;
@@ -30,6 +31,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $model
  * @property string|null $prompt_version
  * @property bool $reported
+ * @property string|null $dedupe_key
  * @property Carbon|null $suspended_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -43,6 +45,16 @@ class Card extends Model
     protected $attributes = [
         'reported' => false,
     ];
+
+    /**
+     * A chave de deduplicação acompanha frente e verso (FLA-05).
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Card $card): void {
+            $card->dedupe_key = CardIdentity::key($card->front, $card->back);
+        });
+    }
 
     protected function casts(): array
     {

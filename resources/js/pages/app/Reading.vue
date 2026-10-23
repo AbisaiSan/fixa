@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import Button from '@/components/fixa/Button.vue';
 import Card from '@/components/fixa/Card.vue';
 import Icon from '@/components/fixa/Icon.vue';
+import ReportButton from '@/components/fixa/ReportButton.vue';
 import Sheet from '@/components/fixa/Sheet.vue';
+import ReportSheet from '@/components/lessons/ReportSheet.vue';
 import TargetText from '@/components/fixa/TargetText.vue';
 import { useTargetLang } from '@/composables/useTargetLang';
 import { t } from '@/i18n';
@@ -124,6 +126,28 @@ async function check(question: PracticeItem): Promise<void> {
         results.value[question.ulid] = { ...result, answer };
     } catch {
         saveError.value = true;
+    }
+}
+
+// "Reportar erro" nas perguntas geradas (J4-F8, MAT-05).
+const reporting = ref<string | null>(null);
+const reportOpen = computed({
+    get: () => reporting.value !== null,
+    set: (open) => {
+        if (!open) {
+            reporting.value = null;
+        }
+    },
+});
+
+function undo(question: PracticeItem): void {
+    if (question.report) {
+        router.delete(
+            `/praticar/itens/${question.ulid}/reportes/${question.report}`,
+            {
+                preserveScroll: true,
+            },
+        );
     }
 }
 
@@ -274,6 +298,13 @@ const score = computed(() => {
                         : t('feedback.wrong')
                 }}
             </p>
+            <ReportButton
+                class="self-start"
+                :reported="!!question.report"
+                :label="t('reading.reportQuestion', { n: question.position })"
+                @report="reporting = question.ulid"
+                @undo="undo(question)"
+            />
         </Card>
         <p v-if="score" role="status" class="m-0 type-subtitle">{{ score }}</p>
     </section>
@@ -308,4 +339,10 @@ const score = computed(() => {
             <p class="sr-only" :lang="targetLang.code">{{ selected.form }}</p>
         </div>
     </Sheet>
+
+    <ReportSheet
+        v-if="reporting"
+        v-model:open="reportOpen"
+        :url="`/praticar/itens/${reporting}/reportes`"
+    />
 </template>

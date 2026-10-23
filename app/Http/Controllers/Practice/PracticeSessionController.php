@@ -80,6 +80,8 @@ class PracticeSessionController extends Controller
             'sentence' => $content['sentence'] ?? '',
             'options' => $item->type === ItemType::Choice ? ($content['options'] ?? []) : null,
             'reported' => $item->reported,
+            // Report aberto, para "Desfazer" (MAT-05).
+            'report' => $item->reported ? $item->reports()->open()->value('ulid') : null,
             'attempt' => $attempt === null ? null : [
                 'answer' => $attempt->answer,
                 'verdict' => $attempt->verdict->value,

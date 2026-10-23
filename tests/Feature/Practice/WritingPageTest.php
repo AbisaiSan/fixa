@@ -95,3 +95,15 @@ test('a reading session is not opened as writing', function () {
 
     $this->get(route('practice.writing', $reading))->assertNotFound();
 });
+
+test('a reported correction shows its open report and can be undone', function () {
+    $this->post(route('practice.items.reports.store', $this->items[0]), ['reason' => 'other']);
+    $report = ItemReport::sole();
+
+    $this->get(route('practice.writing', $this->session))
+        ->assertInertia(fn (Assert $page) => $page->where('items.0.reported', true)->where('items.0.report', $report->ulid));
+
+    $this->delete(route('practice.items.reports.destroy', [$this->items[0], $report]))->assertSessionHas('status', 'report-withdrawn');
+
+    expect($this->items[0]->fresh()->reported)->toBeFalse();
+});

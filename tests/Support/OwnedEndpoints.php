@@ -74,6 +74,7 @@ final class OwnedEndpoints
             // J4: prática.
             'abrir escrita' => self::endpoint('get', 'practice.writing', self::makeWritingSession(...)),
             'reportar item de prática' => self::endpoint('post', 'practice.items.reports.store', self::makePracticeItem(...), ['reason' => 'other']),
+            'desfazer report do item de prática' => self::endpoint('delete', 'practice.items.reports.destroy', self::makePracticeItemReport(...)),
             'responder item' => self::endpoint('post', 'practice.attempts.store', self::makePracticeItem(...), ['answer' => 'ever']),
             'abrir leitura' => self::endpoint('get', 'practice.reading', self::makeReading(...)),
             'salvar palavra da leitura' => self::endpoint('post', 'practice.reading.words.store', self::makeReading(...), ['form' => 'applied']),
@@ -190,6 +191,18 @@ final class OwnedEndpoints
         $item->save();
 
         return ['resource' => $session, 'params' => [$item->ulid], 'numeric' => [$item->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makePracticeItemReport(User $owner): array
+    {
+        self::makePracticeItem($owner);
+        $item = PracticeItem::forUser($owner)->latest('id')->firstOrFail();
+        $report = app(ReportItem::class)->handle($item, PracticeItem::ITEM, ReportReason::Other, 'nota da aluna A');
+
+        return ['resource' => $report, 'params' => [$item->ulid, $report->ulid], 'numeric' => [$item->id, $report->id]];
     }
 
     /**

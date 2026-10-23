@@ -455,6 +455,7 @@ export const ptBR = {
         questions: 'Perguntas',
         check: 'Verificar',
         score: '{n} de {total} certas',
+        reportQuestion: 'Reportar erro na pergunta {n}',
     },
     aiLimit: {
         close: 'Fechar',
@@ -469,6 +470,11 @@ export const ptBR = {
         bannerTitle: 'Correções de IA voltam amanhã.',
         bannerBody:
             'Flashcards, leitura, ponto fraco e itens com gabarito continuam liberados.',
+    },
+    report: {
+        action: 'Reportar erro',
+        underReview: 'Em análise',
+        undo: 'Desfazer',
     },
     feedback: {
         total: 'Correto!',

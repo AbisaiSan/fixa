@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Practice;
 use App\Domain\Lessons\Reports\ReportItem;
 use App\Domain\Lessons\Reports\ReportReason;
 use App\Http\Controllers\Controller;
+use App\Models\ItemReport;
 use App\Models\PracticeItem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,5 +29,17 @@ class PracticeItemReportController extends Controller
         $reports->handle($item, PracticeItem::ITEM, ReportReason::from($validated['reason']), $validated['details'] ?? null);
 
         return back()->with('status', 'item-reported');
+    }
+
+    public function destroy(PracticeItem $item, ItemReport $report, ReportItem $reports): RedirectResponse
+    {
+        Gate::authorize('update', $item);
+        Gate::authorize('update', $report);
+
+        abort_unless($report->reportable_type === $item->getMorphClass() && $report->reportable_id === $item->id, 404);
+
+        $reports->withdraw($report);
+
+        return back()->with('status', 'report-withdrawn');
     }
 }

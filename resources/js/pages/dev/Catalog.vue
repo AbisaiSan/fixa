@@ -11,6 +11,7 @@ import FeedbackPanel from '@/components/fixa/FeedbackPanel.vue';
 import Flashcard from '@/components/fixa/Flashcard.vue';
 import OriginTag from '@/components/fixa/OriginTag.vue';
 import RateBar from '@/components/fixa/RateBar.vue';
+import ReportButton from '@/components/fixa/ReportButton.vue';
 import Select from '@/components/fixa/Select.vue';
 import SessionHeader from '@/components/fixa/SessionHeader.vue';
 import Sheet from '@/components/fixa/Sheet.vue';
@@ -228,6 +229,10 @@ const cardFlipped = ref(false);
                     natural="I've been working here since 2021."
                     explanation="Com since, a ação continua até agora: use have mais o particípio."
                 />
+                <div class="mt-4 flex flex-wrap gap-4">
+                    <ReportButton />
+                    <ReportButton reported />
+                </div>
             </Card>
 
             <Card>

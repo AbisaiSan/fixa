@@ -25,5 +25,6 @@ export type PracticeItem = {
     sentence: string;
     options: string[] | null;
     reported: boolean;
+    report?: string | null;
     attempt: PracticeAttempt | null;
 };

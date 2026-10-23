@@ -68,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('praticar/caderno-de-erros', [MistakeController::class, 'index'])->name('practice.mistakes');
     Route::get('praticar/ponto-fraco', [PracticeSessionController::class, 'weakPoint'])->name('practice.weak-point');
     Route::post('praticar/itens/{item}/reportes', [PracticeItemReportController::class, 'store'])->name('practice.items.reports.store');
+    Route::delete('praticar/itens/{item}/reportes/{report}', [PracticeItemReportController::class, 'destroy'])->name('practice.items.reports.destroy');
     Route::post('praticar/itens/{item}/respostas', [AttemptController::class, 'store'])
         ->middleware('throttle:practice-answers')
         ->name('practice.attempts.store');

@@ -7,10 +7,13 @@ use App\Models\Lesson;
 use App\Models\LessonFile;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 
 beforeEach(function () {
+    // O processamento tem testes próprios; aqui só o envio.
+    Queue::fake();
     Storage::fake(LessonFile::DISK);
     $this->user = User::factory()->create();
     $this->pages = 3;

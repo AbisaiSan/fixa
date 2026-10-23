@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Domain\Ai\Exceptions\AiBudgetExceeded;
 use App\Domain\Ai\Exceptions\AiOutputInvalidException;
 use App\Domain\Ai\Exceptions\AiProviderException;
+use App\Domain\Cards\CardGenerator;
 use App\Domain\Lessons\Extraction\TextExtractor;
 use App\Domain\Lessons\LessonRejected;
 use App\Domain\Lessons\LessonReviewer;
@@ -20,7 +21,7 @@ use Throwable;
 
 /**
  * Processa a aula na fila (J2-B11): antivírus e extração, depois a revisão
- * pela IA. O envio responde na hora e a tela acompanha os estados.
+ * e os cartões pela IA. O envio responde na hora e a tela acompanha os estados.
  *
  * Falhas temporárias (IA sobrecarregada, antivírus fora) tentam de novo com
  * espera. Recusas e saída inválida da IA terminam a aula como "falhou",
@@ -35,7 +36,7 @@ class ProcessLesson implements ShouldQueue
 
     public function __construct(public int $lessonId) {}
 
-    public function handle(TextExtractor $extractor, LessonReviewer $reviewer): void
+    public function handle(TextExtractor $extractor, LessonReviewer $reviewer, CardGenerator $cards): void
     {
         $lesson = Lesson::withoutGlobalScopes()->find($this->lessonId);
 
@@ -50,6 +51,8 @@ class ProcessLesson implements ShouldQueue
 
             if ($lesson->status === LessonStatus::Generating) {
                 $reviewer->review($lesson);
+                // Cartões na mesma tarefa, só na primeira geração (J3-B1).
+                $cards->generate($lesson);
                 $lesson->transitionTo(LessonStatus::Validating);
             }
 

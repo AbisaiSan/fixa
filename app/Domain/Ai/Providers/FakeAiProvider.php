@@ -44,7 +44,10 @@ final class FakeAiProvider implements AiProvider
     {
         $this->sent[] = $request;
 
-        $next = array_shift($this->queued[$request->task->value]) ?? ['fake' => true];
+        // Sem resposta enfileirada, devolve algo que nenhum esquema aceita.
+        $queue = $this->queued[$request->task->value] ?? [];
+        $next = array_shift($queue) ?? ['fake' => true];
+        $this->queued[$request->task->value] = $queue;
 
         if ($next instanceof AiProviderException) {
             throw $next;

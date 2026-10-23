@@ -13,7 +13,9 @@ use Tests\Support\AiFixtures;
  */
 test('a new student goes from an empty Today to a ready review and practice', function () {
     $user = User::factory()->create();
-    app(FakeAiProvider::class)->respondWith(AiTask::LessonReview, AiFixtures::lessonReview());
+    app(FakeAiProvider::class)
+        ->respondWith(AiTask::LessonReview, AiFixtures::lessonReview())
+        ->respondWith(AiTask::Cards, AiFixtures::cards());
 
     $this->actingAs($user)->get(route('today'))
         ->assertInertia(fn (Assert $page) => $page->component('app/Today')->where('status', 'empty'));

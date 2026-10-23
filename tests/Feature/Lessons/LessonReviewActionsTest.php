@@ -19,7 +19,11 @@ use Tests\Support\AiFixtures;
 beforeEach(function () {
     $this->user = User::factory()->create();
     $this->lesson = Lesson::factory()->forUser($this->user)->status(LessonStatus::Ready)->create();
-    $this->lesson->forceFill(['extracted_text' => str_repeat('I have worked here since 2022. ', 12)])->save();
+    // A aula já tem cartões: regenerar a revisão não os recria (J3-B1).
+    $this->lesson->forceFill([
+        'extracted_text' => str_repeat('I have worked here since 2022. ', 12),
+        'cards_generated_at' => now(),
+    ])->save();
     $this->review = LessonReview::factory()->for($this->lesson)->create();
     $this->concept = $this->review->concepts[0]['key'];
     $this->actingAs($this->user);

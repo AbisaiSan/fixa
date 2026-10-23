@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\RecordAuthenticationEvents;
+use App\Models\Card;
 use App\Models\LessonReview;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -35,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         Event::subscribe(RecordAuthenticationEvents::class);
 
         // Nome estável dos itens reportáveis no banco, sem depender da classe (MAT-05).
-        Relation::morphMap(['lesson_review' => LessonReview::class]);
+        Relation::morphMap(['lesson_review' => LessonReview::class, 'card' => Card::class]);
 
         // Envio de aulas (ACE-05): evita abuso de armazenamento e de IA.
         RateLimiter::for('lesson-uploads', fn (Request $request) => [

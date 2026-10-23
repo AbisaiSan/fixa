@@ -71,7 +71,11 @@ return [
         // Versão vigente de cada prompt em resources/prompts. Mudou o texto, crie v2.
         'prompts' => [
             'lesson_review' => 'v1',
+            'cards' => 'v1',
         ],
+
+        // Cartões novos por aula (FLA-02).
+        'max_cards_per_lesson' => 30,
     ],
 
     /*

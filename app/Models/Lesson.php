@@ -33,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $extracted_text
  * @property int|null $word_count
  * @property int $regenerations
+ * @property Carbon|null $cards_generated_at
  * @property Carbon $rights_declared_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -61,6 +62,7 @@ class Lesson extends Model
             'extracted_text' => 'encrypted',
             'word_count' => 'integer',
             'regenerations' => 'integer',
+            'cards_generated_at' => 'datetime',
             'rights_declared_at' => 'datetime',
         ];
     }
@@ -87,6 +89,16 @@ class Lesson extends Model
     public function review(): HasOne
     {
         return $this->hasOne(LessonReview::class);
+    }
+
+    /**
+     * Cartões que nasceram desta aula (FLA-01).
+     *
+     * @return HasMany<Card, $this>
+     */
+    public function cards(): HasMany
+    {
+        return $this->hasMany(Card::class, 'source_lesson_id');
     }
 
     /**

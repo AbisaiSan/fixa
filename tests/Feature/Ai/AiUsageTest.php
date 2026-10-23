@@ -11,7 +11,7 @@ use Tests\Support\AiFixtures;
 
 beforeEach(function () {
     config(['fixa.ai.prices.fake-model' => ['input' => 1_000_000, 'output' => 2_000_000], 'fixa.ai.monthly_budget_usd' => 100_000]);
-    $this->ai = app(FakeAiProvider::class);
+    $this->ai = app(FakeAiProvider::class)->respondWith(AiTask::Cards, AiFixtures::cards());
     $this->lesson = Lesson::factory()->create();
     $this->lesson->forceFill(['extracted_text' => str_repeat('I have worked here since 2022. ', 12)])->save();
 });
@@ -26,7 +26,7 @@ test('each AI attempt is recorded with tokens and cost, never content', function
 
     process($this->lesson);
 
-    $calls = DB::table('ai_calls')->orderBy('id')->get();
+    $calls = DB::table('ai_calls')->where('task', 'lesson_review')->orderBy('id')->get();
 
     expect($calls->pluck('outcome')->all())->toBe(['invalid', 'ok'])
         ->and($calls[1]->user_id)->toBe($this->lesson->user_id)

@@ -14,7 +14,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Support\AiFixtures;
 
 beforeEach(function () {
-    $this->ai = app(FakeAiProvider::class);
+    $this->ai = app(FakeAiProvider::class)->respondWith(AiTask::Cards, AiFixtures::cards());
     $this->lesson = Lesson::factory()->create();
     $this->lesson->forceFill(['extracted_text' => str_repeat('I have worked here since 2022. ', 12)])->save();
 });

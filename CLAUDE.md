@@ -53,6 +53,8 @@ Os comandos `npm` e o `composer test` rodam no host, não no container: o Vite+ 
 
 - **ULID público:** modelos expostos ao aluno usam `HasPublicUlid` (coluna `ulid`, chave de rota). O `id` numérico é interno e nunca aparece em URL, JSON ou tela.
 - **Dono do dado:** todo modelo de conteúdo usa `BelongsToUser` e tem `user_id`. O escopo global filtra pelo aluno autenticado e, sem login, não retorna nada. Em filas e comandos use `Modelo::forUser($user)`. Nunca coloque `user_id` em `$fillable`, e nunca remova o escopo `OwnedByAuthenticatedUser` fora de um ponto revisado.
+- **Matriz de acesso entre alunos:** todo endpoint que recebe dado de aluno entra em `tests/Support/OwnedEndpoints.php`. O `CrossStudentAccessTest` tenta ler, alterar e apagar como outro aluno e falha se uma rota com modelo `BelongsToUser` ficar de fora. Policies de conteúdo estendem `App\Policies\OwnedModelPolicy`.
+- **Papéis:** `Role::Student` e `Role::Admin`; admin só pelo comando `fixa:admin` e sempre com 2FA. O admin não lê conteúdo de aluno.
 - **Cabeçalhos e CSP:** `App\Http\Middleware\SecurityHeaders`. Script inline só com `nonce="{{ Vite::cspNonce() }}"`. Origem externa nova (fonte, CDN, API no navegador) exige mudança na CSP com justificativa.
 - **Logs:** canais em JSON com `request_id` e o ULID do usuário. O processador `RedactSensitiveData` apaga chaves como `password`, `token`, `text`, `content`, `answer`, `material` e `prompt`, e reduz exceções a classe e local. Ainda assim, nunca passe texto do aluno para o log; registre IDs.
 - **Auditoria:** `app(AuditLog::class)->record('acao.em_ingles', $user, [...metadados])` para login, exclusão, exportação e ações de administrador. Só IDs e metadados escalares.

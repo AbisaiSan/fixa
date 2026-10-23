@@ -15,19 +15,15 @@ export function updateTheme(value: Appearance): void {
         return;
     }
 
-    if (value === 'system') {
-        const mediaQueryList = window.matchMedia(
-            '(prefers-color-scheme: dark)',
-        );
-        const systemTheme = mediaQueryList.matches ? 'dark' : 'light';
+    // "Automático" (system) segue prefers-color-scheme; o tema vai em [data-theme] no <html>.
+    const resolved =
+        value === 'system'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+            : value;
 
-        document.documentElement.classList.toggle(
-            'dark',
-            systemTheme === 'dark',
-        );
-    } else {
-        document.documentElement.classList.toggle('dark', value === 'dark');
-    }
+    document.documentElement.dataset.theme = resolved;
 }
 
 const setCookie = (name: string, value: string, days = 365) => {

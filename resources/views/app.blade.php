@@ -1,34 +1,19 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"  @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if (in_array($appearance ?? 'system', ['light', 'dark'], true)) data-theme="{{ $appearance }}" @endif>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        {{-- Inline script to detect system dark mode preference and apply it immediately --}}
+        {{-- Define o tema antes da pintura para evitar piscar; "Automático" segue o sistema --}}
         <script nonce="{{ Vite::cspNonce() }}">
-            (function() {
-                const appearance = '{{ $appearance ?? "system" }}';
+            (function () {
+                var root = document.documentElement;
 
-                if (appearance === 'system') {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-                    if (prefersDark) {
-                        document.documentElement.classList.add('dark');
-                    }
+                if (!root.dataset.theme) {
+                    root.dataset.theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 }
             })();
         </script>
-
-        {{-- Inline style to set the HTML background color based on our theme in app.css --}}
-        <style nonce="{{ Vite::cspNonce() }}">
-            html {
-                background-color: oklch(1 0 0);
-            }
-
-            html.dark {
-                background-color: oklch(0.145 0 0);
-            }
-        </style>
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">

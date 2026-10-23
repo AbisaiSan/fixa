@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
+use App\Models\Consent;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +24,7 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
+            'terms' => ['accepted'],
         ])->validate();
 
         return DB::transaction(function () use ($input) {
@@ -36,6 +38,9 @@ class CreateNewUser implements CreatesNewUsers
             $user->enrollments()->create([
                 'target_language' => config('fixa.target_language'),
             ]);
+
+            // Aceite de termos e privacidade com versão, data e IP (J1-B7, DAD-01).
+            Consent::acceptCurrent($user, request()->ip());
 
             return $user;
         });

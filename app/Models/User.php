@@ -66,6 +66,27 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * @return HasMany<Consent, $this>
+     */
+    public function consents(): HasMany
+    {
+        return $this->hasMany(Consent::class)->withoutGlobalScope(OwnedByAuthenticatedUser::class);
+    }
+
+    /**
+     * Se o aluno aceitou as versões vigentes de termos e privacidade.
+     */
+    public function hasAcceptedCurrentLegal(): bool
+    {
+        $accepted = $this->consents()
+            ->get(['document', 'version'])
+            ->map(fn (Consent $consent) => $consent->document.'@'.$consent->version);
+
+        return collect(Consent::DOCUMENTS)
+            ->every(fn (string $document) => $accepted->contains($document.'@'.config("fixa.legal.{$document}")));
+    }
+
+    /**
      * @return HasOne<Enrollment, $this>
      */
     public function activeEnrollment(): HasOne

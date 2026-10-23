@@ -89,6 +89,35 @@ defineOptions({
                 <InputError :message="errors.password_confirmation" />
             </div>
 
+            <div class="grid gap-2">
+                <label class="flex items-start gap-3 text-sm">
+                    <input
+                        type="checkbox"
+                        name="terms"
+                        value="1"
+                        required
+                        class="mt-0.5 size-5 accent-prid"
+                    />
+                    <span>
+                        Li e aceito os
+                        <a
+                            href="/termos"
+                            target="_blank"
+                            class="font-bold text-prid"
+                            >termos de uso</a
+                        >
+                        e a
+                        <a
+                            href="/privacidade"
+                            target="_blank"
+                            class="font-bold text-prid"
+                            >política de privacidade</a
+                        >.
+                    </span>
+                </label>
+                <InputError :message="errors.terms" />
+            </div>
+
             <Button
                 type="submit"
                 class="mt-2 w-full"

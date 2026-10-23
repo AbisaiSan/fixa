@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Consent;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,7 @@ class UserFactory extends Factory
     {
         return $this->afterCreating(function (User $user): void {
             $user->enrollments()->create(['target_language' => 'en']);
+            Consent::acceptCurrent($user, '127.0.0.1');
         });
     }
 

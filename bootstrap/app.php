@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AddRequestContext;
+use App\Http\Middleware\EnsureCurrentLegalAccepted;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RequireTwoFactorForAdmins;
@@ -36,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
             RequireTwoFactorForAdmins::class,
+            EnsureCurrentLegalAccepted::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

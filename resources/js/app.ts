@@ -13,6 +13,7 @@ void createInertiaApp({
         switch (true) {
             case name === 'Welcome':
             case name.startsWith('dev/'):
+            case name.startsWith('legal/'):
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;

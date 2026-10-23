@@ -16,4 +16,13 @@ return [
 
     'upcoming_languages' => ['es', 'fr'],
 
+    /*
+    | Versões vigentes dos documentos legais (J1-B7, DAD-01). Subir a versão
+    | faz todo aluno aceitar de novo no próximo acesso.
+    */
+    'legal' => [
+        'terms' => '2026-10-23',
+        'privacy' => '2026-10-23',
+    ],
+
 ];

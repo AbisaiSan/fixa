@@ -36,6 +36,20 @@ export const ptBR = {
         lesson: 'Da aula de {date}',
         mine: 'Adicionada por mim',
     },
+    legal: {
+        version: 'Versão de {version}',
+        draftTitle: 'Rascunho.',
+        draftBody:
+            'Este texto ainda será revisado por um advogado antes de qualquer uso por outras pessoas.',
+        acceptTitle: 'Atualizamos nossos termos',
+        acceptBody:
+            'Para continuar estudando, leia e aceite a versão atual dos termos de uso e da política de privacidade.',
+        acceptLabelStart: 'Li e aceito os',
+        terms: 'termos de uso',
+        and: 'e a',
+        privacy: 'política de privacidade',
+        acceptAction: 'Aceitar e continuar',
+    },
     common: {
         loading: 'Carregando',
         close: 'Fechar',

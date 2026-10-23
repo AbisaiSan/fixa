@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Http\Responses\PasswordResetLinkFailedResponse;
+use Closure;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -79,18 +81,49 @@ class FortifyServiceProvider extends ServiceProvider
     }
 
     /**
-     * Configure rate limiting.
+     * Limites de tentativas por e-mail e por IP (ACE-05).
+     * Ao estourar, o formulário volta com uma mensagem em vez de uma página 429.
      */
     private function configureRateLimiting(): void
     {
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        });
+        RateLimiter::for('login', fn (Request $request) => [
+            Limit::perMinute(5)->by('login|'.$this->emailKey($request).'|'.$request->ip())->response($this->tooMany('email')),
+            Limit::perMinute(20)->by('login-ip|'.$request->ip())->response($this->tooMany('email')),
+        ]);
 
-        RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+        RateLimiter::for('two-factor', fn (Request $request) => [
+            Limit::perMinute(5)->by('2fa|'.$request->session()->get('login.id'))->response($this->tooMany('code')),
+            Limit::perMinute(20)->by('2fa-ip|'.$request->ip())->response($this->tooMany('code')),
+        ]);
 
-            return Limit::perMinute(5)->by($throttleKey);
+        RateLimiter::for('auth-forms', fn (Request $request) => match ($request->route()?->getName()) {
+            'register.store' => [
+                Limit::perMinute(5)->by('register|'.$request->ip())->response($this->tooMany('email')),
+                Limit::perHour(20)->by('register-hour|'.$request->ip())->response($this->tooMany('email')),
+            ],
+            'password.email' => [
+                Limit::perMinutes(15, 3)->by('reset-link|'.$this->emailKey($request))->response($this->tooMany('email')),
+                Limit::perHour(10)->by('reset-link-ip|'.$request->ip())->response($this->tooMany('email')),
+            ],
+            'password.update' => [
+                Limit::perMinute(10)->by('reset|'.$request->ip())->response($this->tooMany('email')),
+            ],
+            default => Limit::none(),
         });
+    }
+
+    private function emailKey(Request $request): string
+    {
+        return Str::transliterate(Str::lower((string) $request->input(Fortify::username())));
+    }
+
+    /**
+     * @return Closure(Request, array<string, mixed>): RedirectResponse
+     */
+    private function tooMany(string $field): Closure
+    {
+        return fn (Request $request, array $headers) => back()
+            ->withInput($request->except('password', 'password_confirmation', 'code', 'recovery_code'))
+            ->withErrors([$field => __('auth.throttle', ['seconds' => $headers['Retry-After'] ?? 60])]);
     }
 }

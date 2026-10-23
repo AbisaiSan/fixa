@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ThrottleAuthForms;
 use Laravel\Fortify\Features;
 
 return [
@@ -101,7 +102,7 @@ return [
     |
     */
 
-    'middleware' => ['web'],
+    'middleware' => ['web', ThrottleAuthForms::class],
 
     // Caminhos em português, como no protótipo (J1-B1).
     'paths' => [

@@ -46,3 +46,13 @@ test('the list never shows lessons of another student', function () {
     $this->get(route('lessons.index'))
         ->assertInertia(fn (Assert $page) => $page->where('status', 'empty')->has('lessons', 0));
 });
+
+test('a lesson still processing shows its current step, so the student can leave and come back', function () {
+    $lesson = Lesson::factory()->forUser($this->user)->status(LessonStatus::Extracting)->create();
+
+    $this->get(route('lessons.show', $lesson))
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('app/LessonShow')
+            ->where('lesson.status', 'extracting')
+            ->where('review', null));
+});

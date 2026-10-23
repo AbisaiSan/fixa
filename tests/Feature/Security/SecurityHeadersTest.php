@@ -76,25 +76,25 @@ describe('request forgery prevention', function () {
     });
 
     test('rejects a post without token', function () {
-        $this->post('/login', ['email' => 'a@example.com', 'password' => 'secret'])
+        $this->post(route('login'), ['email' => 'a@example.com', 'password' => 'secret'])
             ->assertStatus(419);
     });
 
     test('rejects a cross-site post without token', function () {
         $this->withHeaders(['Sec-Fetch-Site' => 'cross-site'])
-            ->post('/login', ['email' => 'a@example.com', 'password' => 'secret'])
+            ->post(route('login'), ['email' => 'a@example.com', 'password' => 'secret'])
             ->assertStatus(419);
     });
 
     test('rejects a same-site post from another subdomain', function () {
         $this->withHeaders(['Sec-Fetch-Site' => 'same-site'])
-            ->post('/login', ['email' => 'a@example.com', 'password' => 'secret'])
+            ->post(route('login'), ['email' => 'a@example.com', 'password' => 'secret'])
             ->assertStatus(419);
     });
 
     test('accepts a same-origin post', function () {
         $this->withHeaders(['Sec-Fetch-Site' => 'same-origin'])
-            ->post('/login', ['email' => 'a@example.com', 'password' => 'secret'])
+            ->post(route('login'), ['email' => 'a@example.com', 'password' => 'secret'])
             ->assertStatus(302);
     });
 });

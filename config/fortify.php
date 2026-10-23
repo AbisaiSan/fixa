@@ -103,6 +103,28 @@ return [
 
     'middleware' => ['web'],
 
+    // Caminhos em português, como no protótipo (J1-B1).
+    'paths' => [
+        'login' => '/entrar',
+        'logout' => '/sair',
+        'register' => '/cadastro',
+        'password' => [
+            'request' => '/recuperar',
+            'email' => '/recuperar',
+            'reset' => '/redefinir-senha/{token}',
+            'update' => '/redefinir-senha',
+            'confirm' => '/confirmar-senha',
+        ],
+        'verification' => [
+            'notice' => '/verificar',
+            'verify' => '/verificar/{id}/{hash}',
+            'send' => '/verificar/reenviar',
+        ],
+        'two-factor' => [
+            'login' => '/2fa',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Rate Limiting

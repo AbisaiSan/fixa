@@ -62,6 +62,11 @@ export default defineConfig({
             ],
         },
     },
+    test: {
+        environment: 'jsdom',
+        include: ['resources/js/**/*.test.ts'],
+        setupFiles: ['resources/js/test/setup.ts'],
+    },
     lint: {
         ignorePatterns: [
             'docs/**',

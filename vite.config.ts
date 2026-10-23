@@ -112,6 +112,8 @@ export default defineConfig({
         ignorePatterns: [
             '.github/**',
             'docs/**',
+            // Prompts versionados ficam exatamente como foram testados.
+            'resources/prompts/**',
             'composer.json',
             'resources/js/components/ui/*',
             'resources/views/mail/*',

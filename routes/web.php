@@ -6,6 +6,7 @@ use App\Http\Controllers\Lessons\LessonController;
 use App\Http\Controllers\Lessons\LessonFileController;
 use App\Http\Controllers\Lessons\LessonGenerationController;
 use App\Http\Controllers\Lessons\LessonReviewController;
+use App\Http\Controllers\TodayController;
 use App\Http\Requests\Lessons\StoreLessonRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -13,8 +14,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn () => redirect()->route(auth()->check() ? 'today' : 'login'))->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    // As abas ainda não têm conteúdo: o contrato de estados chega como "empty" até a J2.
-    Route::inertia('hoje', 'app/Today', ['status' => 'empty'])->name('today');
+    Route::get('hoje', [TodayController::class, 'show'])->name('today');
     Route::get('aulas', [LessonController::class, 'index'])->name('lessons.index');
     Route::inertia('aulas/enviar', 'app/LessonUpload', ['limits' => [
         'max_megabytes' => StoreLessonRequest::MAX_FILE_KILOBYTES / 1024,
@@ -47,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('signed')
         ->scopeBindings()
         ->name('lessons.files.show');
-    Route::inertia('praticar', 'app/Practice', ['status' => 'empty'])->name('practice');
+    Route::get('praticar', [TodayController::class, 'practice'])->name('practice');
     Route::inertia('vocabulario', 'app/Vocabulary', ['status' => 'empty'])->name('vocabulary.index');
     Route::inertia('progresso', 'app/Progress', ['status' => 'empty'])->name('progress');
 });

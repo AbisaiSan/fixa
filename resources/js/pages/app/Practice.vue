@@ -7,7 +7,7 @@ import PageState from '@/components/fixa/PageState.vue';
 import type { PageStatus } from '@/components/fixa/PageState.vue';
 import { t } from '@/i18n';
 
-defineProps<{ status: PageStatus }>();
+defineProps<{ status: PageStatus; hasLessons?: boolean }>();
 </script>
 
 <template>
@@ -17,7 +17,23 @@ defineProps<{ status: PageStatus }>();
 
     <PageState :status="status">
         <template #empty>
-            <Card>
+            <Card v-if="hasLessons">
+                <EmptyState
+                    icon="edit_note"
+                    :title="t('empty.practiceSoonTitle')"
+                >
+                    {{ t('empty.practiceSoonBody') }}
+                    <template #action>
+                        <Button
+                            href="/aulas"
+                            variant="secondary"
+                            class="mt-2"
+                            >{{ t('empty.lessonsAction') }}</Button
+                        >
+                    </template>
+                </EmptyState>
+            </Card>
+            <Card v-else>
                 <EmptyState icon="edit_note" :title="t('empty.practiceTitle')">
                     {{ t('empty.practiceBody') }}
                     <template #action>

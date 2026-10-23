@@ -4,11 +4,51 @@ import { computed } from 'vue';
 import Button from '@/components/fixa/Button.vue';
 import Card from '@/components/fixa/Card.vue';
 import Icon from '@/components/fixa/Icon.vue';
+import OriginTag from '@/components/fixa/OriginTag.vue';
 import PageState from '@/components/fixa/PageState.vue';
 import type { PageStatus } from '@/components/fixa/PageState.vue';
 import { t } from '@/i18n';
+import { isProcessing, shortDate } from '@/lib/lessons';
+import type { LessonStatus } from '@/types/lessons';
 
-defineProps<{ status: PageStatus }>();
+const props = defineProps<{
+    status: PageStatus;
+    latestLesson?: {
+        ulid: string;
+        title: string;
+        lesson_date: string;
+        status: LessonStatus;
+    } | null;
+}>();
+
+// Fluxo A (J2-F6): da aula enviada até a revisão pronta.
+const latest = computed(() => {
+    const lesson = props.latestLesson;
+
+    if (!lesson) {
+        return null;
+    }
+
+    if (isProcessing(lesson.status)) {
+        return {
+            body: t('today.latestProcessing'),
+            action: t('today.followGeneration'),
+            icon: 'autorenew',
+        };
+    }
+
+    return lesson.status === 'failed'
+        ? {
+              body: t('today.latestFailed'),
+              action: t('today.seeWhatHappened'),
+              icon: 'error',
+          }
+        : {
+              body: t('today.latestReady'),
+              action: t('today.openReview'),
+              icon: 'menu_book',
+          };
+});
 
 const page = usePage();
 
@@ -42,6 +82,39 @@ const steps = computed(() => [
     <h1 class="m-0 type-display-l">{{ greeting }}</h1>
 
     <PageState :status="status">
+        <Card
+            v-if="latestLesson && latest"
+            tone="hero"
+            as="section"
+            aria-labelledby="today-latest-title"
+            class="flex flex-col gap-3"
+        >
+            <p class="m-0 type-label text-ink2">
+                {{ t('today.latestLabel') }}
+            </p>
+            <OriginTag
+                :lesson-date="shortDate(latestLesson.lesson_date)"
+                class="self-start"
+            />
+            <h2 id="today-latest-title" class="m-0 type-title">
+                {{ latestLesson.title }}
+            </h2>
+            <p class="m-0 max-w-140 text-ink2 type-body">{{ latest.body }}</p>
+            <div class="flex flex-wrap gap-2">
+                <Button
+                    :href="`/aulas/${latestLesson.ulid}`"
+                    :icon="latest.icon"
+                    >{{ latest.action }}</Button
+                >
+                <Button
+                    href="/aulas/enviar"
+                    variant="secondary"
+                    icon="upload"
+                    >{{ t('today.uploadAnother') }}</Button
+                >
+            </div>
+        </Card>
+
         <template #empty>
             <Card
                 tone="hero"

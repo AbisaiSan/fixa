@@ -126,6 +126,17 @@ export const ptBR = {
         step2Body: 'Resumo, exemplos e erros comuns.',
         step3Title: 'Pratique {minutes} min por dia.',
         step3Body: 'O plano cuida do resto.',
+        latestLabel: 'Sua última aula',
+        latestReady:
+            'A revisão está pronta. Leia com calma e pratique quando quiser.',
+        latestProcessing:
+            'Estamos preparando a revisão. Pode acompanhar ou voltar depois.',
+        latestFailed:
+            'Não conseguimos preparar esta aula. Veja o que houve e tente de novo.',
+        openReview: 'Ver revisão',
+        followGeneration: 'Acompanhar',
+        seeWhatHappened: 'Ver o que houve',
+        uploadAnother: 'Enviar outra aula',
     },
     empty: {
         lessonsTitle: 'Nenhuma aula por aqui ainda',
@@ -134,6 +145,10 @@ export const ptBR = {
         practiceTitle: 'Envie uma aula para liberar as atividades',
         practiceBody:
             'Tudo o que você pratica aqui vem do material das suas aulas.',
+        practiceSoonTitle: 'As atividades da sua aula estão a caminho',
+        practiceSoonBody:
+            'Flashcards, escrita e leitura feitos a partir das suas aulas chegam nas próximas etapas. Enquanto isso, revise a aula.',
+        lessonsAction: 'Ver minhas aulas',
         vocabularyTitle: 'Seu vocabulário começa na primeira aula',
         vocabularyBody:
             'As palavras das suas aulas aparecem aqui. Depois você também pode adicionar as suas.',

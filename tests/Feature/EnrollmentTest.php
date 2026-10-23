@@ -28,7 +28,7 @@ test('the shared target language comes from the active enrollment', function () 
     $user = User::factory()->create();
     $user->activeEnrollment->forceFill(['target_language' => 'es'])->save();
 
-    $this->actingAs($user)->get(route('dashboard'))
+    $this->actingAs($user)->get(route('today'))
         ->assertInertia(fn (Assert $page) => $page->where('targetLang.code', 'es'));
 });
 

@@ -52,7 +52,7 @@ test('an admin is promoted and revoked only from the terminal', function () {
 test('the browser never receives the numeric user id', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user)->get(route('dashboard'))->assertInertia(fn (Assert $page) => $page
+    $this->actingAs($user)->get(route('today'))->assertInertia(fn (Assert $page) => $page
         ->where('auth.user.ulid', $user->ulid)
         ->where('auth.user.is_admin', false)
         ->missing('auth.user.id')

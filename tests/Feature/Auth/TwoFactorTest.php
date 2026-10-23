@@ -97,7 +97,7 @@ describe('admins', function () {
 
     test('without two factor are sent to the security settings', function () {
         $this->actingAs($this->admin)
-            ->get(route('dashboard'))
+            ->get(route('today'))
             ->assertRedirect(route('security.edit'));
     });
 
@@ -113,10 +113,10 @@ describe('admins', function () {
     test('with two factor use the app normally', function () {
         enableTwoFactor($this->admin);
 
-        $this->actingAs($this->admin)->get(route('dashboard'))->assertOk();
+        $this->actingAs($this->admin)->get(route('today'))->assertOk();
     });
 });
 
 test('students are not forced to use two factor', function () {
-    $this->actingAs(User::factory()->create())->get(route('dashboard'))->assertOk();
+    $this->actingAs(User::factory()->create())->get(route('today'))->assertOk();
 });

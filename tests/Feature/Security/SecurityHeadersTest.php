@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 
 test('responses carry the security headers', function () {
-    $response = $this->get('/');
+    $response = $this->get('/entrar');
 
     $response->assertOk()
         ->assertHeader('X-Frame-Options', 'DENY')
@@ -16,7 +16,7 @@ test('responses carry the security headers', function () {
 });
 
 test('content security policy uses a per-request nonce for scripts', function () {
-    $first = $this->get('/');
+    $first = $this->get('/entrar');
     $csp = $first->headers->get('Content-Security-Policy');
 
     expect($csp)
@@ -32,7 +32,7 @@ test('content security policy uses a per-request nonce for scripts', function ()
 
     $first->assertSee('nonce="'.$nonce.'"', false);
 
-    $second = $this->get('/');
+    $second = $this->get('/entrar');
     expect($second->headers->get('Content-Security-Policy'))->not->toContain($nonce);
 });
 
@@ -44,11 +44,11 @@ test('error pages also carry the security headers', function () {
 });
 
 test('hsts and upgrade-insecure-requests are only sent in production', function () {
-    $this->get('/')->assertHeaderMissing('Strict-Transport-Security');
+    $this->get('/entrar')->assertHeaderMissing('Strict-Transport-Security');
 
     app()->detectEnvironment(fn () => 'production');
 
-    $response = $this->get('/');
+    $response = $this->get('/entrar');
 
     $response->assertHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     expect($response->headers->get('Content-Security-Policy'))
@@ -59,7 +59,7 @@ test('hsts and upgrade-insecure-requests are only sent in production', function 
 
 test('cors does not allow cross-origin requests', function () {
     $this->withHeaders(['Origin' => 'https://evil.example'])
-        ->get('/')
+        ->get('/entrar')
         ->assertHeaderMissing('Access-Control-Allow-Origin');
 });
 

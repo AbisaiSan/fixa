@@ -69,7 +69,7 @@ test('audit records identifiers and metadata only', function () {
 });
 
 test('each web response carries a request id', function () {
-    $response = $this->get('/');
+    $response = $this->get('/entrar');
 
     expect($response->headers->get('X-Request-Id'))->toMatch('/^[0-9a-z]{26}$/');
 });

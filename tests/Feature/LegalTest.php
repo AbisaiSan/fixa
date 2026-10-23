@@ -47,7 +47,7 @@ describe('a new version of the documents', function () {
     });
 
     test('sends the student to accept it before anything else', function () {
-        $this->actingAs($this->user)->get(route('dashboard'))->assertRedirect(route('legal.accept'));
+        $this->actingAs($this->user)->get(route('today'))->assertRedirect(route('legal.accept'));
     });
 
     test('is recorded when accepted and the student goes on', function () {
@@ -56,7 +56,7 @@ describe('a new version of the documents', function () {
             ->assertRedirect();
 
         expect($this->user->fresh()->hasAcceptedCurrentLegal())->toBeTrue();
-        $this->actingAs($this->user)->get(route('dashboard'))->assertOk();
+        $this->actingAs($this->user)->get(route('today'))->assertOk();
     });
 
     test('still requires the checkbox', function () {

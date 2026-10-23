@@ -16,7 +16,7 @@ test('auth pages use the portuguese paths from the prototype', function () {
 test('unverified students are sent to the verification page', function () {
     $user = User::factory()->unverified()->create();
 
-    $this->actingAs($user)->get(route('dashboard'))->assertRedirect('/verificar');
+    $this->actingAs($user)->get(route('today'))->assertRedirect('/verificar');
 });
 
 test('registration sends the verification email in portuguese', function () {

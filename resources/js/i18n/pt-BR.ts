@@ -109,6 +109,46 @@ export const ptBR = {
         privacy: 'política de privacidade',
         acceptAction: 'Aceitar e continuar',
     },
+    greeting: {
+        morning: 'Bom dia, {name}',
+        afternoon: 'Boa tarde, {name}',
+        evening: 'Boa noite, {name}',
+    },
+    today: {
+        emptyTitle: 'Vamos começar pela sua aula',
+        emptyBody:
+            'Envie o material da última aula: texto, PDF ou foto do caderno. Em menos de um minuto você tem revisão, flashcards e atividades prontos.',
+        emptyAction: 'Enviar minha primeira aula',
+        stepsLabel: 'Como funciona',
+        step1Title: 'Envie a aula.',
+        step1Body: 'A IA lê o material.',
+        step2Title: 'Revise.',
+        step2Body: 'Resumo, exemplos e erros comuns.',
+        step3Title: 'Pratique {minutes} min por dia.',
+        step3Body: 'O plano cuida do resto.',
+    },
+    empty: {
+        lessonsTitle: 'Nenhuma aula por aqui ainda',
+        lessonsBody:
+            'Envie o material da sua última aula (texto, PDF ou foto do caderno) e a gente monta a revisão, os flashcards e as atividades.',
+        practiceTitle: 'Envie uma aula para liberar as atividades',
+        practiceBody:
+            'Tudo o que você pratica aqui vem do material das suas aulas.',
+        vocabularyTitle: 'Seu vocabulário começa na primeira aula',
+        vocabularyBody:
+            'As palavras das suas aulas aparecem aqui. Depois você também pode adicionar as suas.',
+        progressTitle: 'Seu progresso começa hoje',
+        progressBody:
+            'Cada cartão revisado e cada atividade concluída somam XP. A sequência começa no primeiro dia de meta cumprida.',
+        uploadAction: 'Enviar aula',
+        todayAction: 'Ir para Hoje',
+    },
+    upload: {
+        title: 'Enviar aula',
+        soonTitle: 'O envio de aulas chega na próxima etapa',
+        soonBody:
+            'Em breve você envia texto, PDF ou foto do caderno e recebe revisão, flashcards e atividades.',
+    },
     state: {
         loading: 'Carregando',
         errorTitle: 'Não conseguimos carregar.',

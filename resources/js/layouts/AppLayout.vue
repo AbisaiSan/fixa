@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
-import type { BreadcrumbItem } from '@/types';
+import AppShell from '@/components/fixa/AppShell.vue';
 
-const { breadcrumbs = [] } = defineProps<{
-    breadcrumbs?: BreadcrumbItem[];
-}>();
+/**
+ * Layout das telas do app: o AppShell do sistema de design (J1-F2).
+ */
+withDefaults(defineProps<{ focus?: boolean }>(), { focus: false });
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <slot />
-    </AppLayout>
+    <AppShell :focus="focus">
+        <div class="mx-auto flex max-w-270 flex-col gap-6">
+            <slot />
+        </div>
+    </AppShell>
 </template>

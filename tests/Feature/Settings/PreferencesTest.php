@@ -56,7 +56,7 @@ test('the student updates theme and notifications', function () {
         ->and($user->notify_daily_reminder)->toBeTrue()
         ->and($user->notify_streak)->toBeTrue();
 
-    $this->actingAs($user)->get(route('dashboard'))->assertSee('data-theme="dark"', false);
+    $this->actingAs($user)->get(route('today'))->assertSee('data-theme="dark"', false);
 });
 
 test('an unknown theme is rejected', function () {

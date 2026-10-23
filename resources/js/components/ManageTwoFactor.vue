@@ -2,7 +2,6 @@
 import { Form } from '@inertiajs/vue3';
 import { ShieldCheck } from '@lucide/vue';
 import { onUnmounted, ref } from 'vue';
-import Heading from '@/components/Heading.vue';
 import TwoFactorRecoveryCodes from '@/components/TwoFactorRecoveryCodes.vue';
 import TwoFactorSetupModal from '@/components/TwoFactorSetupModal.vue';
 import { Button } from '@/components/ui/button';
@@ -29,25 +28,18 @@ onUnmounted(() => clearTwoFactorAuthData());
 
 <template>
     <div v-if="canManageTwoFactor" class="space-y-6">
-        <Heading
-            variant="small"
-            title="Two-factor authentication"
-            description="Manage your two-factor authentication settings"
-        />
-
         <div
             v-if="!twoFactorEnabled"
             class="flex flex-col items-start justify-start space-y-4"
         >
             <p class="text-sm text-muted-foreground">
-                When you enable two-factor authentication, you will be prompted
-                for a secure pin during login. This pin can be retrieved from a
-                TOTP-supported application on your phone.
+                Ao ativar, além da senha você vai digitar um código de 6 dígitos
+                do app autenticador do seu celular sempre que entrar.
             </p>
 
             <div>
                 <Button v-if="hasSetupData" @click="showSetupModal = true">
-                    <ShieldCheck />Continue setup
+                    <ShieldCheck />Continuar ativação
                 </Button>
                 <Form
                     v-else
@@ -56,7 +48,7 @@ onUnmounted(() => clearTwoFactorAuthData());
                     #default="{ processing }"
                 >
                     <Button type="submit" :disabled="processing">
-                        Enable 2FA
+                        Ativar verificação em duas etapas
                     </Button>
                 </Form>
             </div>
@@ -64,9 +56,8 @@ onUnmounted(() => clearTwoFactorAuthData());
 
         <div v-else class="flex flex-col items-start justify-start space-y-4">
             <p class="text-sm text-muted-foreground">
-                You will be prompted for a secure, random pin during login,
-                which you can retrieve from the TOTP-supported application on
-                your phone.
+                Ativa. Ao entrar, digite o código de 6 dígitos que aparece no
+                app autenticador do seu celular.
             </p>
 
             <div class="relative inline">
@@ -76,7 +67,7 @@ onUnmounted(() => clearTwoFactorAuthData());
                         type="submit"
                         :disabled="processing"
                     >
-                        Disable 2FA
+                        Desativar
                     </Button>
                 </Form>
             </div>

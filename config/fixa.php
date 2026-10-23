@@ -17,6 +17,25 @@ return [
     'upcoming_languages' => ['es', 'fr'],
 
     /*
+    | Fusos oferecidos em Configurações (GAM-06). O padrão é America/Sao_Paulo.
+    */
+    'timezones' => [
+        'America/Sao_Paulo',
+        'America/Bahia',
+        'America/Fortaleza',
+        'America/Recife',
+        'America/Belem',
+        'America/Manaus',
+        'America/Cuiaba',
+        'America/Porto_Velho',
+        'America/Boa_Vista',
+        'America/Rio_Branco',
+        'America/Noronha',
+        'Europe/Lisbon',
+        'UTC',
+    ],
+
+    /*
     | Versões vigentes dos documentos legais (J1-B7, DAD-01). Subir a versão
     | faz todo aluno aceitar de novo no próximo acesso.
     */

@@ -98,13 +98,13 @@ describe('admins', function () {
     test('without two factor are sent to the security settings', function () {
         $this->actingAs($this->admin)
             ->get(route('today'))
-            ->assertRedirect(route('security.edit'));
+            ->assertRedirect(route('settings'));
     });
 
     test('without two factor can still turn it on and log out', function () {
         $this->actingAs($this->admin)
             ->withSession(['auth.password_confirmed_at' => time()])
-            ->get(route('security.edit'))
+            ->get(route('settings'))
             ->assertOk();
 
         $this->actingAs($this->admin)->post(route('logout'))->assertRedirect();

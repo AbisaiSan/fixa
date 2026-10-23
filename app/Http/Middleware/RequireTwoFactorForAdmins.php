@@ -18,7 +18,7 @@ class RequireTwoFactorForAdmins
      * @var list<string>
      */
     private const ALLOWED_ROUTES = [
-        'security.edit',
+        'settings',
         'two-factor.*',
         'password.confirm',
         'password.confirmation',
@@ -42,6 +42,6 @@ class RequireTwoFactorForAdmins
             abort(403, 'Two-factor authentication required.');
         }
 
-        return redirect()->route('security.edit')->with('status', 'two-factor-required');
+        return redirect()->route('settings')->with('status', 'two-factor-required');
     }
 }

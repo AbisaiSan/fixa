@@ -4,33 +4,21 @@ use App\Http\Controllers\Settings\PreferencesController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use App\Http\Controllers\Settings\SessionController;
-use Illuminate\Auth\Middleware\RequirePassword;
+use App\Http\Controllers\Settings\SettingsController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', '/settings/profile');
+Route::middleware(['auth', 'verified'])->prefix('configuracoes')->group(function () {
+    Route::get('/', [SettingsController::class, 'show'])->name('settings');
 
-    Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
-});
+    Route::patch('perfil', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('estudo', [PreferencesController::class, 'updateStudy'])->name('preferences.study');
+    Route::patch('preferencias', [PreferencesController::class, 'updateAccount'])->name('preferences.account');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::get('settings/security', [SecurityController::class, 'edit'])
-        ->middleware(RequirePassword::class)
-        ->name('security.edit');
-
-    Route::patch('settings/study', [PreferencesController::class, 'updateStudy'])->name('preferences.study');
-    Route::patch('settings/preferences', [PreferencesController::class, 'updateAccount'])->name('preferences.account');
-
-    Route::delete('settings/sessions', [SessionController::class, 'destroyOthers'])
-        ->middleware('throttle:6,1')
-        ->name('sessions.destroy-others');
-
-    Route::put('settings/password', [SecurityController::class, 'update'])
+    Route::put('senha', [SecurityController::class, 'update'])
         ->middleware('throttle:6,1')
         ->name('user-password.update');
 
-    Route::inertia('settings/appearance', 'settings/Appearance')->name('appearance.edit');
+    Route::delete('sessoes', [SessionController::class, 'destroyOthers'])
+        ->middleware('throttle:6,1')
+        ->name('sessions.destroy-others');
 });

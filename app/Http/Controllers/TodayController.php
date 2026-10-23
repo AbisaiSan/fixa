@@ -3,7 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Cards\DailyQueue;
+use App\Domain\Lessons\WordCounter;
+use App\Domain\Practice\SessionKind;
+use App\Domain\Practice\SessionStatus;
+use App\Domain\Practice\WeakPointBuilder;
 use App\Models\Lesson;
+use App\Models\Mistake;
+use App\Models\PracticeSession;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -31,7 +37,8 @@ class TodayController extends Controller
     }
 
     /**
-     * Praticar: por ora, os flashcards (J3); escrita e leitura chegam na J4.
+     * Praticar (J4-F1): flashcards, escrita, leitura, ponto fraco, caderno
+     * de erros e modo corrida, tudo a partir das aulas do aluno.
      */
     public function practice(Request $request, DailyQueue $queue): Response
     {
@@ -39,12 +46,54 @@ class TodayController extends Controller
         $user = $request->user();
         $cards = $queue->for($user);
 
+        $writing = $this->latestSession($user, SessionKind::Writing);
+        $reading = $this->latestSession($user, SessionKind::Reading);
+        $mistakes = Mistake::forUser($user)->open()->get();
+        $due = $mistakes->filter(fn (Mistake $mistake) => $mistake->due_at !== null && $mistake->due_at->isPast())
+            ->sortByDesc('priority');
+
         return Inertia::render('app/Practice', [
             'status' => Lesson::query()->exists() ? 'ready' : 'empty',
             'flashcards' => [
                 'due' => $cards->whereNotNull('first_reviewed_at')->count(),
                 'new' => $cards->whereNull('first_reviewed_at')->count(),
             ],
+            'writing' => $writing === null ? null : [
+                'ulid' => $writing->ulid,
+                'lesson' => $writing->sourceLesson?->title,
+                'items' => $writing->items()->count(),
+                'completed' => $writing->status === SessionStatus::Completed,
+            ],
+            'reading' => $reading === null ? null : [
+                'ulid' => $reading->ulid,
+                'title' => $reading->content['title'] ?? '',
+                'words' => WordCounter::count(implode(' ', $reading->content['paragraphs'] ?? [])),
+                'completed' => $reading->status === SessionStatus::Completed,
+            ],
+            'weakPoint' => [
+                'due' => min($due->count(), WeakPointBuilder::MAX_ITEMS),
+                'point' => $due->first()?->content['point'],
+            ],
+            'mistakes' => [
+                'open' => $mistakes->count(),
+                'priority' => $mistakes->where('priority', true)->count(),
+            ],
         ]);
+    }
+
+    /**
+     * A sessão da aula mais recente ainda por fazer, ou a última feita.
+     */
+    private function latestSession(User $user, SessionKind $kind): ?PracticeSession
+    {
+        $sessions = PracticeSession::forUser($user)
+            ->where('kind', $kind)
+            ->with('sourceLesson:id,title,lesson_date')
+            ->latest('id')
+            ->limit(20)
+            ->get();
+
+        return $sessions->first(fn (PracticeSession $session) => $session->status !== SessionStatus::Completed)
+            ?? $sessions->first();
     }
 }

@@ -341,6 +341,8 @@ export const ptBR = {
         hard: 'Difícil',
         good: 'Bom',
         easy: 'Fácil',
+        swipeHint:
+            'Opcional: deslize o cartão para a direita (Bom) ou para a esquerda (Errei).',
         keysHint: 'Atalhos: Espaço vira o cartão, 1 a 4 escolhem a nota.',
         lessMinute: '<1 min',
         day: '1 dia',

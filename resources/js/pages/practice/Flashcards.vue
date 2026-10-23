@@ -205,12 +205,20 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
             :example="current.example"
             :example-translation="current.example_translation"
             :part-of-speech="current.part_of_speech"
+            @swipe="(direction) => rate(direction === 'right' ? 3 : 1)"
         />
 
         <Button v-if="!flipped" block icon="flip" @click="flipped = true">{{
             t('flashcards.showAnswer')
         }}</Button>
-        <RateBar v-else :preview="current.preview" @rate="rate" />
+        <template v-else>
+            <RateBar :preview="current.preview" @rate="rate" />
+            <p
+                class="m-0 flex items-center justify-center gap-1.5 text-[13px] text-ink2"
+            >
+                <Icon name="swipe" :size="18" />{{ t('flashcards.swipeHint') }}
+            </p>
+        </template>
 
         <p class="m-0 text-center text-sm text-ink2">{{ remaining }}</p>
         <p class="m-0 text-center text-[13px] text-ink2">

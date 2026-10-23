@@ -85,3 +85,48 @@ describe('flashcard components', () => {
         await expectAccessible(wrapper.element);
     });
 });
+
+describe('Flashcard swipe', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
+
+    const pointer = (type: string, clientX: number) =>
+        new PointerEvent(type, { clientX, pointerId: 1, bubbles: true });
+
+    it('swiping the back right or left emits the direction, and short drags do nothing', async () => {
+        const wrapper = mount(Flashcard, {
+            props: { front: 'deadline', back: 'prazo final', flipped: true },
+        });
+        const card = wrapper.get('[role="button"]').element;
+
+        card.dispatchEvent(pointer('pointerdown', 100));
+        card.dispatchEvent(pointer('pointermove', 260));
+        await wrapper.vm.$nextTick();
+        expect(wrapper.text()).toContain('Bom →');
+        card.dispatchEvent(pointer('pointerup', 260));
+
+        card.dispatchEvent(pointer('pointerdown', 300));
+        card.dispatchEvent(pointer('pointermove', 150));
+        card.dispatchEvent(pointer('pointerup', 150));
+
+        card.dispatchEvent(pointer('pointerdown', 100));
+        card.dispatchEvent(pointer('pointermove', 150));
+        card.dispatchEvent(pointer('pointerup', 150));
+
+        expect(wrapper.emitted('swipe')).toEqual([['right'], ['left']]);
+    });
+
+    it('the front does not swipe', () => {
+        const wrapper = mount(Flashcard, {
+            props: { front: 'deadline', back: 'prazo final', flipped: false },
+        });
+        const card = wrapper.get('[role="button"]').element;
+
+        card.dispatchEvent(pointer('pointerdown', 100));
+        card.dispatchEvent(pointer('pointermove', 400));
+        card.dispatchEvent(pointer('pointerup', 400));
+
+        expect(wrapper.emitted('swipe')).toBeUndefined();
+    });
+});

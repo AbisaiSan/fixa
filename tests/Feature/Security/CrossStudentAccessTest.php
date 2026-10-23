@@ -3,6 +3,7 @@
 use App\Models\Concerns\BelongsToUser;
 use App\Models\User;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\URL;
 use Tests\Support\OwnedEndpoints;
 
 beforeEach(function () {
@@ -14,14 +15,18 @@ beforeEach(function () {
 
 dataset('owned endpoints', fn () => array_map(fn (array $endpoint) => [$endpoint], OwnedEndpoints::all()));
 
-test('another student cannot read, change or delete the data', function (array $endpoint) {
-    $resource = ($endpoint['make'])($this->alice);
-    $before = $resource->fresh()->getAttributes();
+function endpointUrl(array $endpoint, array $params): string
+{
+    return $endpoint['signed']
+        ? URL::temporarySignedRoute($endpoint['route'], now()->addMinutes(5), $params)
+        : route($endpoint['route'], $params);
+}
 
-    $response = $this->actingAs($this->bob)->{$endpoint['method']}(
-        route($endpoint['route'], $resource->getRouteKey()),
-        $endpoint['payload'],
-    );
+test('another student cannot read, change or delete the data', function (array $endpoint) {
+    ['resource' => $resource, 'params' => $params] = ($endpoint['make'])($this->alice);
+    $before = $resource->newQueryWithoutScopes()->find($resource->getKey())->getAttributes();
+
+    $response = $this->actingAs($this->bob)->{$endpoint['method']}(endpointUrl($endpoint, $params), $endpoint['payload']);
 
     expect($response->status())->toBeIn([403, 404])
         ->and($response->getContent())->not->toContain('nota da aluna A');
@@ -33,18 +38,18 @@ test('another student cannot read, change or delete the data', function (array $
 })->with('owned endpoints');
 
 test('the owner still has access, so the denial above is real', function (array $endpoint) {
-    $resource = ($endpoint['make'])($this->alice);
+    ['params' => $params] = ($endpoint['make'])($this->alice);
 
     $this->actingAs($this->alice)
-        ->{$endpoint['method']}(route($endpoint['route'], $resource->getRouteKey()), $endpoint['payload'])
+        ->{$endpoint['method']}(endpointUrl($endpoint, $params), $endpoint['payload'])
         ->assertSuccessful();
 })->with('owned endpoints');
 
 test('the numeric id never works as a route key', function (array $endpoint) {
-    $resource = ($endpoint['make'])($this->alice);
+    ['numeric' => $numeric] = ($endpoint['make'])($this->alice);
 
     $this->actingAs($this->alice)
-        ->{$endpoint['method']}(route($endpoint['route'], $resource->getKey()), $endpoint['payload'])
+        ->{$endpoint['method']}(endpointUrl($endpoint, $numeric), $endpoint['payload'])
         ->assertNotFound();
 })->with('owned endpoints');
 

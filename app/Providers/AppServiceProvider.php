@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use App\Listeners\RecordAuthenticationEvents;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -28,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
 
         Event::subscribe(RecordAuthenticationEvents::class);
+
+        // Envio de aulas (ACE-05): evita abuso de armazenamento e de IA.
+        RateLimiter::for('lesson-uploads', fn (Request $request) => [
+            Limit::perMinute(5)->by('upload|'.$request->user()?->getKey()),
+            Limit::perDay(30)->by('upload-day|'.$request->user()?->getKey()),
+        ]);
     }
 
     /**

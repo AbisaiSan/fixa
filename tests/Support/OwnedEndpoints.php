@@ -2,6 +2,8 @@
 
 namespace Tests\Support;
 
+use App\Models\Lesson;
+use App\Models\LessonFile;
 use App\Models\User;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +11,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Tests\Fixtures\OwnedNote;
 use Tests\Fixtures\OwnedNotePolicy;
 
@@ -23,15 +26,19 @@ use Tests\Fixtures\OwnedNotePolicy;
 final class OwnedEndpoints
 {
     /**
-     * @return array<string, array{method: string, route: string, make: Closure(User): Model, payload: array<string, mixed>}>
+     * @return array<string, array{method: string, route: string, make: Closure(User): array{resource: Model, params: array<int, string>, numeric: array<int, int>}, payload: array<string, mixed>, signed: bool}>
      */
     public static function all(): array
     {
         return [
-            // Exemplo com o modelo de teste; troque pelos reais a partir da J2.
+            // Exemplo com o modelo de teste, que garante a matriz funcionando.
             'fixture: ler nota' => self::endpoint('get', 'test.notes.show', self::makeNote(...)),
             'fixture: alterar nota' => self::endpoint('patch', 'test.notes.update', self::makeNote(...), ['body' => 'invadido']),
             'fixture: apagar nota' => self::endpoint('delete', 'test.notes.destroy', self::makeNote(...)),
+
+            // J2: aulas e arquivos de aula.
+            'ver aula' => self::endpoint('get', 'lessons.show', self::makeLesson(...)),
+            'baixar arquivo da aula' => self::endpoint('get', 'lessons.files.show', self::makeLessonFile(...), signed: true),
         ];
     }
 
@@ -50,6 +57,8 @@ final class OwnedEndpoints
      */
     public static function bootFixtures(): void
     {
+        Storage::fake(LessonFile::DISK);
+
         Schema::create('owned_notes', function (Blueprint $table) {
             $table->id();
             $table->ulid()->unique();
@@ -86,20 +95,54 @@ final class OwnedEndpoints
     }
 
     /**
-     * @param  Closure(User): Model  $make
+     * @param  Closure(User): array{resource: Model, params: array<int, string>, numeric: array<int, int>}  $make
      * @param  array<string, mixed>  $payload
-     * @return array{method: string, route: string, make: Closure(User): Model, payload: array<string, mixed>}
+     * @return array{method: string, route: string, make: Closure(User): array{resource: Model, params: array<int, string>, numeric: array<int, int>}, payload: array<string, mixed>, signed: bool}
      */
-    private static function endpoint(string $method, string $route, Closure $make, array $payload = []): array
+    private static function endpoint(string $method, string $route, Closure $make, array $payload = [], bool $signed = false): array
     {
-        return compact('method', 'route', 'make', 'payload');
+        return compact('method', 'route', 'make', 'payload', 'signed');
     }
 
-    private static function makeNote(User $owner): OwnedNote
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeNote(User $owner): array
     {
         $note = (new OwnedNote(['body' => 'nota da aluna A']))->forceFill(['user_id' => $owner->id]);
         $note->save();
 
-        return $note;
+        return ['resource' => $note, 'params' => [$note->ulid], 'numeric' => [$note->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeLesson(User $owner): array
+    {
+        $lesson = Lesson::factory()->forUser($owner)->create(['title' => 'nota da aluna A']);
+
+        return ['resource' => $lesson, 'params' => [$lesson->ulid], 'numeric' => [$lesson->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeLessonFile(User $owner): array
+    {
+        $lesson = Lesson::factory()->forUser($owner)->create();
+        Storage::disk(LessonFile::DISK)->put("{$owner->ulid}/{$lesson->ulid}/a.pdf", '%PDF nota da aluna A');
+
+        $file = (new LessonFile)->forceFill([
+            'user_id' => $owner->id,
+            'lesson_id' => $lesson->id,
+            'path' => "{$owner->ulid}/{$lesson->ulid}/a.pdf",
+            'mime_type' => 'application/pdf',
+            'size_bytes' => 20,
+            'sha256' => str_repeat('a', 64),
+        ]);
+        $file->save();
+
+        return ['resource' => $file, 'params' => [$lesson->ulid, $file->ulid], 'numeric' => [$lesson->id, $file->id]];
     }
 }

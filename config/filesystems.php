@@ -38,6 +38,18 @@ return [
             'report' => false,
         ],
 
+        // Material das aulas (UPL-02): fora da pasta pública, sem rota automática.
+        // Os arquivos só saem pelo LessonFileController, com link assinado e Policy.
+        // Em produção, troque o driver para S3 compatível pela configuração.
+        'lessons' => [
+            'driver' => env('LESSONS_DISK_DRIVER', 'local'),
+            'root' => storage_path('app/private/lessons'),
+            'serve' => false,
+            'throw' => true,
+            'report' => false,
+            'visibility' => 'private',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

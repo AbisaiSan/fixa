@@ -53,6 +53,9 @@ jobs:
           node-version: '24'
           cache: npm
 
+      - name: Ferramentas do sistema (poppler para PDFs)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
       - name: Instalar dependências
         run: |
           composer install --no-interaction --no-progress --prefer-dist

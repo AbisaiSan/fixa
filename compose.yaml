@@ -112,7 +112,7 @@ services:
         networks:
             - sail
         healthcheck:
-            test: ["CMD", "clamdcheck.sh"]
+            test: ['CMD', 'clamdcheck.sh']
             interval: 60s
             timeout: 10s
             retries: 3

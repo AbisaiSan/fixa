@@ -29,7 +29,10 @@ class SecurityHeaders
 
         $response = $next($request);
 
-        $response->headers->set('Content-Security-Policy', $this->contentSecurityPolicy($nonce));
+        // Respostas que já trazem uma CSP mais restrita (arquivos de aula) a mantêm.
+        if (! $response->headers->has('Content-Security-Policy')) {
+            $response->headers->set('Content-Security-Policy', $this->contentSecurityPolicy($nonce));
+        }
         $response->headers->set('X-Frame-Options', 'DENY');
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');

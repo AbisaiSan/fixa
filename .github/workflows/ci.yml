@@ -1,10 +1,10 @@
 name: ci
 
+# Roda em push de qualquer branch: o fluxo do projeto não usa pull request.
 on:
   push:
     branches:
-      - main
-  pull_request:
+      - '**'
 
 permissions:
   contents: read

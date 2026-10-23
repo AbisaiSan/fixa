@@ -10,7 +10,13 @@ import { t } from '@/i18n';
  * "Reportar erro" num item gerado (MAT-05): motivo e detalhes opcionais.
  * Serve palavras e cartões; a revisão da aula tem a própria folha.
  */
-const props = defineProps<{ url: string }>();
+const props = defineProps<{
+    url: string;
+    // Nas sessões, a página não recarrega: só os avisos voltam do servidor.
+    partial?: boolean;
+}>();
+
+const emit = defineEmits<{ sent: [] }>();
 
 const open = defineModel<boolean>('open', { default: false });
 
@@ -36,7 +42,11 @@ watch(open, (now) => {
 function send(): void {
     form.post(props.url, {
         preserveScroll: true,
-        onSuccess: () => (open.value = false),
+        ...(props.partial ? { preserveState: true, only: ['flash'] } : {}),
+        onSuccess: () => {
+            open.value = false;
+            emit('sent');
+        },
     });
 }
 </script>

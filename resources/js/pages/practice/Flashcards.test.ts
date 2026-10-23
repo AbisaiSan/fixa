@@ -198,3 +198,55 @@ describe('Flashcards end of session', () => {
         await expectAccessible(wrapper.element);
     });
 });
+
+describe('Flashcards card options', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
+
+    it('opens the card options with edit, create, suspend and report', async () => {
+        const wrapper = render([card('a', true)]);
+
+        await wrapper
+            .get('button[aria-label="Opções do cartão"]')
+            .trigger('click');
+        await flushPromises();
+
+        const dialog = document.body.querySelector('[role="dialog"]');
+
+        expect(dialog?.textContent).toContain('Editar cartão');
+        expect(dialog?.textContent).toContain('Criar novo cartão');
+        expect(dialog?.textContent).toContain(
+            'Sai das sessões até você reativar',
+        );
+        expect(dialog?.textContent).toContain('Reportar erro');
+        await expectAccessible(document.body);
+    });
+
+    it('fills the edit form with the current card', async () => {
+        const wrapper = render([card('a', true)]);
+
+        await wrapper
+            .get('button[aria-label="Opções do cartão"]')
+            .trigger('click');
+        await flushPromises();
+        (
+            Array.from(
+                document.body.querySelectorAll('[role="dialog"] button'),
+            ) as HTMLButtonElement[]
+        )
+            .find((button) => button.textContent?.includes('Editar cartão'))
+            ?.click();
+        await flushPromises();
+
+        const inputs = Array.from(
+            document.body.querySelectorAll('[role="dialog"] input'),
+        ) as HTMLInputElement[];
+
+        expect(inputs.map((input) => input.value)).toEqual([
+            'front a',
+            'back a',
+            '',
+        ]);
+    });
+});

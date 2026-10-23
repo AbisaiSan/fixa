@@ -35,12 +35,17 @@ class FlashcardSessionController extends Controller
             : null;
 
         $rush = $request->query('modo') === 'corrida';
-        $cards = $queue->for($user, $lesson, dueOnly: $rush)->load(['sourceLesson:id,lesson_date', 'word:id,part_of_speech']);
 
         return Inertia::render('practice/Flashcards', [
             'mode' => $rush ? 'rush' : 'normal',
+            'flash' => session('status'),
             'lesson' => $lesson === null ? null : ['ulid' => $lesson->ulid, 'title' => $lesson->title],
-            'cards' => $cards->map(fn (Card $card) => self::present($card, $scheduler, $now, $timezone))->values()->all(),
+            // Preguiçosa: as ações da sessão recarregam só os avisos.
+            'cards' => fn () => $queue->for($user, $lesson, dueOnly: $rush)
+                ->load(['sourceLesson:id,lesson_date', 'word:id,part_of_speech'])
+                ->map(fn (Card $card) => self::present($card, $scheduler, $now, $timezone))
+                ->values()
+                ->all(),
         ]);
     }
 

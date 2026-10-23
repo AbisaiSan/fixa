@@ -2,6 +2,8 @@
 import { Head, router } from '@inertiajs/vue3';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import Banner from '@/components/fixa/Banner.vue';
+import CardFormSheet from '@/components/cards/CardFormSheet.vue';
+import type { CardFields } from '@/components/cards/CardFormSheet.vue';
 import Button from '@/components/fixa/Button.vue';
 import Card from '@/components/fixa/Card.vue';
 import EmptyState from '@/components/fixa/EmptyState.vue';
@@ -10,7 +12,11 @@ import Icon from '@/components/fixa/Icon.vue';
 import OriginTag from '@/components/fixa/OriginTag.vue';
 import RateBar from '@/components/fixa/RateBar.vue';
 import SessionHeader from '@/components/fixa/SessionHeader.vue';
+import Sheet from '@/components/fixa/Sheet.vue';
+import Toast from '@/components/fixa/Toast.vue';
+import ReportSheet from '@/components/lessons/ReportSheet.vue';
 import { t } from '@/i18n';
+import { ptBR } from '@/i18n/pt-BR';
 import { postJson } from '@/lib/http';
 import { shortDate } from '@/lib/lessons';
 import type { SessionCard } from '@/types/lessons';
@@ -167,7 +173,10 @@ function exit(): void {
 function onKey(event: KeyboardEvent): void {
     const target = event.target as HTMLElement | null;
 
-    if (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
+    if (
+        anySheetOpen.value ||
+        (target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
+    ) {
         return;
     }
 
@@ -192,7 +201,90 @@ function tick(): void {
     }
 }
 
+// Opções do cartão (J3-F6, FLA-06): editar, criar, suspender e reportar.
+const menuOpen = ref(false);
+const formOpen = ref(false);
+const editing = ref(false);
+const reportOpen = ref(false);
+const reported = ref<string[]>([]);
+const toast = ref<string | null>(null);
+let toastTimer: ReturnType<typeof setTimeout> | undefined;
+let removeListener: VoidFunction | undefined;
+
+const anySheetOpen = computed(
+    () => menuOpen.value || formOpen.value || reportOpen.value,
+);
+
+function showToast(code: string | null | undefined): void {
+    const messages: Record<string, string> = ptBR.cards.flash;
+
+    if (!code || !messages[code]) {
+        return;
+    }
+
+    toast.value = messages[code];
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => (toast.value = null), 4000);
+}
+
+function openForm(edit: boolean): void {
+    editing.value = edit;
+    menuOpen.value = false;
+    formOpen.value = true;
+}
+
+function onSaved(fields: CardFields): void {
+    const ulid = current.value?.ulid;
+
+    if (!editing.value || !ulid) {
+        return;
+    }
+
+    queue.value
+        .filter((item) => item.ulid === ulid)
+        .forEach((item) => Object.assign(item, fields));
+}
+
+function suspend(): void {
+    const ulid = current.value?.ulid;
+    menuOpen.value = false;
+
+    if (!ulid) {
+        return;
+    }
+
+    router.post(
+        `/cartoes/${ulid}/suspender`,
+        {},
+        {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['flash'],
+            onSuccess: () => skip(ulid),
+        },
+    );
+}
+
+function openReport(): void {
+    menuOpen.value = false;
+    reportOpen.value = true;
+}
+
+// Tira o cartão do resto desta sessão e segue para o próximo.
+function skip(ulid: string): void {
+    queue.value = [
+        ...queue.value.slice(0, index.value + 1),
+        ...queue.value
+            .slice(index.value + 1)
+            .filter((item) => item.ulid !== ulid),
+    ];
+    next();
+}
+
 onMounted(() => {
+    removeListener = router.on('success', (event) =>
+        showToast(event.detail.page.props.flash as string | null),
+    );
     window.addEventListener('keydown', onKey);
 
     if (rush.value && queue.value.length > 0) {
@@ -201,6 +293,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+    removeListener?.();
+    clearTimeout(toastTimer);
     window.removeEventListener('keydown', onKey);
     clearInterval(timer);
 });
@@ -321,6 +415,29 @@ onBeforeUnmount(() => {
                         : undefined
                 "
             />
+            <button
+                type="button"
+                class="ml-auto grid size-11 place-items-center rounded-s text-ink2 hover:bg-sf2"
+                :aria-label="t('cards.menuTitle')"
+                @click="menuOpen = true"
+            >
+                <Icon name="more_horiz" />
+            </button>
+        </div>
+
+        <div
+            v-if="reported.includes(current.ulid)"
+            role="status"
+            class="flex flex-wrap items-center gap-3 rounded-m bg-infot px-3.5 py-3"
+        >
+            <Icon name="flag" class="text-infod" />
+            <span class="min-w-0 flex-1 text-sm"
+                ><strong>{{ t('cards.reportedTitle') }}</strong>
+                {{ t('cards.reportedBody') }}</span
+            >
+            <Button variant="ghost" @click="skip(current.ulid)">{{
+                t('cards.skip')
+            }}</Button>
         </div>
 
         <Banner
@@ -358,4 +475,65 @@ onBeforeUnmount(() => {
             {{ t('flashcards.keysHint') }}
         </p>
     </template>
+
+    <Sheet v-model:open="menuOpen" :title="t('cards.menuTitle')">
+        <div class="flex flex-col gap-1">
+            <Button
+                variant="ghost"
+                icon="edit"
+                class="justify-start"
+                @click="openForm(true)"
+                >{{ t('cards.edit') }}</Button
+            >
+            <Button
+                variant="ghost"
+                icon="add_card"
+                class="justify-start"
+                @click="openForm(false)"
+                >{{ t('cards.create') }}</Button
+            >
+            <Button
+                variant="ghost"
+                icon="pause_circle"
+                class="justify-start"
+                @click="suspend"
+            >
+                <span class="flex flex-col items-start">
+                    <span>{{ t('cards.suspend') }}</span>
+                    <span class="text-[12.5px] font-semibold text-ink2">{{
+                        t('cards.suspendHint')
+                    }}</span>
+                </span>
+            </Button>
+            <Button
+                variant="ghost"
+                icon="flag"
+                class="justify-start"
+                @click="openReport"
+                >{{ t('cards.report') }}</Button
+            >
+        </div>
+    </Sheet>
+
+    <CardFormSheet
+        v-model:open="formOpen"
+        :card="editing && current ? current : null"
+        :lesson="lesson?.ulid ?? null"
+        @saved="onSaved"
+    />
+
+    <ReportSheet
+        v-if="current"
+        v-model:open="reportOpen"
+        :url="`/cartoes/${current.ulid}/reportes`"
+        partial
+        @sent="reported.push(current.ulid)"
+    />
+
+    <div
+        v-if="toast"
+        class="pointer-events-none fixed inset-x-0 bottom-8 z-30 flex justify-center px-4"
+    >
+        <Toast tone="info">{{ toast }}</Toast>
+    </div>
 </template>

@@ -323,6 +323,34 @@ export const ptBR = {
         flashcardsDone: 'Tudo em dia por agora',
         soon: 'Escrita, leitura e ponto fraco chegam na próxima etapa.',
     },
+    cards: {
+        menuTitle: 'Opções do cartão',
+        edit: 'Editar cartão',
+        create: 'Criar novo cartão',
+        suspend: 'Suspender cartão',
+        suspendHint: 'Sai das sessões até você reativar',
+        report: 'Reportar erro',
+        editTitle: 'Editar cartão',
+        newTitle: 'Criar cartão',
+        front: 'Frente',
+        back: 'Verso',
+        backPlaceholder: 'Resposta ou tradução',
+        example: 'Exemplo (opcional)',
+        save: 'Salvar',
+        cancel: 'Cancelar',
+        reportedTitle: 'Você reportou este cartão.',
+        reportedBody:
+            'Ele fica fora das próximas sessões até ser revisado. Pode responder normalmente ou pular.',
+        skip: 'Pular',
+        flash: {
+            'card-created': 'Cartão criado. Ele entra nas próximas sessões.',
+            'card-updated': 'Cartão atualizado.',
+            'card-suspended':
+                'Cartão suspenso. Ele sai das sessões até você reativar.',
+            'item-reported':
+                'Obrigado por avisar. O cartão saiu das próximas sessões até ser revisado.',
+        },
+    },
     flashcards: {
         title: 'Flashcards',
         exit: 'Sair da sessão',

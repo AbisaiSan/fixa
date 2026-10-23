@@ -49,6 +49,8 @@ yarn-error.log
 
 # Dumps e bancos locais
 *.sql
+# Script de criação do banco de testes do Sail, não é dump
+!/docker/pgsql/create-testing-database.sql
 *.sql.gz
 *.dump
 /database/*.sqlite*

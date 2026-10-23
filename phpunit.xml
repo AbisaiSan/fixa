@@ -21,6 +21,7 @@
         <env name="APP_ENV" value="testing"/>
         <env name="APP_LOCALE" value="pt_BR"/>
         <env name="FIXA_AI_PROVIDER" value="fake"/>
+        <env name="ANTIVIRUS_DRIVER" value="fake"/>
         <env name="GEMINI_API_KEY" value=""/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>

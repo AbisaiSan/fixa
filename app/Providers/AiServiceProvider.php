@@ -6,6 +6,9 @@ use App\Domain\Ai\Contracts\AiProvider;
 use App\Domain\Ai\Prompts\PromptLibrary;
 use App\Domain\Ai\Providers\FakeAiProvider;
 use App\Domain\Ai\Providers\GeminiProvider;
+use App\Domain\Lessons\Scanning\ClamAvScanner;
+use App\Domain\Lessons\Scanning\FakeVirusScanner;
+use App\Domain\Lessons\Scanning\VirusScanner;
 use Illuminate\Http\Client\Factory as Http;
 use Illuminate\Support\ServiceProvider;
 use InvalidArgumentException;
@@ -19,6 +22,11 @@ class AiServiceProvider extends ServiceProvider
     {
         $this->app->singleton(FakeAiProvider::class);
         $this->app->singleton(PromptLibrary::class, fn () => new PromptLibrary(resource_path('prompts')));
+
+        $this->app->singleton(FakeVirusScanner::class);
+        $this->app->singleton(VirusScanner::class, fn ($app) => config('fixa.antivirus.driver') === 'clamav'
+            ? new ClamAvScanner((string) config('fixa.antivirus.host'), (int) config('fixa.antivirus.port'))
+            : $app->make(FakeVirusScanner::class));
 
         $this->app->singleton(AiProvider::class, fn ($app) => match (config('fixa.ai.provider')) {
             'fake' => $app->make(FakeAiProvider::class),

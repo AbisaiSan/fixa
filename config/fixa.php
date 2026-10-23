@@ -54,7 +54,18 @@ return [
         // Versão vigente de cada prompt em resources/prompts. Mudou o texto, crie v2.
         'prompts' => [
             'lesson_review' => 'v1',
+            'text_extraction' => 'v1',
         ],
+    ],
+
+    /*
+    | Antivírus dos arquivos enviados (UPL-03). "clamav" no Sail e em produção;
+    | "fake" só nos testes, que não têm o clamd.
+    */
+    'antivirus' => [
+        'driver' => env('ANTIVIRUS_DRIVER', 'clamav'),
+        'host' => env('CLAMAV_HOST', 'clamav'),
+        'port' => (int) env('CLAMAV_PORT', 3310),
     ],
 
 ];

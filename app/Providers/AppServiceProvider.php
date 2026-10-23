@@ -7,6 +7,7 @@ use App\Domain\Cards\Scheduling\Sm2Scheduler;
 use App\Listeners\RecordAuthenticationEvents;
 use App\Models\Card;
 use App\Models\LessonReview;
+use App\Models\Word;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -39,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
         Event::subscribe(RecordAuthenticationEvents::class);
 
         // Nome estável dos itens reportáveis no banco, sem depender da classe (MAT-05).
-        Relation::morphMap(['lesson_review' => LessonReview::class, 'card' => Card::class]);
+        Relation::morphMap(['lesson_review' => LessonReview::class, 'card' => Card::class, 'word' => Word::class]);
 
         // Envio de aulas (ACE-05): evita abuso de armazenamento e de IA.
         RateLimiter::for('lesson-uploads', fn (Request $request) => [

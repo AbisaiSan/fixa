@@ -5,6 +5,7 @@ namespace App\Domain\Cards;
 use App\Domain\Cards\Scheduling\CardState;
 use App\Domain\Cards\Scheduling\Rating;
 use App\Domain\Cards\Scheduling\ReviewScheduler;
+use App\Domain\Vocabulary\WordBook;
 use App\Models\Card;
 use App\Models\CardReview;
 use App\Models\Enrollment;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class ReviewCard
 {
-    public function __construct(private ReviewScheduler $scheduler) {}
+    public function __construct(private ReviewScheduler $scheduler, private WordBook $words) {}
 
     public function handle(User $user, Card $card, Rating $rating, ?int $durationMs = null, ?string $clientReviewId = null): CardReview
     {
@@ -51,7 +52,7 @@ final class ReviewCard
             $intervalBefore = (int) $card->getOriginal('interval_days');
             $card->save();
 
-            return tap((new CardReview)->forceFill([
+            $review = tap((new CardReview)->forceFill([
                 'user_id' => $user->id,
                 'card_id' => $card->id,
                 'rating' => $rating,
@@ -63,6 +64,10 @@ final class ReviewCard
                 'client_review_id' => $clientReviewId,
                 'reviewed_at' => $now,
             ]))->save();
+
+            $this->words->refreshState($card);
+
+            return $review;
         });
     }
 

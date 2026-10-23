@@ -6,6 +6,7 @@ use App\Domain\Ai\AiCallContext;
 use App\Domain\Ai\AiTask;
 use App\Domain\Ai\Schemas\CardsSchema;
 use App\Domain\Ai\StructuredGenerator;
+use App\Domain\Vocabulary\WordBook;
 use App\Models\Card;
 use App\Models\Lesson;
 use App\Models\User;
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class CardGenerator
 {
-    public function __construct(private StructuredGenerator $generator) {}
+    public function __construct(private StructuredGenerator $generator, private WordBook $words) {}
 
     public function generate(Lesson $lesson): void
     {
@@ -44,14 +45,29 @@ final class CardGenerator
 
         $owner = User::query()->findOrFail($lesson->user_id);
 
-        DB::transaction(function () use ($lesson, $owner, $response, $max) {
+        $generation = [
+            'provider' => $response->provider,
+            'model' => $response->model,
+            'prompt_version' => (string) config('fixa.ai.prompts.cards', 'v1'),
+        ];
+
+        DB::transaction(function () use ($lesson, $owner, $response, $max, $generation) {
             foreach (array_slice($response->data['cards'], 0, $max) as $item) {
+                // Palavras entram também no vocabulário (VOC-01).
+                $word = isset($item['word']) && $item['kind'] === CardKind::Word->value
+                    ? $this->words->fromLesson($owner, $lesson, $item['front'], $item['back'], $item['word'], $generation)
+                    : null;
+
                 $existing = Card::forUser($owner)
                     ->where('dedupe_key', CardIdentity::key($item['front'], $item['back']))
                     ->first();
 
                 if ($existing !== null) {
                     $existing->lessons()->syncWithoutDetaching([$lesson->id]);
+
+                    if ($word !== null && $existing->word_id === null) {
+                        $existing->forceFill(['word_id' => $word->id])->save();
+                    }
 
                     continue;
                 }
@@ -64,9 +80,8 @@ final class CardGenerator
                     'back' => trim($item['back']),
                     'example' => trim($item['example']),
                     'example_translation' => trim($item['example_translation']),
-                    'provider' => $response->provider,
-                    'model' => $response->model,
-                    'prompt_version' => config('fixa.ai.prompts.cards', 'v1'),
+                    'word_id' => $word?->id,
+                    ...$generation,
                 ]);
                 $card->save();
                 $card->lessons()->attach($lesson->id);

@@ -35,7 +35,7 @@ test('the lesson job also creates its cards with origin and generation data', fu
         ->and($cards[0]->source_lesson_id)->toBe($this->lesson->id)
         ->and($cards[0]->user_id)->toBe($this->lesson->user_id)
         ->and($cards[0]->provider)->toBe('fake')
-        ->and($cards[0]->prompt_version)->toBe('v1')
+        ->and($cards[0]->prompt_version)->toBe('v2')
         ->and($cards[0]->reported)->toBeFalse()
         ->and(DB::table('card_lesson')->where('card_id', $cards[0]->id)->pluck('lesson_id')->all())->toBe([$this->lesson->id]);
 });

@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\DB;
  * @property string|null $prompt_version
  * @property bool $reported
  * @property string|null $dedupe_key
+ * @property int|null $word_id
  * @property Carbon|null $suspended_at
  * @property int $repetitions
  * @property int $interval_days
@@ -103,11 +104,23 @@ class Card extends Model implements Reportable
     }
 
     /**
+     * @return BelongsTo<Word, $this>
+     */
+    public function word(): BelongsTo
+    {
+        return $this->belongsTo(Word::class);
+    }
+
+    /**
+     * Ponto revisado: as respostas são do dono do cartão.
+     *
      * @return HasMany<CardReview, $this>
      */
     public function reviews(): HasMany
     {
-        return $this->hasMany(CardReview::class);
+        return $this->hasMany(CardReview::class)
+            ->withoutGlobalScope(OwnedByAuthenticatedUser::class)
+            ->where('card_reviews.user_id', $this->user_id);
     }
 
     /**

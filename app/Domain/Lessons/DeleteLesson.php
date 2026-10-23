@@ -2,10 +2,12 @@
 
 namespace App\Domain\Lessons;
 
+use App\Domain\Vocabulary\WordOrigin;
 use App\Models\Card;
 use App\Models\Lesson;
 use App\Models\LessonFile;
 use App\Models\User;
+use App\Models\Word;
 use App\Support\Audit\AuditLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -41,6 +43,8 @@ final class DeleteLesson
                     }
                 });
 
+            $this->removeWordsOnlyFrom($user, $lesson);
+
             $lesson->delete();
         });
 
@@ -48,5 +52,31 @@ final class DeleteLesson
         Storage::disk(LessonFile::DISK)->deleteDirectory("{$user->ulid}/{$ulid}");
 
         $this->audit->record('lesson.deleted', $user, ['lesson' => $ulid]);
+    }
+
+    /**
+     * Palavras que também aparecem em outra aula continuam no vocabulário.
+     * As adicionadas pelo aluno nunca saem junto.
+     */
+    private function removeWordsOnlyFrom(User $user, Lesson $lesson): void
+    {
+        $words = Word::forUser($user)
+            ->where('origin', WordOrigin::Lesson)
+            ->whereIn('id', DB::table('lesson_word')->where('lesson_id', $lesson->id)->select('word_id'))
+            ->get();
+
+        foreach ($words as $word) {
+            $others = DB::table('lesson_word')->where('word_id', $word->id)
+                ->where('lesson_id', '!=', $lesson->id)
+                ->orderBy('lesson_id')
+                ->pluck('lesson_id');
+
+            if ($others->isEmpty()) {
+                $word->reports()->delete();
+                $word->delete();
+            } elseif ($word->source_lesson_id === $lesson->id) {
+                $word->forceFill(['source_lesson_id' => $others->first()])->save();
+            }
+        }
     }
 }

@@ -42,12 +42,20 @@ final class AiFixtures
     /**
      * Cartões de exemplo da mesma aula fictícia (J3-B1).
      *
-     * @return array{cards: list<array<string, string>>}
+     * @return array{cards: list<array<string, mixed>>}
      */
     public static function cards(int $count = 3): array
     {
         $samples = [
-            ['kind' => 'word', 'front' => 'deadline', 'back' => 'prazo final', 'example' => "We've never missed a deadline.", 'example_translation' => 'Nunca perdemos um prazo.'],
+            ['kind' => 'word', 'front' => 'deadline', 'back' => 'prazo final', 'example' => "We've never missed a deadline.", 'example_translation' => 'Nunca perdemos um prazo.', 'word' => [
+                'part_of_speech' => 'substantivo',
+                'definition' => 'A data ou hora em que algo precisa estar pronto.',
+                'examples' => [
+                    ['target' => "We've never missed a deadline.", 'translation' => 'Nunca perdemos um prazo.'],
+                    ['target' => 'The deadline is next Friday.', 'translation' => 'O prazo é na próxima sexta.'],
+                ],
+                'collocations' => ['meet a deadline', 'miss a deadline'],
+            ]],
             ['kind' => 'word', 'front' => 'to apply for', 'back' => 'candidatar-se a', 'example' => 'I have applied for three jobs.', 'example_translation' => 'Eu me candidatei a três vagas.'],
             ['kind' => 'phrase', 'front' => 'Have you ever managed a team?', 'back' => 'Você já gerenciou uma equipe?', 'example' => 'Have you ever managed a team abroad?', 'example_translation' => 'Você já gerenciou uma equipe no exterior?'],
         ];

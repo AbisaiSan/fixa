@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { t } from '@/i18n';
 import BottomNav from './BottomNav.vue';
+import OfflineBanner from './OfflineBanner.vue';
 import SidebarNav from './SidebarNav.vue';
 
 /**
@@ -28,6 +29,7 @@ withDefaults(defineProps<{ focus?: boolean }>(), { focus: false });
             class="min-w-0 flex-1 px-5 py-6 lg:px-10 lg:py-8"
             :class="{ 'pb-28 lg:pb-8': !focus }"
         >
+            <OfflineBanner class="mb-4" />
             <slot />
         </main>
 

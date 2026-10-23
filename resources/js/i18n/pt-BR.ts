@@ -109,6 +109,15 @@ export const ptBR = {
         privacy: 'política de privacidade',
         acceptAction: 'Aceitar e continuar',
     },
+    state: {
+        loading: 'Carregando',
+        errorTitle: 'Não conseguimos carregar.',
+        errorBody: 'Confira sua conexão e tente de novo.',
+        retry: 'Tentar de novo',
+        offlineTitle: 'Sem conexão.',
+        offlineBody:
+            'Assim que a internet voltar, tudo continua de onde parou.',
+    },
     common: {
         loading: 'Carregando',
         close: 'Fechar',

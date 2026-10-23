@@ -11,6 +11,7 @@ use App\Domain\Lessons\LessonRejected;
 use App\Domain\Lessons\LessonReviewer;
 use App\Domain\Lessons\LessonStatus;
 use App\Domain\Lessons\WordCounter;
+use App\Domain\Practice\ActivityGenerator;
 use App\Models\Lesson;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -20,8 +21,9 @@ use Illuminate\Queue\Attributes\Tries;
 use Throwable;
 
 /**
- * Processa a aula na fila (J2-B11): antivírus e extração, depois a revisão
- * e os cartões pela IA. O envio responde na hora e a tela acompanha os estados.
+ * Processa a aula na fila (J2-B11): antivírus e extração, depois a revisão,
+ * os cartões e a sessão de escrita pela IA. O envio responde na hora e a
+ * tela acompanha os estados.
  *
  * Falhas temporárias (IA sobrecarregada, antivírus fora) tentam de novo com
  * espera. Recusas e saída inválida da IA terminam a aula como "falhou",
@@ -36,7 +38,7 @@ class ProcessLesson implements ShouldQueue
 
     public function __construct(public int $lessonId) {}
 
-    public function handle(TextExtractor $extractor, LessonReviewer $reviewer, CardGenerator $cards): void
+    public function handle(TextExtractor $extractor, LessonReviewer $reviewer, CardGenerator $cards, ActivityGenerator $activities): void
     {
         $lesson = Lesson::withoutGlobalScopes()->find($this->lessonId);
 
@@ -53,6 +55,8 @@ class ProcessLesson implements ShouldQueue
                 $reviewer->review($lesson);
                 // Cartões na mesma tarefa, só na primeira geração (J3-B1).
                 $cards->generate($lesson);
+                // Sessão de escrita da aula, também só na primeira geração (J4-B1).
+                $activities->generate($lesson);
                 $lesson->transitionTo(LessonStatus::Validating);
             }
 

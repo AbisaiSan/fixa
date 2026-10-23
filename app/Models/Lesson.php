@@ -34,6 +34,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $word_count
  * @property int $regenerations
  * @property Carbon|null $cards_generated_at
+ * @property Carbon|null $activities_generated_at
  * @property Carbon $rights_declared_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -63,6 +64,7 @@ class Lesson extends Model
             'word_count' => 'integer',
             'regenerations' => 'integer',
             'cards_generated_at' => 'datetime',
+            'activities_generated_at' => 'datetime',
             'rights_declared_at' => 'datetime',
         ];
     }

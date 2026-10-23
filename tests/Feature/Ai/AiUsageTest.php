@@ -11,7 +11,9 @@ use Tests\Support\AiFixtures;
 
 beforeEach(function () {
     config(['fixa.ai.prices.fake-model' => ['input' => 1_000_000, 'output' => 2_000_000], 'fixa.ai.monthly_budget_usd' => 100_000]);
-    $this->ai = app(FakeAiProvider::class)->respondWith(AiTask::Cards, AiFixtures::cards());
+    $this->ai = app(FakeAiProvider::class)
+        ->respondWith(AiTask::Cards, AiFixtures::cards())
+        ->respondWith(AiTask::Activities, AiFixtures::activities());
     $this->lesson = Lesson::factory()->create();
     $this->lesson->forceFill(['extracted_text' => str_repeat('I have worked here since 2022. ', 12)])->save();
 });

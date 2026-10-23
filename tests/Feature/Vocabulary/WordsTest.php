@@ -19,7 +19,9 @@ beforeEach(function () {
     $this->lesson = Lesson::factory()->create();
     $this->lesson->forceFill(['extracted_text' => str_repeat('I have worked here since 2022. ', 12)])->save();
     $this->run = function (Lesson $lesson) {
-        $this->ai->respondWith(AiTask::LessonReview, AiFixtures::lessonReview())->respondWith(AiTask::Cards, AiFixtures::cards());
+        $this->ai->respondWith(AiTask::LessonReview, AiFixtures::lessonReview())
+            ->respondWith(AiTask::Cards, AiFixtures::cards())
+            ->respondWith(AiTask::Activities, AiFixtures::activities());
         app()->call([new ProcessLesson($lesson->id), 'handle']);
     };
 });

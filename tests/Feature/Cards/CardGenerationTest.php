@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 use Tests\Support\AiFixtures;
 
 beforeEach(function () {
-    $this->ai = app(FakeAiProvider::class)->respondWith(AiTask::LessonReview, AiFixtures::lessonReview());
+    $this->ai = app(FakeAiProvider::class)
+        ->respondWith(AiTask::LessonReview, AiFixtures::lessonReview())
+        ->respondWith(AiTask::Activities, AiFixtures::activities());
     $this->lesson = Lesson::factory()->create();
     $this->lesson->forceFill(['extracted_text' => str_repeat('I have worked here since 2022. ', 12)])->save();
     $this->run = fn () => app()->call([new ProcessLesson($this->lesson->id), 'handle']);

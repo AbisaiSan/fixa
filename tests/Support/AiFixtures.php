@@ -65,4 +65,65 @@ final class AiFixtures
             range(0, $count - 1),
         )];
     }
+
+    /**
+     * Sessão de escrita de exemplo da aula fictícia (J4-B1), como no protótipo.
+     *
+     * @return array{items: list<array<string, mixed>>}
+     */
+    public static function activities(): array
+    {
+        return ['items' => [
+            [
+                'type' => 'fill', 'context' => 'work',
+                'instruction' => 'Use o Present Perfect do verbo entre parênteses.',
+                'sentence' => 'I ___ (work) at this company since 2021.',
+                'accepted' => ['have worked', "'ve worked", 'have been working', "'ve been working"],
+                'corrected' => 'I have worked at this company since 2021.',
+                'natural' => "I've been working at this company since 2021.",
+                'why' => 'Com since, a ação começou no passado e continua agora: use have mais o particípio.',
+                'point' => 'have + particípio',
+            ],
+            [
+                'type' => 'translate', 'context' => 'work',
+                'instruction' => 'Escreva em inglês.',
+                'sentence' => 'Eu nunca trabalhei com vendas.',
+                'accepted' => ['I have never worked in sales.', "I've never worked in sales."],
+                'corrected' => 'I have never worked in sales.',
+                'natural' => "I've never worked in sales before.",
+                'why' => 'Para experiências sem dizer quando, use o Present Perfect. Áreas de atuação levam in.',
+                'point' => 'never + Present Perfect',
+            ],
+            [
+                'type' => 'context', 'context' => 'work',
+                'instruction' => 'Conte uma conquista sua.',
+                'sentence' => 'Numa entrevista, conte uma conquista usando "achievement" e o Present Perfect.',
+                'accepted' => [],
+                'corrected' => 'My biggest achievement has been leading our team through a migration.',
+                'natural' => "One achievement I'm proud of is that I've led our team through a migration.",
+                'why' => 'Conquista com efeito hoje pede o Present Perfect.',
+                'point' => 'achievement',
+            ],
+            [
+                'type' => 'fill', 'context' => 'daily',
+                'instruction' => 'Complete com a palavra que falta.',
+                'sentence' => 'Have you ___ been to Chile?',
+                'accepted' => ['ever'],
+                'corrected' => 'Have you ever been to Chile?',
+                'natural' => 'Have you ever been to Chile?',
+                'why' => 'Ever entra em perguntas sobre experiência: Have you ever quer dizer Você já.',
+                'point' => 'ever',
+            ],
+            [
+                'type' => 'context', 'context' => 'travel',
+                'instruction' => 'Conte como a viagem está indo.',
+                'sentence' => 'Você está numa viagem. Conte como ela está indo usando "so far".',
+                'accepted' => [],
+                'corrected' => "So far, I've visited three museums.",
+                'natural' => "So far, I've visited three museums and tried the local food.",
+                'why' => 'So far pede o Present Perfect, porque o período ainda não terminou.',
+                'point' => 'so far',
+            ],
+        ]];
+    }
 }

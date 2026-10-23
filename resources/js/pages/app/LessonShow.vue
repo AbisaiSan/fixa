@@ -347,9 +347,12 @@ const regenerationHint = computed(() => {
     <!-- Se uma nova geração falhar, a versão anterior continua visível. -->
     <template v-if="review && !processing">
         <div class="flex flex-wrap items-center gap-2">
-            <Button href="/praticar" icon="play_arrow" class="grow sm:grow-0">{{
-                t('review.practice')
-            }}</Button>
+            <Button
+                :href="`/praticar/flashcards?aula=${lesson.ulid}`"
+                icon="play_arrow"
+                class="grow sm:grow-0"
+                >{{ t('review.practice') }}</Button
+            >
             <Button
                 variant="secondary"
                 icon="edit"

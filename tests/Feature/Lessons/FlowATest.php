@@ -45,5 +45,9 @@ test('a new student goes from an empty Today to a ready review and practice', fu
             ->where('latestLesson.status', 'ready'));
 
     $this->get(route('practice'))
-        ->assertInertia(fn (Assert $page) => $page->component('app/Practice')->where('hasLessons', true));
+        ->assertInertia(fn (Assert $page) => $page->component('app/Practice')->where('status', 'ready')->where('flashcards.new', 3));
+
+    // "Praticar esta aula" abre os flashcards da aula.
+    $this->get(route('flashcards', ['aula' => $lesson->ulid]))
+        ->assertInertia(fn (Assert $page) => $page->component('practice/Flashcards')->has('cards', 3));
 });

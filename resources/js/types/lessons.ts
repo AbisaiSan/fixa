@@ -51,3 +51,16 @@ export type LessonReview = {
     reported: boolean;
     open_reports: { ulid: string; item: string }[];
 };
+
+export type SessionCard = {
+    ulid: string;
+    kind: 'word' | 'phrase';
+    front: string;
+    back: string;
+    example: string | null;
+    example_translation: string | null;
+    part_of_speech: string | null;
+    lesson_date: string | null;
+    is_new: boolean;
+    preview: number[];
+};

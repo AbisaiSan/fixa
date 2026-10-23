@@ -7,8 +7,11 @@ import Button from '@/components/fixa/Button.vue';
 import Card from '@/components/fixa/Card.vue';
 import Checkbox from '@/components/fixa/Checkbox.vue';
 import EmptyState from '@/components/fixa/EmptyState.vue';
+import Flashcard from '@/components/fixa/Flashcard.vue';
 import OriginTag from '@/components/fixa/OriginTag.vue';
+import RateBar from '@/components/fixa/RateBar.vue';
 import Select from '@/components/fixa/Select.vue';
+import SessionHeader from '@/components/fixa/SessionHeader.vue';
 import Sheet from '@/components/fixa/Sheet.vue';
 import SidebarNav from '@/components/fixa/SidebarNav.vue';
 import Skeleton from '@/components/fixa/Skeleton.vue';
@@ -72,6 +75,7 @@ const notes = ref('I have worked here since 2022.');
 const declared = ref(true);
 const reminder = ref(true);
 const sheetOpen = ref(false);
+const cardFlipped = ref(false);
 </script>
 
 <template>
@@ -194,6 +198,22 @@ const sheetOpen = ref(false);
                     />
                     <OriginTag lesson-date="21/10" />
                     <OriginTag />
+                </div>
+            </Card>
+
+            <Card>
+                <h2 class="mt-0 mb-4 type-subtitle">Flashcard</h2>
+                <div class="flex flex-col gap-4">
+                    <SessionHeader :current="2" :total="8" />
+                    <Flashcard
+                        v-model:flipped="cardFlipped"
+                        front="deadline"
+                        back="prazo final"
+                        example="We've never missed a deadline."
+                        example-translation="Nunca perdemos um prazo."
+                        part-of-speech="substantivo"
+                    />
+                    <RateBar :preview="[0, 1, 6, 35]" />
                 </div>
             </Card>
 

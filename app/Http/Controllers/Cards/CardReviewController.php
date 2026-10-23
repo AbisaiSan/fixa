@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Cards;
 
 use App\Domain\Cards\ReviewCard;
 use App\Domain\Cards\Scheduling\Rating;
+use App\Domain\Cards\Scheduling\ReviewScheduler;
 use App\Http\Controllers\Controller;
 use App\Models\Card;
+use App\Models\Enrollment;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -18,7 +21,7 @@ use Illuminate\Validation\Rule;
  */
 class CardReviewController extends Controller
 {
-    public function store(Request $request, Card $card, ReviewCard $review): JsonResponse
+    public function store(Request $request, Card $card, ReviewCard $review, ReviewScheduler $scheduler): JsonResponse
     {
         Gate::authorize('update', $card);
 
@@ -39,11 +42,14 @@ class CardReviewController extends Controller
         );
 
         $card->refresh();
+        $timezone = $user->activeEnrollment->timezone ?? Enrollment::DEFAULT_TIMEZONE;
 
         return response()->json([
             'card' => $card->ulid,
             'interval_days' => $saved->interval_after,
             'due_at' => $card->due_at?->toIso8601String(),
+            // Prévia nova, para o cartão que volta ainda na sessão depois de "Errei".
+            'preview' => array_values($scheduler->preview(ReviewCard::stateOf($card), CarbonImmutable::now(), $timezone)),
         ]);
     }
 }

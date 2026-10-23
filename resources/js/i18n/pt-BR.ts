@@ -145,10 +145,6 @@ export const ptBR = {
         practiceTitle: 'Envie uma aula para liberar as atividades',
         practiceBody:
             'Tudo o que você pratica aqui vem do material das suas aulas.',
-        practiceSoonTitle: 'As atividades da sua aula estão a caminho',
-        practiceSoonBody:
-            'Flashcards, escrita e leitura feitos a partir das suas aulas chegam nas próximas etapas. Enquanto isso, revise a aula.',
-        lessonsAction: 'Ver minhas aulas',
         vocabularyTitle: 'Seu vocabulário começa na primeira aula',
         vocabularyBody:
             'As palavras das suas aulas aparecem aqui. Depois você também pode adicionar as suas.',
@@ -320,6 +316,55 @@ export const ptBR = {
             title: 'Algo deu errado ao preparar a aula.',
             body: 'Seu material continua aqui. Tente de novo; se continuar, envie o material outra vez.',
         },
+    },
+    practice: {
+        intro: 'Tudo aqui vem das suas aulas. Escolha o que quiser treinar agora.',
+        flashcardsMeta: '{due} e {new}',
+        flashcardsDone: 'Tudo em dia por agora',
+        soon: 'Escrita, leitura e ponto fraco chegam na próxima etapa.',
+    },
+    flashcards: {
+        title: 'Flashcards',
+        exit: 'Sair da sessão',
+        progress: 'Progresso da sessão',
+        counter: '{n} de {total}',
+        isNew: 'Novo',
+        isDue: 'Revisão vencida',
+        options: 'Opções do cartão',
+        tapToFlip: 'Toque para virar',
+        frontLabel:
+            'Frente do cartão: {text}. Toque ou aperte Espaço para virar.',
+        backLabel: 'Verso do cartão: {text}. Aperte Espaço para ver a frente.',
+        showAnswer: 'Mostrar resposta',
+        rateLabel: 'Como foi?',
+        again: 'Errei',
+        hard: 'Difícil',
+        good: 'Bom',
+        easy: 'Fácil',
+        keysHint: 'Atalhos: Espaço vira o cartão, 1 a 4 escolhem a nota.',
+        lessMinute: '<1 min',
+        day: '1 dia',
+        days: '{n} dias',
+        month: '1 mês',
+        months: '{n} meses',
+        year: '1 ano',
+        remaining:
+            'Faltam {due} e {new} · revisões vencidas vêm antes dos novos',
+        dueOne: '1 revisão',
+        dueMany: '{n} revisões',
+        newOne: '1 novo',
+        newMany: '{n} novos',
+        emptyTitle: 'Nada para revisar agora',
+        emptyBody:
+            'Seus cartões voltam no tempo certo. Envie uma aula nova ou volte mais tarde.',
+        emptyLessonBody:
+            'Os cartões desta aula já estão em dia. Eles voltam no tempo certo.',
+        doneTitle: 'Flashcards em dia',
+        doneBody:
+            'Você fez as revisões de agora. Os próximos cartões voltam no tempo certo.',
+        backToday: 'Voltar para Hoje',
+        sendError:
+            'Não conseguimos salvar esta resposta. Ela fica guardada e vai assim que der.',
     },
     generation: {
         title: 'Gerando sua revisão',

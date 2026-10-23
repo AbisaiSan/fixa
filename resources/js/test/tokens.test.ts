@@ -68,6 +68,11 @@ const textPairs: [string, string][] = [
     ['ink', 'infot'],
     ['ink2', 'infot'],
     ['ink', 'prit'],
+    // Flashcards (J3-F1): botões de nota e selos.
+    ['ink', 'errt'],
+    ['ink', 'ambt'],
+    ['ink', 'okt'],
+    ['ambd', 'ambt'],
 ];
 
 // Anel de foco e elementos gráficos: mínimo 3:1.

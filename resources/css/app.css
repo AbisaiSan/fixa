@@ -224,3 +224,16 @@
         }
     }
 }
+
+/* O cartão gira ao virar (J3-F1). Sem movimento reduzido, só troca a face. */
+@keyframes fx-flip {
+    from {
+        opacity: 0.4;
+        transform: perspective(900px) rotateY(80deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}

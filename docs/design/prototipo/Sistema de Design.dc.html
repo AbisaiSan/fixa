@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block">
+<style>
+html,body{margin:0;background:#F6F8FB}
+*{box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;color:#14213D}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:#0C7A68;text-underline-offset:3px}
+a:hover{color:#095C4F}
+:focus{outline:none}
+:focus-visible{outline:3px solid var(--focus,#2563EB);outline-offset:2px}
+code{font:600 12.5px ui-monospace,Menlo,monospace}
+@keyframes fx-shimmer{0%{background-position:-420px 0}100%{background-position:420px 0}}
+@keyframes fx-glow{0%,100%{filter:drop-shadow(0 0 0 rgba(245,165,36,0));transform:scale(1)}50%{filter:drop-shadow(0 0 6px rgba(245,165,36,.6));transform:scale(1.07)}}
+@keyframes fx-fall{0%{transform:translate3d(0,-10px,0) rotate(0deg);opacity:1}85%{opacity:1}100%{transform:translate3d(var(--dx),300px,0) rotate(var(--rot));opacity:0}}
+@keyframes fx-pop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes fx-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#F6F8FB;color:#14213D">
+  <header style="background:#101727;color:#E6EBF3">
+    <div style="max-width:1120px;margin:0 auto;padding:40px 24px 32px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span aria-hidden="true" style="width:40px;height:40px;border-radius:12px;background:#2CC5A8;color:#0F172A;display:grid;place-items:center;font-family:Gloock,serif;font-size:24px">f</span>
+        <span style="font-family:Gloock,serif;font-size:28px">Fixa</span>
+        <span style="color:#9AA8BE">Sistema de design · v1 · outubro de 2026</span>
+        <span style="flex:1"></span>
+        <a href="Prototipo.dc.html" style="color:#7FE0CB;font-weight:700">Abrir protótipo</a>
+        <a href="Fase 2 e 3.dc.html" style="color:#7FE0CB;font-weight:700">Fase 2 e 3</a>
+      </div>
+      <h1 style="margin:8px 0 0;font-family:Gloock,serif;font-weight:400;font-size:clamp(34px,5vw,52px);line-height:1.08;max-width:760px">Calmo, claro e feito para voltar todo dia.</h1>
+      <p style="margin:0;max-width:680px;color:#B8C3D4;font-size:17px;line-height:1.6">Tokens, componentes e regras de uso para a plataforma de estudo. “Fixa” é um nome provisório. A interface é em português; o idioma estudado é um parâmetro, e todo texto nesse idioma recebe tratamento tipográfico próprio.</p>
+      <nav aria-label="Seções" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+        <a href="#principios" style="padding:6px 12px;border-radius:999px;background:#1B2335;color:#E6EBF3;text-decoration:none;font-size:13.5px;font-weight:600">Princípios</a>
+        <a href="#cores" style="padding:6px 12px;border-radius:999px;background:#1B2335;color:#E6EBF3;text-decoration:none;font-size:13.5px;font-weight:600">Cores</a>
+        <a href="#tipografia" style="padding:6px 12px;border-radius:999px;background:#1B2335;color:#E6EBF3;text-decoration:none;font-size:13.5px;font-weight:600">Tipografia</a>
+        <a href="#base" style="padding:6px 12px;border-radius:999px;background:#1B2335;color:#E6EBF3;text-decoration:none;font-size:13.5px;font-weight:600">Espaço, raios e elevação</a>
+        <a href="#movimento" style="padding:6px 12px;border-radius:999px;background:#1B2335;color:#E6EBF3;text-decoration:none;font-size:13.5px;font-weight:600">Movimento</a>
+        <a href="#componentes" style="padding:6px 12px;border-radius:999px;background:#1B2335;color:#E6EBF3;text-decoration:none;font-size:13.5px;font-weight:600">Componentes</a>
+        <a href="#fluxos" style="padding:6px 12px;border-radius:999px;background:#1B2335;color:#E6EBF3;text-decoration:none;font-size:13.5px;font-weight:600">Fluxos</a>
+        <a href="#implementacao" style="padding:6px 12px;border-radius:999px;background:#1B2335;color:#E6EBF3;text-decoration:none;font-size:13.5px;font-weight:600">Notas de implementação</a>
+      </nav>
+    </div>
+  </header>
+
+  <main style="max-width:1120px;margin:0 auto;padding:8px 24px 80px;display:flex;flex-direction:column">
+
+    <section id="principios" style="padding:48px 0 8px;scroll-margin-top:12px">
+      <h2 style="margin:0 0 6px;font-family:Gloock,serif;font-weight:400;font-size:34px">Princípios</h2>
+      <p style="margin:0 0 20px;color:#5A6A85;max-width:640px;line-height:1.6">Cinco regras que decidem qualquer dúvida de layout.</p>
+      <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px">
+        <li style="padding:18px;border-radius:20px;background:#fff;border:1px solid #DFE5EE"><p style="margin:0 0 6px;font-family:Gloock,serif;font-size:24px;color:#0C7A68">1</p><p style="margin:0 0 4px;font-weight:800">Uma ação principal por tela</p><p style="margin:0;font-size:14px;color:#5A6A85;line-height:1.5">Um único botão primário. O resto é secundário, fantasma ou link.</p></li>
+        <li style="padding:18px;border-radius:20px;background:#fff;border:1px solid #DFE5EE"><p style="margin:0 0 6px;font-family:Gloock,serif;font-size:24px;color:#0C7A68">2</p><p style="margin:0 0 4px;font-weight:800">Hoje a 1 clique</p><p style="margin:0;font-size:14px;color:#5A6A85;line-height:1.5">Abrir o app mostra o que fazer e “Começar” leva ao primeiro bloco.</p></li>
+        <li style="padding:18px;border-radius:20px;background:#fff;border:1px solid #DFE5EE"><p style="margin:0 0 6px;font-family:Gloock,serif;font-size:24px;color:#0C7A68">3</p><p style="margin:0 0 4px;font-weight:800">Celebrar, nunca punir</p><p style="margin:0;font-size:14px;color:#5A6A85;line-height:1.5">XP não diminui. Faltas viram plano refeito e mensagem acolhedora.</p></li>
+        <li style="padding:18px;border-radius:20px;background:#fff;border:1px solid #DFE5EE"><p style="margin:0 0 6px;font-family:Gloock,serif;font-size:24px;color:#0C7A68">4</p><p style="margin:0 0 4px;font-weight:800">Tudo mostra a origem</p><p style="margin:0;font-size:14px;color:#5A6A85;line-height:1.5">Conteúdo gerado leva a etiqueta “Da aula de DD/MM” e o botão “Reportar erro”.</p></li>
+        <li style="padding:18px;border-radius:20px;background:#fff;border:1px solid #DFE5EE"><p style="margin:0 0 6px;font-family:Gloock,serif;font-size:24px;color:#0C7A68">5</p><p style="margin:0 0 4px;font-weight:800">Significado além da cor</p><p style="margin:0;font-size:14px;color:#5A6A85;line-height:1.5">Estados sempre com ícone de forma diferente e rótulo em texto.</p></li>
+      </ol>
+    </section>
+
+    <section id="cores" style="padding:48px 0 8px;scroll-margin-top:12px">
+      <h2 style="margin:0 0 6px;font-family:Gloock,serif;font-weight:400;font-size:34px">Cores</h2>
+      <p style="margin:0 0 20px;color:#5A6A85;max-width:720px;line-height:1.6">A paleta sugerida foi mantida e ganhou variantes “forte” para texto, porque o verde-azulado #14A38B e o âmbar #F5A524 não passam de 4,5:1 sobre branco. Regra: a cor base preenche ícones, anéis e barras (3:1 para não texto); a variante forte vai em texto e em botões com texto branco.</p>
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <sc-for list="{{ colorGroups }}" as="g" hint-placeholder-count="4">
+          <div>
+            <h3 style="margin:0 0 10px;font-size:14px;font-weight:800;color:#5A6A85;text-transform:uppercase;letter-spacing:.06em">{{ g.name }}</h3>
+            <div style="border-radius:18px;background:#fff;border:1px solid #DFE5EE;overflow-x:auto"><div style="min-width:640px">
+              <div style="display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,1.6fr) minmax(130px,1fr) minmax(130px,1fr);gap:12px;padding:10px 16px;background:#EEF2F7;font-size:12px;font-weight:800;color:#5A6A85;text-transform:uppercase;letter-spacing:.05em"><span>Token</span><span>Uso</span><span>Claro</span><span>Escuro</span></div>
+              <sc-for list="{{ g.items }}" as="c" hint-placeholder-count="4">
+                <div style="display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,1.6fr) minmax(130px,1fr) minmax(130px,1fr);gap:12px;align-items:center;padding:12px 16px;border-top:1px solid #DFE5EE">
+                  <code style="color:#14213D">--{{ c.t }}</code>
+                  <span style="font-size:13.5px;color:#5A6A85;line-height:1.4">{{ c.use }}</span>
+                  <span style="display:flex;align-items:center;gap:8px"><span aria-hidden="true" style="width:36px;height:36px;flex:none;border-radius:10px;background:{{ c.l }};border:1px solid rgba(20,33,61,.12)"></span><span style="display:flex;flex-direction:column"><code>{{ c.l }}</code><span style="font-size:11.5px;color:#5A6A85">{{ c.lc }}</span></span></span>
+                  <span style="display:flex;align-items:center;gap:8px"><span aria-hidden="true" style="width:36px;height:36px;flex:none;border-radius:10px;background:{{ c.d }};border:1px solid rgba(20,33,61,.12)"></span><span style="display:flex;flex-direction:column"><code>{{ c.d }}</code><span style="font-size:11.5px;color:#5A6A85">{{ c.dc }}</span></span></span>
+                </div>
+              </sc-for>
+            </div></div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:20px">
+        <div style="padding:20px;border-radius:20px;background:linear-gradient(135deg,#E4F5F1 0%,#FFFFFF 58%,#FFF5E3 100%);border:1px solid #DFE5EE"><code>--hero · claro</code><p style="margin:6px 0 0;font-size:14px;color:#5A6A85;line-height:1.5">Único gradiente do sistema. Só em cartões de destaque: meta do dia, “Você consegue?”, sequência.</p></div>
+        <div style="padding:20px;border-radius:20px;background:linear-gradient(135deg,#12352F 0%,#172136 58%,#2E2715 100%);border:1px solid #2A3752;color:#E6EBF3"><code>--hero · escuro</code><p style="margin:6px 0 0;font-size:14px;color:#9AA8BE;line-height:1.5">Mesma direção e paradas. Na versão escura, a primária vira #2CC5A8 com texto #0F172A nos botões.</p></div>
+      </div>
+    </section>
+
+    <section id="tipografia" style="padding:48px 0 8px;scroll-margin-top:12px">
+      <h2 style="margin:0 0 6px;font-family:Gloock,serif;font-weight:400;font-size:34px">Tipografia</h2>
+      <p style="margin:0 0 20px;color:#5A6A85;max-width:720px;line-height:1.6">Três papéis, três famílias. A sans cuida da interface; a display entra só em títulos e números de destaque; a serifa marca todo texto no idioma estudado, para o aluno distinguir na hora o que é português e o que é inglês.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px">
+        <div style="padding:22px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:10px">
+          <code style="color:#5A6A85">--font-display · Gloock 400</code>
+          <p style="margin:0;font-family:Gloock,serif;font-size:44px;line-height:1.05">Boa tarde, Marina</p>
+          <p style="margin:0;font-family:Gloock,serif;font-size:56px;line-height:1;color:#0C7A68">12 <span style="color:#9A5B00">2.740</span></p>
+          <p style="margin:0;font-size:13.5px;color:#5A6A85;line-height:1.5">Títulos de tela, números do anel, sequência, XP e nível. Nunca em parágrafos ou botões.</p>
+        </div>
+        <div style="padding:22px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:10px">
+          <code style="color:#5A6A85">--font-ui · Plus Jakarta Sans 400–800</code>
+          <p style="margin:0;font-size:22px;font-weight:800">Seu plano de hoje</p>
+          <p style="margin:0;font-size:16px;line-height:1.6">Envie o material da última aula. Em menos de um minuto você tem revisão, flashcards e atividades prontos.</p>
+          <p style="margin:0;font-size:13.5px;color:#5A6A85;line-height:1.5">Interface, explicações em português, botões e rótulos.</p>
+        </div>
+        <div style="padding:22px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:10px">
+          <code style="color:#5A6A85">--font-target · Source Serif 4 400/600</code>
+          <p lang="en" style="margin:0;font-family:'Source Serif 4',Georgia,serif;font-size:24px;line-height:1.35">I’ve worked here since 2022.</p>
+          <p style="margin:0;font-size:14px;color:#5A6A85">Trabalho aqui desde 2022.</p>
+          <p style="margin:0;font-size:13.5px;color:#5A6A85;line-height:1.5">Todo texto no idioma estudado, sempre com <code>lang</code> correto. Tradução logo abaixo, em --ink2.</p>
+        </div>
+      </div>
+      <div style="margin-top:12px;border-radius:18px;background:#fff;border:1px solid #DFE5EE;overflow-x:auto">
+        <div style="min-width:560px">
+          <sc-for list="{{ typeScale }}" as="ts" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:150px 120px minmax(0,1fr);gap:12px;align-items:baseline;padding:12px 16px;border-top:1px solid #DFE5EE">
+              <code>{{ ts.t }}</code>
+              <span style="font-size:12.5px;color:#5A6A85">{{ ts.spec }}</span>
+              <span style="font-family:{{ ts.f }};font-size:{{ ts.s }}px;font-weight:{{ ts.w }};line-height:1.25">{{ ts.ex }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="base" style="padding:48px 0 8px;scroll-margin-top:12px">
+      <h2 style="margin:0 0 20px;font-family:Gloock,serif;font-weight:400;font-size:34px">Espaço, raios e elevação</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px">
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:8px">
+          <h3 style="margin:0 0 6px;font-size:16px;font-weight:800">Espaçamento · base 4</h3>
+          <sc-for list="{{ spaces }}" as="sp" hint-placeholder-count="8">
+            <div style="display:flex;align-items:center;gap:12px"><code style="width:84px">--space-{{ sp.n }}</code><span style="width:{{ sp.v }}px;height:12px;border-radius:3px;background:#14A38B"></span><span style="font-size:12.5px;color:#5A6A85">{{ sp.v }} px · {{ sp.use }}</span></div>
+          </sc-for>
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:12px">
+          <h3 style="margin:0;font-size:16px;font-weight:800">Raios</h3>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <sc-for list="{{ radii }}" as="r" hint-placeholder-count="6">
+              <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start"><span style="width:64px;height:52px;border-radius:{{ r.v }};background:#E3F4F0;border:1.5px solid #0C7A68"></span><code>--radius-{{ r.n }}</code><span style="font-size:12px;color:#5A6A85;line-height:1.3">{{ r.use }}</span></div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:14px">
+          <h3 style="margin:0;font-size:16px;font-weight:800">Elevação</h3>
+          <div style="display:flex;gap:14px;align-items:center;padding:14px;border-radius:14px;background:#F6F8FB"><span style="width:72px;height:52px;flex:none;border-radius:14px;background:#fff;border:1px solid #DFE5EE"></span><span><code>--elev-0</code><span style="display:block;font-size:12.5px;color:#5A6A85">Borda só. Listas e linhas.</span></span></div>
+          <div style="display:flex;gap:14px;align-items:center;padding:14px;border-radius:14px;background:#F6F8FB"><span style="width:72px;height:52px;flex:none;border-radius:14px;background:#fff;border:1px solid #DFE5EE;box-shadow:0 1px 2px rgba(20,33,61,.04),0 6px 20px rgba(20,33,61,.05)"></span><span><code>--sh1</code><span style="display:block;font-size:12.5px;color:#5A6A85">Cartões. Sombra quase invisível.</span></span></div>
+          <div style="display:flex;gap:14px;align-items:center;padding:14px;border-radius:14px;background:#F6F8FB"><span style="width:72px;height:52px;flex:none;border-radius:14px;background:#fff;box-shadow:0 10px 36px rgba(20,33,61,.16)"></span><span><code>--sh2</code><span style="display:block;font-size:12.5px;color:#5A6A85">Flashcard, folhas, toasts, botão flutuante.</span></span></div>
+          <div style="display:flex;gap:14px;align-items:center;padding:14px;border-radius:14px;background:#F6F8FB"><span style="width:72px;height:52px;flex:none;border-radius:14px;background:#fff;outline:3px solid #2563EB;outline-offset:2px"></span><span><code>--focus</code><span style="display:block;font-size:12.5px;color:#5A6A85">Anel de foco 3 px, sempre visível no teclado.</span></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="movimento" style="padding:48px 0 8px;scroll-margin-top:12px">
+      <h2 style="margin:0 0 6px;font-family:Gloock,serif;font-weight:400;font-size:34px">Movimento</h2>
+      <p style="margin:0 0 20px;color:#5A6A85;max-width:720px;line-height:1.6">Curto, com desaceleração (ease-out). Com <code>prefers-reduced-motion</code>, transições viram troca instantânea, loops param e o confete não aparece; o feedback continua por texto e ícone.</p>
+      <div style="border-radius:18px;background:#fff;border:1px solid #DFE5EE;overflow-x:auto;margin-bottom:16px">
+        <div style="min-width:620px">
+          <sc-for list="{{ motion }}" as="mo" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:180px 130px minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:baseline;padding:12px 16px;border-top:1px solid #DFE5EE;font-size:13.5px">
+              <strong>{{ mo.n }}</strong><code>{{ mo.d }}</code><span style="color:#5A6A85">{{ mo.how }}</span><span style="color:#5A6A85">Reduzido: {{ mo.red }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;align-items:center;gap:12px">
+          <div role="img" aria-label="{{ ringAria }}" style="position:relative;width:116px;height:116px">
+            <svg width="116" height="116" viewBox="0 0 116 116" style="transform:rotate(-90deg);display:block"><circle cx="58" cy="58" r="48" style="fill:none;stroke:#EEF2F7;stroke-width:11"></circle><circle cx="58" cy="58" r="48" style="fill:none;stroke:#14A38B;stroke-width:11;stroke-linecap:round;stroke-dasharray:301.6;stroke-dashoffset:{{ ringOff }};transition:stroke-dashoffset 700ms cubic-bezier(.2,.8,.2,1)"></circle></svg>
+            <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center"><div><span style="display:block;font-family:Gloock,serif;font-size:32px;line-height:1">{{ ringMin }}</span><span style="font-size:12px;color:#5A6A85;font-weight:700">de 10 min</span></div></div>
+          </div>
+          <button onClick="{{ stepRing }}" style="min-height:44px;padding:0 14px;border:1.5px solid #DFE5EE;border-radius:12px;background:#fff;font-weight:700">Anel: avançar</button>
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:6px;height:116px"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:52px;color:#F5A524;font-variation-settings:'FILL' 1;animation:fx-glow 2.8s ease-in-out infinite">local_fire_department</span><span style="font-family:Gloock,serif;font-size:44px">{{ xpShown }}</span><span style="font-weight:800">XP</span></div>
+          <button onClick="{{ gainXp }}" style="min-height:44px;padding:0 14px;border:1.5px solid #DFE5EE;border-radius:12px;background:#fff;font-weight:700">+60 XP com confete</button>
+          {{ confettiEl }}
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:10px;justify-content:center">
+          <div aria-hidden="true" style="height:14px;width:40%;border-radius:8px;background:linear-gradient(90deg,#EEF2F7 0px,#DFE5EE 210px,#EEF2F7 420px);background-size:840px 100%;animation:fx-shimmer 1.4s linear infinite"></div>
+          <div aria-hidden="true" style="height:12px;width:100%;border-radius:8px;background:linear-gradient(90deg,#EEF2F7 0px,#DFE5EE 210px,#EEF2F7 420px);background-size:840px 100%;animation:fx-shimmer 1.4s linear infinite"></div>
+          <div aria-hidden="true" style="height:12px;width:85%;border-radius:8px;background:linear-gradient(90deg,#EEF2F7 0px,#DFE5EE 210px,#EEF2F7 420px);background-size:840px 100%;animation:fx-shimmer 1.4s linear infinite"></div>
+          <div aria-hidden="true" style="height:48px;width:100%;border-radius:12px;background:linear-gradient(90deg,#EEF2F7 0px,#DFE5EE 210px,#EEF2F7 420px);background-size:840px 100%;animation:fx-shimmer 1.4s linear infinite"></div>
+          <p style="margin:4px 0 0;font-size:12.5px;color:#5A6A85">Skeleton enquanto a IA gera. Sempre com <code>aria-busy</code> e texto de status.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="componentes" style="padding:48px 0 8px;scroll-margin-top:12px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+        <div><h2 style="margin:0 0 6px;font-family:Gloock,serif;font-weight:400;font-size:34px">Componentes</h2><p style="margin:0;color:#5A6A85;max-width:620px;line-height:1.6">Todos usam só tokens. Troque o tema para conferir a versão escura.</p></div>
+        <div role="radiogroup" aria-label="Tema da galeria" style="display:flex;gap:4px;padding:4px;border-radius:14px;background:#EEF2F7">
+          <sc-if value="{{ isLight }}"><button role="radio" aria-checked="true" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:0;border-radius:11px;background:#fff;font-weight:800;box-shadow:0 1px 2px rgba(20,33,61,.08)"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px">light_mode</span>Claro</button><button role="radio" aria-checked="false" onClick="{{ toDark }}" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:0;border-radius:11px;background:transparent;color:#5A6A85;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px">dark_mode</span>Escuro</button></sc-if>
+          <sc-if value="{{ isDark }}"><button role="radio" aria-checked="false" onClick="{{ toLight }}" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:0;border-radius:11px;background:transparent;color:#5A6A85;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px">light_mode</span>Claro</button><button role="radio" aria-checked="true" style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:0;border-radius:11px;background:#fff;font-weight:800;box-shadow:0 1px 2px rgba(20,33,61,.08)"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px">dark_mode</span>Escuro</button></sc-if>
+        </div>
+      </div>
+
+      <div ref="{{ setGal }}" style="--bg:#F6F8FB;--sf:#FFFFFF;--sf2:#EEF2F7;--line:#DFE5EE;--ink:#14213D;--ink2:#5A6A85;--ink3:#8592A8;--pri:#14A38B;--prid:#0C7A68;--prit:#E3F4F0;--onpri:#FFFFFF;--amb:#F5A524;--ambd:#9A5B00;--ambt:#FEF3DC;--ok:#22A06B;--okd:#16794C;--okt:#E6F5EE;--err:#E5566D;--errd:#C2334D;--errt:#FDECEF;--info:#3B82F6;--infod:#2563EB;--infot:#E8F0FE;--focus:#2563EB;--sh1:0 1px 2px rgba(20,33,61,.04),0 6px 20px rgba(20,33,61,.05);--sh2:0 10px 36px rgba(20,33,61,.16);--hero:linear-gradient(135deg,#E4F5F1 0%,#FFFFFF 58%,#FFF5E3 100%);padding:24px;border-radius:28px;background:var(--bg);color:var(--ink);border:1px solid var(--line);display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;transition:background 200ms ease-out">
+
+        <div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:20px;background:var(--sf);border:1px solid var(--line)">
+          <code style="color:var(--ink2)">Button · primary | secondary | ghost | danger</code>
+          <button style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border:0;border-radius:14px;background:var(--prid);color:var(--onpri);font-weight:800;font-size:16px" style-hover="filter:brightness(1.08)" style-active="transform:scale(.98)"><span class="material-symbols-rounded" aria-hidden="true" style="font-variation-settings:'FILL' 1">play_arrow</span>Começar</button>
+          <button style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border:1.5px solid var(--line);border-radius:14px;background:var(--sf);color:var(--ink);font-weight:700;font-size:15px" style-hover="border-color:var(--ink3)">Voltar para Hoje</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button style="display:flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:0;border-radius:12px;background:transparent;color:var(--prid);font-weight:800" style-hover="background:var(--prit)"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:20px">calendar_month</span>Ver semana</button>
+            <button style="min-height:44px;padding:0 14px;border:0;border-radius:12px;background:var(--errd);color:var(--onpri);font-weight:800">Excluir</button>
+            <button disabled="{{ true }}" style="min-height:44px;padding:0 14px;border:0;border-radius:12px;background:var(--prid);color:var(--onpri);font-weight:800;opacity:.45;cursor:not-allowed">Desativado</button>
+          </div>
+          <p style="margin:0;font-size:12.5px;color:var(--ink2);line-height:1.5">Altura mínima 44 px (primário 52–56). Ícone sempre acompanhado de texto nas ações principais.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:20px;background:var(--sf);border:1px solid var(--line)">
+          <code style="color:var(--ink2)">TextField · Select · Checkbox · Switch</code>
+          <div><label for="g-in" style="display:block;font-size:14px;font-weight:700;margin-bottom:6px">E-mail</label><input id="g-in" defaultValue="marina.alves@email.com" style="width:100%;min-height:50px;padding:0 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--sf);color:var(--ink);font-size:16px" style-focus="border-color:var(--prid);box-shadow:0 0 0 3px var(--prit)"></div>
+          <div><label for="g-er" style="display:block;font-size:14px;font-weight:700;margin-bottom:6px">Senha</label><input id="g-er" type="password" defaultValue="123" aria-invalid="true" aria-describedby="g-er-m" style="width:100%;min-height:50px;padding:0 14px;border:1.5px solid var(--errd);border-radius:12px;background:var(--sf);color:var(--ink);font-size:16px"><p id="g-er-m" style="margin:6px 0 0;display:flex;gap:6px;align-items:center;color:var(--errd);font-size:13.5px;font-weight:600"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:17px">error</span>Use pelo menos 8 caracteres.</p></div>
+          <label style="display:flex;gap:12px;align-items:center;min-height:44px;font-size:14.5px;cursor:pointer"><input type="checkbox" defaultChecked="{{ true }}" style="width:22px;height:22px;margin:0;accent-color:var(--prid)">Declaro que tenho direito de usar este material</label>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><span id="g-sw" style="font-weight:700">Lembrete diário</span><button role="switch" aria-checked="true" aria-labelledby="g-sw" style="width:56px;height:34px;padding:3px;border:0;border-radius:999px;background:var(--prid);display:flex;justify-content:flex-end"><span style="width:28px;height:28px;border-radius:50%;background:var(--onpri);display:grid;place-items:center"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:18px;color:var(--prid)">check</span></span></button></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:20px;background:var(--sf);border:1px solid var(--line)">
+          <code style="color:var(--ink2)">StatusChip · OriginTag · PhaseBadge</code>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:var(--infot);color:var(--infod);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">radio_button_unchecked</span>Nova</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:var(--ambt);color:var(--ambd);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">contrast</span>Aprendendo</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:var(--okt);color:var(--okd);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px;font-variation-settings:'FILL' 1">check_circle</span>Dominada</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--okt);color:var(--okd);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px;font-variation-settings:'FILL' 1">check_circle</span>Feito</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--prit);color:var(--prid);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">today</span>Hoje</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--infot);color:var(--infod);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">ac_unit</span>Protegido</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--sf2);color:var(--ink2);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">remove</span>Perdido</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--okt);color:var(--okd);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px;font-variation-settings:'FILL' 1">check_circle</span>Correto</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--ambt);color:var(--ambd);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">contrast</span>Parcial</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--errt);color:var(--errd);font-size:12.5px;font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">cancel</span>Erro</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--sf2);color:var(--ink2);font-size:12.5px;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">menu_book</span>Da aula de 21/10</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:8px;background:var(--sf2);color:var(--ink2);font-size:12.5px;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:15px">person</span>Adicionada por mim</span>
+            <span style="padding:3px 8px;border-radius:999px;background:var(--infot);color:var(--infod);font-size:11.5px;font-weight:800">Fase 2</span>
+          </div>
+          <p style="margin:0;font-size:12.5px;color:var(--ink2);line-height:1.5">Forma do ícone diferente em cada estado: vazio, metade, cheio. Nunca só cor.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:20px;background:var(--sf);border:1px solid var(--line)">
+          <code style="color:var(--ink2)">GoalCard · ProgressRing · StreakFlame</code>
+          <div style="display:flex;align-items:center;gap:16px;padding:18px;border-radius:22px;background:var(--hero);border:1px solid var(--line)">
+            <div style="position:relative;width:88px;height:88px;flex:none"><svg width="88" height="88" viewBox="0 0 116 116" style="transform:rotate(-90deg);display:block"><circle cx="58" cy="58" r="48" style="fill:none;stroke:var(--sf2);stroke-width:12"></circle><circle cx="58" cy="58" r="48" style="fill:none;stroke:var(--pri);stroke-width:12;stroke-linecap:round;stroke-dasharray:301.6;stroke-dashoffset:120"></circle></svg><span style="position:absolute;inset:0;display:grid;place-items:center;font-family:Gloock,serif;font-size:26px">6</span></div>
+            <div><p style="margin:0;font-size:12px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.07em">Meta do dia</p><p style="margin:2px 0 0;font-size:18px;font-weight:800">Faltam 4 minutos</p></div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <span style="display:flex;align-items:center;gap:4px;height:44px;padding:0 14px 0 10px;border-radius:999px;background:var(--ambt);font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:22px;color:var(--amb);font-variation-settings:'FILL' 1;animation:fx-glow 2.8s ease-in-out infinite">local_fire_department</span><span style="font-family:Gloock,serif;font-size:19px">12</span></span>
+            <span style="display:flex;align-items:center;gap:6px;height:44px;padding:0 14px;border-radius:999px;background:var(--sf);border:1px solid var(--line);font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px;color:var(--amb);font-variation-settings:'FILL' 1">star</span>2.740 XP</span>
+            <span style="display:flex;align-items:center;gap:6px;height:44px;padding:0 14px;border-radius:999px;background:var(--infot);font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:19px;color:var(--infod)">ac_unit</span>1 de 2</span>
+          </div>
+          <div role="progressbar" aria-label="Exemplo de barra de sessão" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="height:10px;border-radius:999px;background:var(--sf2);overflow:hidden"><div style="height:100%;width:50%;border-radius:999px;background:var(--pri)"></div></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:20px;background:var(--sf);border:1px solid var(--line)">
+          <code style="color:var(--ink2)">Flashcard · toque para girar</code>
+          <div style="perspective:1200px">
+            <div role="button" tabIndex="0" onClick="{{ flip }}" onKeyDown="{{ flipKey }}" aria-label="{{ flipAria }}" style="position:relative;height:210px;transform-style:preserve-3d;transform:rotateY({{ flipDeg }}deg);transition:transform 300ms ease-out;cursor:pointer;border-radius:24px">
+              <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:24px;background:var(--sf);border:1px solid var(--line);box-shadow:var(--sh2)"><span style="font-size:12.5px;color:var(--ink2);font-weight:700">substantivo</span><span lang="en" style="font-family:'Source Serif 4',Georgia,serif;font-size:32px;font-weight:600">deadline</span></div>
+              <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;gap:8px;padding:22px;border-radius:24px;background:var(--sf);border:1px solid var(--line);box-shadow:var(--sh2)"><span style="font-size:21px;font-weight:800">prazo final</span><span lang="en" style="font-family:'Source Serif 4',Georgia,serif;font-size:17px">We’ve never missed a deadline.</span><span style="font-size:13.5px;color:var(--ink2)">Nunca perdemos um prazo.</span></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+            <span style="display:flex;flex-direction:column;align-items:center;padding:8px 2px;border-radius:12px;background:var(--errt);font-weight:800;font-size:13.5px">Errei<span style="font-size:11.5px;color:var(--errd);font-weight:600">&lt;1 min</span></span>
+            <span style="display:flex;flex-direction:column;align-items:center;padding:8px 2px;border-radius:12px;background:var(--ambt);font-weight:800;font-size:13.5px">Difícil<span style="font-size:11.5px;color:var(--ambd);font-weight:600">1 dia</span></span>
+            <span style="display:flex;flex-direction:column;align-items:center;padding:8px 2px;border-radius:12px;background:var(--prid);color:var(--onpri);font-weight:800;font-size:13.5px">Bom<span style="font-size:11.5px;font-weight:600">3 dias</span></span>
+            <span style="display:flex;flex-direction:column;align-items:center;padding:8px 2px;border-radius:12px;background:var(--infot);font-weight:800;font-size:13.5px">Fácil<span style="font-size:11.5px;color:var(--infod);font-weight:600">7 dias</span></span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;padding:20px;border-radius:20px;background:var(--sf);border:1px solid var(--line)">
+          <code style="color:var(--ink2)">BottomNav (celular) · SidebarItem (desktop)</code>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);padding:6px 2px 8px;border-radius:16px;background:var(--sf);border:1px solid var(--line)">
+            <span style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--prid);font-weight:800;font-size:11px"><span style="display:grid;place-items:center;width:52px;height:30px;border-radius:999px;background:var(--prit)"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:21px;font-variation-settings:'FILL' 1">today</span></span>Hoje</span>
+            <span style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-weight:600;font-size:11px"><span style="display:grid;place-items:center;height:30px"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:21px">menu_book</span></span>Aulas</span>
+            <span style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-weight:600;font-size:11px"><span style="display:grid;place-items:center;height:30px"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:21px">edit_note</span></span>Praticar</span>
+            <span style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-weight:600;font-size:11px"><span style="display:grid;place-items:center;height:30px"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:21px">translate</span></span>Vocabulário</span>
+            <span style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-weight:600;font-size:11px"><span style="display:grid;place-items:center;height:30px"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:21px">insights</span></span>Progresso</span>
+          </div>
+          <span style="display:flex;align-items:center;gap:12px;min-height:46px;padding:0 12px;border-radius:12px;background:var(--prit);color:var(--prid);font-weight:800"><span class="material-symbols-rounded" aria-hidden="true" style="font-variation-settings:'FILL' 1">today</span>Hoje</span>
+          <span style="display:flex;align-items:center;gap:12px;min-height:46px;padding:0 12px;border-radius:12px;color:var(--ink2);font-weight:600"><span class="material-symbols-rounded" aria-hidden="true">menu_book</span>Aulas</span>
+          <p style="margin:0;font-size:12.5px;color:var(--ink2);line-height:1.5">Ícones: Material Symbols Rounded, traço (FILL 0), peso 400. Ativo ganha preenchimento e pílula de fundo.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:20px;background:var(--sf);border:1px solid var(--line)">
+          <code style="color:var(--ink2)">Toast · Banner</code>
+          <div role="status" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:16px;background:var(--sf);border:1px solid var(--line);box-shadow:var(--sh2);font-weight:600;font-size:14.5px"><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--okd);font-variation-settings:'FILL' 1">check_circle</span>Revisão pronta. A aula entrou no plano.</div>
+          <div role="status" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:16px;background:var(--sf);border:1px solid var(--line);box-shadow:var(--sh2);font-weight:600;font-size:14.5px"><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--infod);font-variation-settings:'FILL' 1">flag</span>Obrigado por avisar. O item saiu da rotina.</div>
+          <div style="display:flex;gap:10px;padding:12px 14px;border-radius:14px;background:var(--sf2);font-size:14px;line-height:1.5"><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--ink2)">wifi_off</span><span><strong>Sem conexão.</strong> Flashcards baixados continuam funcionando.</span></div>
+          <div style="display:flex;gap:10px;padding:12px 14px;border-radius:14px;background:var(--ambt);font-size:14px;line-height:1.5"><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--ambd)">hourglass_bottom</span><span><strong>Correções de IA esgotadas hoje.</strong> Gabarito fixo continua liberado.</span></div>
+          <div style="display:flex;gap:10px;padding:12px 14px;border-radius:14px;background:var(--infot);font-size:14px;line-height:1.5"><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--infod)">waving_hand</span><span><strong>Bom te ver de volta.</strong> Refizemos sua semana para caber no seu ritmo.</span></div>
+          <div style="display:flex;gap:10px;padding:12px 14px;border-radius:14px;background:var(--errt);font-size:14px;line-height:1.5"><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--errd)">error</span><span><strong>Não conseguimos enviar.</strong> O que você preencheu continua aqui.</span></div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:24px 20px;border-radius:20px;background:var(--sf);border:1px solid var(--line)">
+          <code style="color:var(--ink2);align-self:flex-start">EmptyState · ilustração de formas simples</code>
+          <div aria-hidden="true" style="position:relative;width:132px;height:112px">
+            <span style="position:absolute;left:10px;top:14px;width:96px;height:96px;border-radius:50%;background:var(--prit)"></span>
+            <span style="position:absolute;right:6px;top:4px;width:30px;height:30px;border-radius:50%;background:var(--ambt)"></span>
+            <span style="position:absolute;left:32px;top:30px;width:72px;height:64px;border-radius:16px;background:var(--sf);border:1.5px solid var(--line);box-shadow:var(--sh1);display:grid;place-items:center;transform:rotate(-6deg)"><span class="material-symbols-rounded" style="font-size:34px;color:var(--prid)">task_alt</span></span>
+            <span style="position:absolute;right:16px;bottom:8px;width:14px;height:14px;border-radius:4px;background:var(--amb);transform:rotate(45deg)"></span>
+          </div>
+          <p style="margin:0;font-weight:800;font-size:18px">Tudo em dia por hoje</p>
+          <p style="margin:0;color:var(--ink2);font-size:14px;line-height:1.5;max-width:280px">Círculo da marca, cartão inclinado com ícone e um detalhe âmbar. Troque o ícone por contexto. Ilustrações finais podem seguir a mesma receita.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="fluxos" style="padding:48px 0 8px;scroll-margin-top:12px">
+      <h2 style="margin:0 0 6px;font-family:Gloock,serif;font-weight:400;font-size:34px">Fluxos destacados</h2>
+      <p style="margin:0 0 20px;color:#5A6A85;max-width:720px;line-height:1.6">No protótipo, escolha o fluxo no menu “Fluxo”. Uma faixa mostra os passos e acompanha onde você está.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px">
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE"><p style="margin:0 0 4px;font-family:Gloock,serif;font-size:26px;color:#0C7A68">A</p><p style="margin:0 0 10px;font-weight:800">Enviar aula até a primeira atividade</p><ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#14213D"><li>Hoje (vazio) → “Enviar minha primeira aula”</li><li>Colar texto, marcar a declaração → “Gerar revisão”</li><li>Skeleton com 4 etapas (≈ 3 s)</li><li>Revisão pronta → “Praticar esta aula”</li><li>Flashcards da aula</li></ol><p style="margin:10px 0 0;font-size:13px;color:#5A6A85">4 cliques do zero à prática.</p></div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE"><p style="margin:0 0 4px;font-family:Gloock,serif;font-size:26px;color:#0C7A68">B</p><p style="margin:0 0 10px;font-weight:800">Ciclo diário a partir de Hoje</p><ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#14213D"><li>“Começar” → flashcards vencidos</li><li>Fim do bloco → “Próximo: escrita da aula”</li><li>Correção com erro destacado e XP</li><li>“Próximo: ponto fraco” (gabarito fixo)</li><li>Meta cumprida, confete, sequência +1</li></ol><p style="margin:10px 0 0;font-size:13px;color:#5A6A85">Cada fim de bloco oferece o próximo; o aluno nunca volta à home para decidir.</p></div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE"><p style="margin:0 0 4px;font-family:Gloock,serif;font-size:26px;color:#0C7A68">C</p><p style="margin:0 0 10px;font-weight:800">Voltar depois de faltar</p><ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#14213D"><li>Hoje com “Bom te ver de volta.”</li><li>“Ver plano refeito”: quarta protegida, quinta perdida</li><li>Tarefas remanejadas para sábado e domingo, até 1,5× a meta</li><li>“Começar o dia” com 1 clique</li></ol><p style="margin:10px 0 0;font-size:13px;color:#5A6A85">Sem vermelho, sem contagem de dias perdidos.</p></div>
+      </div>
+    </section>
+
+    <section id="implementacao" style="padding:48px 0 8px;scroll-margin-top:12px">
+      <h2 style="margin:0 0 6px;font-family:Gloock,serif;font-weight:400;font-size:34px">Notas de implementação</h2>
+      <p style="margin:0 0 20px;color:#5A6A85;max-width:720px;line-height:1.6">Pensado para virar componentes simples no frontend padrão da equipe, com o Laravel servindo sessão por cookie. Nada depende de biblioteca de UI específica.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px">
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:8px">
+          <h3 style="margin:0;font-size:16px;font-weight:800">Tokens</h3>
+          <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.65"><li>Variáveis CSS curtas: <code>--bg --sf --sf2 --line --ink --ink2 --ink3 --pri --prid --prit --onpri --amb --ambd --ambt --ok* --err* --info* --sh1 --sh2 --hero --focus</code>.</li><li>Tema escuro: o mesmo conjunto em <code>[data-theme="dark"]</code> no <code>&lt;html&gt;</code>. “Automático” segue <code>prefers-color-scheme</code>.</li><li>Espaço <code>--space-1…10</code> (base 4), raio <code>--radius-xs…full</code>, tipo <code>--type-*</code>, movimento <code>--dur-fast 150ms · --dur 250ms · --dur-slow 300ms · --ease-out</code>.</li><li>Se a equipe usa Tailwind, os tokens entram em <code>theme.extend</code> apontando para as variáveis.</li></ul>
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:8px">
+          <h3 style="margin:0;font-size:16px;font-weight:800">Componentes e props</h3>
+          <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.65"><li><code>Button</code> variant, icon, loading, disabled</li><li><code>Card</code> tone: default | hero</li><li><code>StatusChip</code> kind: nova | aprendendo | dominada | feito | hoje | protegido | perdido | total | parcial | erro</li><li><code>OriginTag</code> lessonDate | mine · <code>ReportButton</code> itemId</li><li><code>ProgressRing</code> value, goal · <code>StreakChip</code> days · <code>FreezeSlots</code> count</li><li><code>Flashcard</code> front, back, example, flipped · <code>RateBar</code> intervals[4], onRate</li><li><code>SessionHeader</code> progress, counter, timer?, onClose</li><li><code>FeedbackPanel</code> result, tokens, corrected, why, natural, xp</li><li><code>TargetText</code> lang, children: aplica a serifa e o atributo <code>lang</code></li><li><code>AppShell</code> (BottomNav &lt; 1024 px, Sidebar ≥ 1024), <code>Sheet</code>, <code>Toast</code>, <code>Banner</code>, <code>Skeleton</code>, <code>EmptyState</code>, <code>TextField</code>, <code>Switch</code></li></ul>
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:8px">
+          <h3 style="margin:0;font-size:16px;font-weight:800">Telas e rotas</h3>
+          <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.65"><li><code>/entrar /cadastro /verificar /recuperar /2fa</code></li><li><code>/diagnostico</code> intro → questões → resultado | nível manual</li><li><code>/hoje</code> · <code>/plano</code></li><li><code>/aulas</code> · <code>/aulas/enviar</code> · <code>/aulas/:id</code> (revisão)</li><li><code>/praticar</code> · <code>/flashcards?modo=corrida</code> · <code>/escrita/:sessao</code> · <code>/leitura/:id</code> · <code>/ponto-fraco</code> · <code>/caderno-de-erros</code></li><li><code>/vocabulario</code> (+ <code>/:id</code> no celular) · <code>/progresso</code> · <code>/configuracoes</code></li><li>Sessões (flashcards, escrita, ponto fraco, diagnóstico) escondem a navegação: modo foco.</li></ul>
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:8px">
+          <h3 style="margin:0;font-size:16px;font-weight:800">Contrato de estados</h3>
+          <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.65"><li>Toda tela de conteúdo recebe <code>status</code>: ready | empty | loading | error, e <code>offline</code> como banner por cima.</li><li><code>aiLimitReached</code> troca a escrita pela tela de limite e mostra banner em Hoje e Praticar.</li><li>Todo item gerado tem <code>sourceLessonId</code> e <code>reported</code>; reportado sai da rotina e mostra “em análise” com desfazer.</li><li>Geração assíncrona: o envio retorna na hora e a tela acompanha 4 etapas; o aluno pode sair.</li></ul>
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:8px">
+          <h3 style="margin:0;font-size:16px;font-weight:800">Idioma como parâmetro</h3>
+          <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.65"><li>Textos da interface num arquivo de strings pt-BR; nenhum “inglês” fixo no código: use <code>targetLang.name</code>.</li><li>Conteúdo no idioma estudado sempre via <code>TargetText</code>, que define <code>lang</code> para leitores de tela e hifenização.</li><li>Seletor de idioma já existe em Configurações e no envio, com os demais “em breve”.</li></ul>
+        </div>
+        <div style="padding:20px;border-radius:20px;background:#fff;border:1px solid #DFE5EE;display:flex;flex-direction:column;gap:8px">
+          <h3 style="margin:0;font-size:16px;font-weight:800">Acessibilidade</h3>
+          <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.65"><li>Contraste AA em todo texto, nos dois temas (ver tabela de cores).</li><li>Alvos de 44 px ou mais; palavras clicáveis no texto de leitura são exceção inline.</li><li><code>:focus-visible</code> com anel de 3 px; flashcard vira com Espaço/Enter e avalia com 1–4.</li><li>Gesto de deslizar é opcional; os botões ficam sempre na tela.</li><li>Resultados anunciados com <code>aria-live</code>; anel, barras e progresso com <code>role="progressbar"</code> ou rótulo.</li><li><code>prefers-reduced-motion</code> desliga giro, loops e confete.</li></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { dark:false, flip:false, ring:.4, ringKey:0, xp:2740, conf:0 };
+  setGal=el=>{this.galEl=el; this.applyGal();};
+  applyGal(){const el=this.galEl; if(!el) return; const T=this.state.dark?{bg:'#0F172A',sf:'#172136',sf2:'#1F2A42',line:'#2A3752',ink:'#E6EBF3',ink2:'#9AA8BE',ink3:'#6B7890',pri:'#2CC5A8',prid:'#2CC5A8',prit:'#12352F',onpri:'#0F172A',amb:'#F5B544',ambd:'#F5B544',ambt:'#3A2E14',ok:'#45C98F',okd:'#45C98F',okt:'#12322A',err:'#F27A8D',errd:'#F27A8D',errt:'#3A1C26',info:'#6EA8FB',infod:'#6EA8FB',infot:'#172B4A',focus:'#6EA8FB',sh1:'0 1px 2px rgba(0,0,0,.35)',sh2:'0 12px 40px rgba(0,0,0,.55)',hero:'linear-gradient(135deg,#12352F 0%,#172136 58%,#2E2715 100%)'}:{bg:'#F6F8FB',sf:'#FFFFFF',sf2:'#EEF2F7',line:'#DFE5EE',ink:'#14213D',ink2:'#5A6A85',ink3:'#8592A8',pri:'#14A38B',prid:'#0C7A68',prit:'#E3F4F0',onpri:'#FFFFFF',amb:'#F5A524',ambd:'#9A5B00',ambt:'#FEF3DC',ok:'#22A06B',okd:'#16794C',okt:'#E6F5EE',err:'#E5566D',errd:'#C2334D',errt:'#FDECEF',info:'#3B82F6',infod:'#2563EB',infot:'#E8F0FE',focus:'#2563EB',sh1:'0 1px 2px rgba(20,33,61,.04),0 6px 20px rgba(20,33,61,.05)',sh2:'0 10px 36px rgba(20,33,61,.16)',hero:'linear-gradient(135deg,#E4F5F1 0%,#FFFFFF 58%,#FFF5E3 100%)'}; for(const k in T) el.style.setProperty('--'+k,T[k]);}
+  renderVals(){
+    const st0=this.state;
+    const gal={isLight:!st0.dark,isDark:st0.dark,toDark:()=>this.setState({dark:true},()=>this.applyGal()),toLight:()=>this.setState({dark:false},()=>this.applyGal()),
+      flip:()=>this.setState({flip:!this.state.flip}),flipKey:e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault(); this.setState({flip:!this.state.flip});}},flipDeg:st0.flip?180:0,flipAria:st0.flip?'Verso: prazo final':'Frente: deadline. Toque para virar',setGal:this.setGal};
+    const G=[
+      ['Base',[['bg','Fundo do app','#F6F8FB','#0F172A','',''],['sf','Superfície: cartões, barras, campos','#FFFFFF','#172136','',''],['sf2','Superfície rebaixada: chips, trilhas, skeleton','#EEF2F7','#1F2A42','',''],['line','Bordas e divisores','#DFE5EE','#2A3752','',''],['ink','Texto principal','#14213D','#E6EBF3','15,0:1 no fundo','14,9:1 no fundo'],['ink2','Texto secundário','#5A6A85','#9AA8BE','5,2:1 no fundo','7,0:1 no fundo'],['ink3','Placeholder, ícone inativo (nunca texto essencial)','#8592A8','#6B7890','decorativo','decorativo']]],
+      ['Primária · ações e progresso',[['pri','Anel, barras, sublinhados, ícones','#14A38B','#2CC5A8','3,2:1 · não texto','8,2:1'],['prid','Botão primário, links, texto de destaque','#0C7A68','#2CC5A8','5,3:1 com branco','8,2:1 com #0F172A'],['prit','Fundo de item ativo, chips','#E3F4F0','#12352F','prid sobre: 4,6:1',''],['onpri','Texto sobre prid','#FFFFFF','#0F172A','','']]],
+      ['Destaque âmbar · sequência, XP, conquistas',[['amb','Chama, estrela de XP, troféu','#F5A524','#F5B544','7,8:1 com ink',''],['ambd','Texto âmbar','#9A5B00','#F5B544','5,4:1','9,8:1'],['ambt','Fundo de chips de XP e sequência','#FEF3DC','#3A2E14','ambd sobre: 4,9:1','']]],
+      ['Feedback',[['ok · okd · okt','Sucesso: acertos, feito','#16794C','#45C98F','okd 5,4:1 · base #22A06B','7,4:1'],['err · errd · errt','Erro suave: nunca vermelho agressivo','#C2334D','#F27A8D','errd 5,4:1 · base #E5566D','5,9:1'],['info · infod · infot','Informação, congelamento, novidades','#2563EB','#6EA8FB','infod 5,2:1 · base #3B82F6','6,4:1']]]
+    ];
+    const D="Gloock,serif", U="'Plus Jakarta Sans',system-ui,sans-serif", E="'Source Serif 4',Georgia,serif";
+    const TS=[['display-xl',D,52,400,'52/1.05','Sua aula vira rotina.'],['display-l',D,32,400,'32/1.15','Boa tarde, Marina'],['display-num',D,34,400,'34/1 · números','10 de 10'],['title',U,22,800,'22/1.3 · 800','Seu plano de hoje'],['subtitle',U,17,800,'17/1.35 · 800','Conceitos principais'],['body',U,16,400,'16/1.6','Escolha o que mais se parece com você hoje.'],['body-s',U,14,500,'14/1.5','8 cartões · 6 revisões e 2 novos'],['label',U,12.5,800,'12.5 · caixa alta','META DO DIA'],['target-l',E,22,600,'22/1.45','Have you ever managed a team?'],['target',E,18,400,'18/1.5','They haven’t called me yet.']];
+    const s=this.state;
+    const reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    return {
+      ...gal,
+      spaces:[[1,4,'ícone e texto'],[2,8,'chips, gaps curtos'],[3,12,'entre cartões da lista'],[4,16,'padding de cartão compacto'],[5,20,'margem lateral no celular'],[6,24,'padding de cartão de destaque'],[8,32,'entre seções'],[10,40,'margem lateral no desktop']].map(([n,v,use])=>({n,v,use})),
+      radii:[['xs','8px','tags de origem'],['s','12px','campos, ícones'],['m','14px','botões'],['l','20px','cartões'],['xl','26px','flashcard, folhas'],['full','999px','chips e pílulas']].map(([n,v,use])=>({n,v,use})),
+      motion:[['Toque em botão','150 ms','escala .98 e brilho','sem escala'],['Giro do flashcard','300 ms ease-out','rotateY 180° com faces 3D','troca direta de face'],['Anel da meta','700 ms (0,2 0,8 0,2 1)','dashoffset de 0 ao valor','valor final direto'],['Chama da sequência','2,8 s em loop','brilho e escala 1,07','estática'],['Contagem de XP','700 ms ease-out','números sobem até o total','total direto'],['Confete','1,6–2,6 s, uma vez','46 peças caindo','não aparece'],['Barra de sessão','300 ms ease-out','largura avança por item','salto direto'],['Feedback de resposta','250 ms','ícone faz pop, explicação sobe 8 px','aparece direto']].map(([n,d,how,red])=>({n,d,how,red})),
+      ringOff:(301.6*(1-s.ring)).toFixed(1),ringMin:Math.round(s.ring*10),ringAria:'Exemplo de anel: '+Math.round(s.ring*10)+' de 10 minutos',
+      stepRing:()=>this.setState({ring:s.ring>=1?0:Math.min(1,+(s.ring+.3).toFixed(2))}),
+      xpShown:(s.xpShown||s.xp).toLocaleString('pt-BR'),
+      gainXp:()=>{const from=s.xp,to=s.xp+60; this.setState({xp:to}); if(reduced){this.setState({xpShown:to});return;} const t0=performance.now(); const st=t=>{const k=Math.min(1,(t-t0)/700),e=1-Math.pow(1-k,3); this.setState({xpShown:Math.round(from+60*e)}); if(k<1) requestAnimationFrame(st);}; requestAnimationFrame(st); const cols=['#14A38B','#F5A524','#3B82F6','#E5566D']; this.pieces=Array.from({length:28},(_,i)=>({x:Math.random()*100,w:6+Math.random()*5,h:8+Math.random()*7,c:cols[i%4],dx:Math.round((Math.random()-.5)*120),rot:Math.round(Math.random()*600-300),d:(1.4+Math.random()).toFixed(2),dl:(Math.random()*.3).toFixed(2)})); this.setState({conf:s.conf+1}); clearTimeout(this.ct); this.ct=setTimeout(()=>this.setState({conf:0}),2600);},
+      confettiEl:s.conf&&this.pieces?React.createElement('div',{key:'c'+s.conf,'aria-hidden':true,style:{position:'absolute',inset:0,pointerEvents:'none'}},this.pieces.map((p,i)=>React.createElement('span',{key:i,style:{position:'absolute',left:p.x+'%',top:'-10px',width:p.w+'px',height:p.h+'px',borderRadius:'2px',background:p.c,'--dx':p.dx+'px','--rot':p.rot+'deg',animation:'fx-fall '+p.d+'s cubic-bezier(.2,.6,.4,1) '+p.dl+'s forwards'}}))):null,
+      typeScale:TS.map(([t,f,s,w,spec,ex])=>({t:'--type-'+t,f,s,w,spec,ex})),
+      colorGroups:G.map(([name,items])=>({name,items:items.map(([t,use,l,d,lc,dc])=>({t,use,l,d,lc,dc}))}))
+    };
+  }
+}
+</script>
+</body>
+</html>

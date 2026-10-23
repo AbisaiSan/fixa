@@ -4,53 +4,70 @@ import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import { fontsource, local } from 'laravel-vite-plugin/fonts';
+import { fileURLToPath } from 'node:url';
 import { defineConfig, lazyPlugins } from 'vite-plus';
 
-export default defineConfig({
-    plugins: lazyPlugins(() => [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.ts'],
-            refresh: true,
-            // Fontes servidas pelo próprio app, sem CDN (J0-F3, OPE-01, DAD-01).
-            fonts: [
-                fontsource('Plus Jakarta Sans', {
-                    alias: 'ui',
-                    weights: [400, 500, 600, 700, 800],
-                    preload: [{ weight: 400 }, { weight: 800 }],
-                }),
-                fontsource('Gloock', { alias: 'display' }),
-                fontsource('Source Serif 4', {
-                    alias: 'target',
-                    weights: [400, 600],
-                    preload: false,
-                }),
-                local('Material Symbols Rounded', {
-                    alias: 'icons',
-                    display: 'block',
-                    preload: false,
-                    variants: [
-                        {
-                            src: 'node_modules/@fontsource-variable/material-symbols-rounded/files/material-symbols-rounded-latin-fill-normal.woff2',
-                            weight: '400',
-                        },
-                    ],
-                }),
-            ],
-        }),
-        inertia(),
-        tailwindcss(),
-        vue({
-            template: {
-                transformAssetUrls: {
-                    base: null,
-                    includeAbsolute: false,
-                },
+const vuePlugin = () =>
+    vue({
+        template: {
+            transformAssetUrls: {
+                base: null,
+                includeAbsolute: false,
             },
-        }),
-        wayfinder({
-            formVariants: true,
-        }),
-    ]),
+        },
+    });
+
+// Nos testes (Vitest) só o Vue é necessário. O plugin do Laravel criaria
+// public/hot e faria o app apontar para um servidor Vite que não existe.
+const isTest = process.env.VITEST !== undefined;
+
+export default defineConfig({
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./resources/js', import.meta.url)),
+        },
+    },
+    plugins: lazyPlugins(() =>
+        isTest
+            ? [vuePlugin()]
+            : [
+                  laravel({
+                      input: ['resources/css/app.css', 'resources/js/app.ts'],
+                      refresh: true,
+                      // Fontes servidas pelo próprio app, sem CDN (J0-F3, OPE-01, DAD-01).
+                      fonts: [
+                          fontsource('Plus Jakarta Sans', {
+                              alias: 'ui',
+                              weights: [400, 500, 600, 700, 800],
+                              preload: [{ weight: 400 }, { weight: 800 }],
+                          }),
+                          fontsource('Gloock', { alias: 'display' }),
+                          fontsource('Source Serif 4', {
+                              alias: 'target',
+                              weights: [400, 600],
+                              preload: false,
+                          }),
+                          local('Material Symbols Rounded', {
+                              alias: 'icons',
+                              display: 'block',
+                              preload: false,
+                              variants: [
+                                  {
+                                      src: 'node_modules/@fontsource-variable/material-symbols-rounded/files/material-symbols-rounded-latin-fill-normal.woff2',
+                                      weight: '400',
+                                  },
+                              ],
+                          }),
+                      ],
+                  }),
+                  inertia(),
+                  tailwindcss(),
+                  vuePlugin(),
+                  wayfinder({
+                      formVariants: true,
+                  }),
+              ],
+    ),
     server: {
         watch: {
             ignored: [

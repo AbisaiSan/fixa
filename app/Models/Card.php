@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Cartão de repetição espaçada (FLA-01): frente, verso, exemplo com tradução
@@ -33,6 +35,13 @@ use Illuminate\Support\Carbon;
  * @property bool $reported
  * @property string|null $dedupe_key
  * @property Carbon|null $suspended_at
+ * @property int $repetitions
+ * @property int $interval_days
+ * @property float $ease
+ * @property int $lapses
+ * @property Carbon|null $due_at
+ * @property Carbon|null $first_reviewed_at
+ * @property Carbon|null $last_reviewed_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -62,6 +71,13 @@ class Card extends Model
             'kind' => CardKind::class,
             'reported' => 'boolean',
             'suspended_at' => 'datetime',
+            'repetitions' => 'integer',
+            'interval_days' => 'integer',
+            'ease' => 'float',
+            'lapses' => 'integer',
+            'due_at' => 'datetime',
+            'first_reviewed_at' => 'datetime',
+            'last_reviewed_at' => 'datetime',
         ];
     }
 
@@ -81,6 +97,15 @@ class Card extends Model
     public function lessons(): BelongsToMany
     {
         return $this->belongsToMany(Lesson::class)->withPivot('created_at');
+    }
+
+    /**
+     * Ids dos cartões ligados à aula pelo pivô, sem passar pelo escopo da aula,
+     * para funcionar também na fila. Use sempre junto de forUser().
+     */
+    public static function idsInLesson(Lesson $lesson): QueryBuilder
+    {
+        return DB::table('card_lesson')->where('lesson_id', $lesson->id)->select('card_id');
     }
 
     /**

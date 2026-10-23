@@ -79,6 +79,13 @@ return [
     ],
 
     /*
+    | Flashcards (FLA-04): cartões novos por dia, além dos vencidos.
+    */
+    'cards' => [
+        'new_per_day' => (int) env('FIXA_NEW_CARDS_PER_DAY', 15),
+    ],
+
+    /*
     | Antivírus dos arquivos enviados (UPL-03). "clamav" no Sail e em produção;
     | "fake" só nos testes, que não têm o clamd.
     */

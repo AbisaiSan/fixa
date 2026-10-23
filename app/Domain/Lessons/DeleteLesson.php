@@ -26,11 +26,13 @@ final class DeleteLesson
 
         DB::transaction(function () use ($user, $lesson) {
             Card::forUser($user)
-                ->whereHas('lessons', fn ($query) => $query->whereKey($lesson->id))
-                ->with('lessons:id')
+                ->where(fn ($query) => $query->where('source_lesson_id', $lesson->id)->orWhereIn('id', Card::idsInLesson($lesson)))
                 ->get()
                 ->each(function (Card $card) use ($lesson) {
-                    $others = $card->lessons->pluck('id')->reject(fn (int $id) => $id === $lesson->id);
+                    $others = DB::table('card_lesson')->where('card_id', $card->id)
+                        ->where('lesson_id', '!=', $lesson->id)
+                        ->orderBy('lesson_id')
+                        ->pluck('lesson_id');
 
                     if ($others->isEmpty()) {
                         $card->delete();

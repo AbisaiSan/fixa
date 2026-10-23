@@ -1,6 +1,7 @@
 <?php
 
 use App\Domain\Lessons\Extraction\TextExtractor;
+use App\Http\Controllers\Cards\CardReviewController;
 use App\Http\Controllers\Lessons\ItemReportController;
 use App\Http\Controllers\Lessons\LessonController;
 use App\Http\Controllers\Lessons\LessonFileController;
@@ -48,6 +49,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->scopeBindings()
         ->name('lessons.files.show');
     Route::get('praticar', [TodayController::class, 'practice'])->name('practice');
+    Route::post('praticar/flashcards/{card}/respostas', [CardReviewController::class, 'store'])
+        ->middleware('throttle:card-reviews')
+        ->name('cards.reviews.store');
     Route::inertia('vocabulario', 'app/Vocabulary', ['status' => 'empty'])->name('vocabulary.index');
     Route::inertia('progresso', 'app/Progress', ['status' => 'empty'])->name('progress');
 });

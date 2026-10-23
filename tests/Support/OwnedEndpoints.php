@@ -5,6 +5,7 @@ namespace Tests\Support;
 use App\Domain\Lessons\LessonStatus;
 use App\Domain\Lessons\Reports\ReportReason;
 use App\Domain\Lessons\Reports\ReportReviewItem;
+use App\Models\Card;
 use App\Models\Lesson;
 use App\Models\LessonFile;
 use App\Models\LessonReview;
@@ -53,6 +54,8 @@ final class OwnedEndpoints
             'editar conceito' => self::endpoint('patch', 'lessons.review.concepts.update', self::makeConcept(...), ['explanation' => 'invadido']),
             'remover conceito' => self::endpoint('delete', 'lessons.review.concepts.destroy', self::makeConcept(...)),
             'reportar item' => self::endpoint('post', 'lessons.reports.store', self::makeReview(...), ['item' => 'summary', 'reason' => 'other']),
+            // J3: flashcards.
+            'responder cartão' => self::endpoint('post', 'cards.reviews.store', self::makeCard(...), ['rating' => 3]),
             'desfazer report' => self::endpoint('delete', 'lessons.reports.destroy', self::makeReport(...)),
         ];
     }
@@ -138,6 +141,17 @@ final class OwnedEndpoints
         $lesson = Lesson::factory()->forUser($owner)->create(['title' => 'nota da aluna A']);
 
         return ['resource' => $lesson, 'params' => [$lesson->ulid], 'numeric' => [$lesson->id]];
+    }
+
+    /**
+     * @return array{resource: Model, params: array<int, string>, numeric: array<int, int>}
+     */
+    private static function makeCard(User $owner): array
+    {
+        $lesson = Lesson::factory()->forUser($owner)->status(LessonStatus::Ready)->create();
+        $card = Card::factory()->forLesson($lesson)->create(['back' => 'nota da aluna A']);
+
+        return ['resource' => $card, 'params' => [$card->ulid], 'numeric' => [$card->id]];
     }
 
     /**

@@ -54,6 +54,16 @@ return [
     'ai' => [
         'provider' => env('FIXA_AI_PROVIDER', 'fake'),
 
+        // Teto mensal de gasto com IA, em dólares (IAS-03). Alerta em 80%.
+        'monthly_budget_usd' => (float) env('FIXA_AI_MONTHLY_BUDGET_USD', 5),
+
+        // Preço por milhão de tokens, para estimar o custo (IAS-03). Confira e
+        // atualize com a tabela oficial do provedor; modelo sem preço custa 0.
+        'prices' => [
+            'gemini-3.5-flash-lite' => ['input' => env('PRICE_GEMINI_LITE_INPUT', 0), 'output' => env('PRICE_GEMINI_LITE_OUTPUT', 0)],
+            'gemini-3.8-flash' => ['input' => env('PRICE_GEMINI_FLASH_INPUT', 0), 'output' => env('PRICE_GEMINI_FLASH_OUTPUT', 0)],
+        ],
+
         // Versão vigente de cada prompt em resources/prompts. Mudou o texto, crie v2.
         'prompts' => [
             'lesson_review' => 'v1',

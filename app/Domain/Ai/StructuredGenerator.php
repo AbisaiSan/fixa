@@ -5,6 +5,7 @@ namespace App\Domain\Ai;
 use App\Domain\Ai\Contracts\AiProvider;
 use App\Domain\Ai\Contracts\OutputSchema;
 use App\Domain\Ai\Exceptions\AiOutputInvalidException;
+use App\Domain\Ai\Exceptions\AiProviderException;
 use App\Domain\Ai\Prompts\PromptLibrary;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,6 +24,7 @@ final class StructuredGenerator
     public function __construct(
         private AiProvider $provider,
         private PromptLibrary $prompts,
+        private AiUsage $usage,
     ) {}
 
     /**
@@ -33,6 +35,7 @@ final class StructuredGenerator
         OutputSchema $schema,
         string $material,
         array $variables = [],
+        AiCallContext $context = new AiCallContext,
     ): AiResponse {
         $prompt = $this->prompts->build($task, $material, $variables);
         $request = new AiRequest(
@@ -46,8 +49,18 @@ final class StructuredGenerator
         $failed = [];
 
         for ($attempt = 1; $attempt <= self::MAX_ATTEMPTS; $attempt++) {
-            $response = $this->provider->generate($request);
+            $this->usage->ensureWithinBudget();
+
+            try {
+                $response = $this->provider->generate($request);
+            } catch (AiProviderException $exception) {
+                $this->usage->record($task, $prompt->version, null, 'error', $context, $this->provider->name());
+
+                throw $exception;
+            }
+
             $validator = Validator::make($response->data, $schema->rules());
+            $this->usage->record($task, $prompt->version, $response, $validator->passes() ? 'ok' : 'invalid', $context, $this->provider->name());
 
             if ($validator->passes()) {
                 return new AiResponse(

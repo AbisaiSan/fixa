@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Domain\Ai\Exceptions\AiBudgetExceeded;
 use App\Domain\Ai\Exceptions\AiOutputInvalidException;
 use App\Domain\Ai\Exceptions\AiProviderException;
 use App\Domain\Lessons\Extraction\TextExtractor;
@@ -59,6 +60,8 @@ class ProcessLesson implements ShouldQueue
             $lesson->transitionTo(LessonStatus::Failed, $exception->reason);
         } catch (AiOutputInvalidException) {
             $lesson->transitionTo(LessonStatus::Failed, 'ai_invalid_output');
+        } catch (AiBudgetExceeded) {
+            $lesson->transitionTo(LessonStatus::Failed, 'ai_budget_reached');
         } catch (AiProviderException $exception) {
             if ($exception->retryable) {
                 throw $exception;

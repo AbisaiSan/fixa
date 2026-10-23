@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Domain\Ai\AiTask;
+use App\Domain\Ai\AiUsage;
 use App\Domain\Ai\Contracts\AiProvider;
 use App\Domain\Ai\Exceptions\AiOutputInvalidException;
 use App\Domain\Ai\Exceptions\AiProviderException;
@@ -48,7 +49,7 @@ class AiCompare extends Command
         foreach ($targets as $target) {
             [$name, $model] = array_pad(explode(':', $target, 2), 2, '');
             $provider = $this->provider($name, $model, $http);
-            $generator = new StructuredGenerator($provider, $prompts);
+            $generator = new StructuredGenerator($provider, $prompts, app(AiUsage::class));
             $started = microtime(true);
 
             try {

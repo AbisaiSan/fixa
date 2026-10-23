@@ -2,6 +2,7 @@
 
 namespace App\Domain\Lessons;
 
+use App\Domain\Ai\AiCallContext;
 use App\Domain\Ai\AiTask;
 use App\Domain\Ai\Schemas\LessonReviewSchema;
 use App\Domain\Ai\StructuredGenerator;
@@ -23,6 +24,7 @@ final class LessonReviewer
             new LessonReviewSchema,
             (string) $lesson->extracted_text,
             ['target_language' => (string) (config("fixa.language_names.{$lesson->language}") ?? $lesson->language)],
+            new AiCallContext(userId: $lesson->user_id, lessonId: $lesson->id),
         );
 
         $review = LessonReview::withoutGlobalScopes()->where('lesson_id', $lesson->id)->first() ?? new LessonReview;

@@ -115,3 +115,30 @@ describe('LessonShow', () => {
         await expectAccessible(wrapper.element);
     });
 });
+
+describe('LessonShow failures', () => {
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
+
+    it('shows the friendly failure with retry instead of the review', async () => {
+        const wrapper = mount(LessonShow, {
+            props: {
+                lesson: {
+                    ...lesson,
+                    status: 'failed',
+                    failure_reason: 'ai_unavailable',
+                    can_regenerate: false,
+                    can_retry: true,
+                },
+                review: null,
+            },
+            attachTo: document.body,
+        });
+
+        expect(wrapper.text()).toContain('A IA não respondeu agora.');
+        expect(wrapper.text()).toContain('Tentar de novo');
+        expect(wrapper.text()).not.toContain('Praticar esta aula');
+        await expectAccessible(wrapper.element);
+    });
+});

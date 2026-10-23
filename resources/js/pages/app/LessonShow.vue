@@ -13,6 +13,7 @@ import TextArea from '@/components/fixa/TextArea.vue';
 import TextField from '@/components/fixa/TextField.vue';
 import Toast from '@/components/fixa/Toast.vue';
 import GenerationProgress from '@/components/lessons/GenerationProgress.vue';
+import LessonFailure from '@/components/lessons/LessonFailure.vue';
 import ReportedNotice from '@/components/lessons/ReportedNotice.vue';
 import { useTargetLang } from '@/composables/useTargetLang';
 import { t } from '@/i18n';
@@ -122,6 +123,24 @@ const summaryWords = computed(() => countWords(props.review?.summary ?? ''));
 const reportOf = (item: string) =>
     props.review?.open_reports.find((report) => report.item === item);
 const conceptItem = (concept: ReviewConcept) => `concept:${concept.key}`;
+
+// "Tentar de novo" e "Regenerar" podem ser recusados pelo limite (REV-04).
+const actionError = ref<string | null>(null);
+const retrying = ref(false);
+
+function retry(): void {
+    actionError.value = null;
+    retrying.value = true;
+    router.post(
+        `${base.value}/tentar-de-novo`,
+        {},
+        {
+            preserveScroll: true,
+            onError: (errors) => (actionError.value = errors.lesson ?? null),
+            onFinish: () => (retrying.value = false),
+        },
+    );
+}
 
 const busyUndo = ref<string | null>(null);
 
@@ -262,7 +281,11 @@ function saveSheet(): void {
             reportForm.post(`${base.value}/reportes`, keep);
             break;
         case 'regenerate':
+            actionError.value = null;
             actionForm.post(`${base.value}/regenerar`, {
+                preserveScroll: true,
+                onError: (errors) =>
+                    (actionError.value = errors.lesson ?? null),
                 onFinish: closeSheet,
             });
             break;
@@ -311,7 +334,18 @@ const regenerationHint = computed(() => {
 
     <GenerationProgress v-if="processing" :status="lesson.status" />
 
-    <template v-else-if="review && lesson.status === 'ready'">
+    <LessonFailure
+        v-if="lesson.status === 'failed'"
+        :reason="lesson.failure_reason"
+        :can-retry="lesson.can_retry"
+        :retrying="retrying"
+        @retry="retry"
+    />
+
+    <Banner v-if="actionError" tone="error" icon="error" :title="actionError" />
+
+    <!-- Se uma nova geração falhar, a versão anterior continua visível. -->
+    <template v-if="review && !processing">
         <div class="flex flex-wrap items-center gap-2">
             <Button href="/praticar" icon="play_arrow" class="grow sm:grow-0">{{
                 t('review.practice')

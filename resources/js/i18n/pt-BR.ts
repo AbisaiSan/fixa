@@ -268,6 +268,44 @@ export const ptBR = {
             'lesson-deleted': 'Aula removida da sua rotina.',
         },
     },
+    failure: {
+        retry: 'Tentar de novo',
+        resend: 'Enviar de novo',
+        noRetries:
+            'Você já usou as novas tentativas desta aula. Envie o material outra vez.',
+        too_short: {
+            title: 'O material ficou curto demais.',
+            body: 'Precisamos de pelo menos 50 palavras legíveis para gerar a revisão. Envie de novo com mais conteúdo da aula.',
+        },
+        pdf_without_text: {
+            title: 'Este PDF não tem texto selecionável.',
+            body: 'Parece uma imagem ou um documento escaneado, que ainda não conseguimos ler. Cole o texto da aula ou envie um PDF com texto.',
+        },
+        virus_found: {
+            title: 'Recusamos este arquivo por segurança.',
+            body: 'O antivírus encontrou um problema no arquivo, e ele foi apagado. Envie outro arquivo ou cole o texto da aula.',
+        },
+        unreadable_file: {
+            title: 'Não conseguimos abrir este arquivo.',
+            body: 'O PDF pode estar corrompido ou protegido por senha. Exporte de novo e envie, ou cole o texto da aula.',
+        },
+        ai_invalid_output: {
+            title: 'A revisão não ficou boa o bastante.',
+            body: 'Conferimos a resposta da IA e ela veio incompleta, então não salvamos. Seu material continua aqui; tente de novo.',
+        },
+        ai_unavailable: {
+            title: 'A IA não respondeu agora.',
+            body: 'O serviço está instável no momento. Seu material continua aqui; tente de novo em alguns minutos.',
+        },
+        ai_budget_reached: {
+            title: 'Chegamos ao limite de uso da IA deste mês.',
+            body: 'Para manter os custos sob controle, pausamos novas gerações. Seu material continua guardado; tente de novo mais tarde.',
+        },
+        processing_failed: {
+            title: 'Algo deu errado ao preparar a aula.',
+            body: 'Seu material continua aqui. Tente de novo; se continuar, envie o material outra vez.',
+        },
+    },
     generation: {
         title: 'Gerando sua revisão',
         body: 'Pode sair desta tela. A aula continua sendo preparada e aparece pronta em Aulas.',

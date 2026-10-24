@@ -2,13 +2,15 @@
 
 Registro das versões em uso por ambiente (SEG-01, SEG-02 e SEG-03). Atualize este arquivo sempre que trocar a versão do PHP, do Laravel ou de uma imagem, e anote a data.
 
-Última atualização: 23/10/2026.
+Última atualização: 24/10/2026.
 
-## Avisos de segurança conferidos em 23/10/2026
+## Avisos de segurança conferidos em 24/10/2026
 
 | Componente | Aviso | Corrigido em | Situação |
 | --- | --- | --- | --- |
-| PHP | CVE-2026-109618 e CVE-2026-109619, execução remota de código (21/10/2026) | 8.5.12 e 8.4.27 | Corrigido no computador. **Pendente no container**, ver abaixo |
+| PHP | CVE-2026-109618 e CVE-2026-109619 ("PHP2Shell"), execução remota de código sem login, explorada ativamente (21/10/2026) | 8.5.12 e 8.4.27 | Corrigido no computador e no container (24/10/2026) |
+| PHP | CVE-2026-115560, execução remota improvável pelo progresso de upload da sessão (aviso de 23/10/2026) | Próxima versão regular | Sem correção ainda. Mitigado com `session.upload_progress.enabled = 0` no `docker/8.5/php.ini`. O Fixa não troca o serializador de sessão, condição do ataque |
+| Node | Correções de 21/10/2026 (Brotli com possível execução de código, resposta confundida em conexão reaproveitada, verificação de certificado por IP) | 26.12.1, 24.22.1 e 22.23.4 | Computador atualizado para 26.12.1; container já no 24.22.1 |
 | Laravel | Auth bypass no guard de token (crítico, 19/10/2026) | 13.29.0 | Coberto pela 13.38.0 |
 | Laravel | Destruição de dados não autorizada (médio, 19/10/2026) | 13.27.0 | Coberto |
 | Laravel | XSS na página de depuração (baixo, 10/09/2026) | 13.30.0 | Coberto |
@@ -16,7 +18,7 @@ Registro das versões em uso por ambiente (SEG-01, SEG-02 e SEG-03). Atualize es
 | Laravel | Injeção CRLF na regra de e-mail (alto, 01/06/2026) | 13.10.0 | Coberto |
 | npm | Vite+ 0.3.0 do starter kit (Vite, Vitest, tinypool: 3 críticos e 4 moderados) | Vite+ 1.x | Atualizado para 1.3.0, `npm audit` sem vulnerabilidades |
 
-Fontes: [php.net](https://www.php.net/releases/), [avisos do Laravel no GitHub](https://github.com/laravel/framework/security/advisories), [releases do Laravel](https://github.com/laravel/framework/releases).
+Fontes: [php.net](https://www.php.net/releases/), [aviso de 23/10 do PHP](https://www.php.net/archive/2026.php), [avisos do Node](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases), [avisos do Laravel no GitHub](https://github.com/laravel/framework/security/advisories), [releases do Laravel](https://github.com/laravel/framework/releases).
 
 ## Computador de desenvolvimento (macOS)
 
@@ -24,31 +26,31 @@ Fontes: [php.net](https://www.php.net/releases/), [avisos do Laravel no GitHub](
 | --- | --- |
 | PHP (Herd) | 8.5.12 |
 | Composer | 2.10.2 |
-| Node | 26.10.0 |
-| npm | 11.19.1 |
+| Node (Homebrew) | 26.12.1 |
+| npm | 11.20.0 |
 | Docker | 29.8.2 |
 | gitleaks | 8.30.1 |
 
-O PHP 8.4.25, ainda instalado no Herd e vulnerável, não é mais o padrão. Atualize ou remova pelo Herd.
+O PHP 8.4 do Herd, que não é o padrão, também foi para o 8.4.27, corrigido.
 
 ## Container do Sail (ambiente local)
 
 | Serviço | Imagem | Versão |
 | --- | --- | --- |
-| App | `sail-8.5/app` (Ubuntu 24.04, PHP do repositório sury) | PHP **8.5.11**, Node 24.22.1 |
+| App | `sail-8.5/app` (Ubuntu 24.04, PHP do repositório sury) | PHP 8.5.12, Node 24.22.1 |
 | Banco | `postgres:18-alpine` | PostgreSQL 18.6 |
 | Cache e filas | `redis:alpine` | Redis 8.10.2 |
 | E-mail | `axllent/mailpit:latest` | Mailpit 1.32.0 |
 | Arquivos (S3) | `rustfs/rustfs:latest` | RustFS 1.0.3 |
 
-**Pendência (SEG-03 e SEG-06):** em 23/10/2026 o repositório sury ainda não publicou o PHP 8.5.12, então o container roda o 8.5.11, vulnerável. Mitigação até lá: todas as portas publicadas só em `127.0.0.1` e nenhum dado real no ambiente. Assim que o pacote sair, reconstrua e confira a versão em execução:
+Imagem reconstruída em 24/10/2026 com o PHP 8.5.12 e conferida em execução (`sail php -v`). O supervisord do container roda o servidor web, a fila e o agendador (`schedule:work`). Para reconstruir de novo depois de uma correção do PHP:
 
 ```bash
 ./vendor/bin/sail build --no-cache && ./vendor/bin/sail up -d
 ./vendor/bin/sail php -v
 ```
 
-Para conferir se o pacote já saiu: `./vendor/bin/sail root-shell -c "apt-get update -qq && apt-cache policy php8.5-cli"`.
+Para conferir se o pacote corrigido já saiu: `./vendor/bin/sail root-shell -c "apt-get update -qq && apt-cache policy php8.5-cli"`.
 
 ## CI (GitHub Actions)
 

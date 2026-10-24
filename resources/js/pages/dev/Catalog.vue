@@ -17,7 +17,11 @@ import SessionHeader from '@/components/fixa/SessionHeader.vue';
 import Sheet from '@/components/fixa/Sheet.vue';
 import SidebarNav from '@/components/fixa/SidebarNav.vue';
 import Skeleton from '@/components/fixa/Skeleton.vue';
+import FreezeSlots from '@/components/fixa/FreezeSlots.vue';
+import Icon from '@/components/fixa/Icon.vue';
+import ProgressRing from '@/components/fixa/ProgressRing.vue';
 import StatusChip from '@/components/fixa/StatusChip.vue';
+import StreakChip from '@/components/fixa/StreakChip.vue';
 import type { StatusKind } from '@/components/fixa/StatusChip.vue';
 import Switch from '@/components/fixa/Switch.vue';
 import TargetText from '@/components/fixa/TargetText.vue';
@@ -200,6 +204,30 @@ const cardFlipped = ref(false);
                     />
                     <OriginTag lesson-date="21/10" />
                     <OriginTag />
+                </div>
+            </Card>
+
+            <Card>
+                <h2 class="mt-0 mb-4 type-subtitle">
+                    ProgressRing, StreakChip e FreezeSlots
+                </h2>
+                <div class="flex flex-wrap items-center gap-4">
+                    <ProgressRing
+                        :percent="40"
+                        label="Meta do dia: 4 de 10 minutos"
+                    >
+                        <span class="flex flex-col">
+                            <span class="font-display text-3xl">4</span>
+                            <span class="text-xs text-ink2">de 10 min</span>
+                        </span>
+                    </ProgressRing>
+                    <ProgressRing :percent="100" label="Meta do dia cumprida">
+                        <Icon name="check" :size="40" class="text-prid" />
+                    </ProgressRing>
+                    <StreakChip :days="12" />
+                    <StreakChip :days="0" />
+                    <FreezeSlots :count="1" />
+                    <FreezeSlots :count="0" />
                 </div>
             </Card>
 

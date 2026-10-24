@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import Button from '@/components/fixa/Button.vue';
+import GoalCelebration from '@/components/fixa/GoalCelebration.vue';
 import { t } from '@/i18n';
 import { getJson } from '@/lib/http';
 import { blockShort } from '@/lib/plan';
@@ -14,16 +15,35 @@ import type { NextBlockSummary, PlanBlock } from '@/types/plan';
 const props = withDefaults(
     defineProps<{
         current: string;
+        gained?: number;
         fallbackHref?: string;
         fallbackLabel?: string;
     }>(),
-    { fallbackHref: '/hoje', fallbackLabel: undefined },
+    { gained: 0, fallbackHref: '/hoje', fallbackLabel: undefined },
 );
 
 const emit = defineEmits<{ loaded: [summary: NextBlockSummary] }>();
 
 const next = ref<PlanBlock | null>(null);
 const loading = ref(true);
+const celebrate = ref<{ streak: number; xp: number } | null>(null);
+
+// A comemoração aparece uma vez por dia, no bloco que cumpriu a meta (J5-F3).
+const CELEBRATED_KEY = 'fixa-goal-celebrated';
+
+function firstCelebration(date: string): boolean {
+    try {
+        if (localStorage.getItem(CELEBRATED_KEY) === date) {
+            return false;
+        }
+
+        localStorage.setItem(CELEBRATED_KEY, date);
+    } catch {
+        // Sem armazenamento: comemora, sem lembrar depois.
+    }
+
+    return true;
+}
 
 onMounted(async () => {
     try {
@@ -31,6 +51,18 @@ onMounted(async () => {
             `/hoje/proximo?atual=${encodeURIComponent(props.current)}`,
         );
         next.value = summary.next;
+
+        if (
+            summary.goal?.counted &&
+            summary.date &&
+            firstCelebration(summary.date)
+        ) {
+            celebrate.value = {
+                streak: summary.streak.current,
+                xp: summary.xp?.total ?? 0,
+            };
+        }
+
         emit('loaded', summary);
     } catch {
         // Sem conexão: ficam os caminhos de sempre.
@@ -42,6 +74,13 @@ onMounted(async () => {
 
 <template>
     <div class="flex w-full flex-col gap-2">
+        <GoalCelebration
+            v-if="celebrate"
+            :streak="celebrate.streak"
+            :xp-from="Math.max(0, celebrate.xp - gained)"
+            :xp-to="celebrate.xp"
+            class="mb-2"
+        />
         <Button
             v-if="next?.href"
             block

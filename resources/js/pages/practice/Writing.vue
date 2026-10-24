@@ -215,7 +215,10 @@ const summary = computed(() => {
                     t('feedback.xp', { n: xp })
                 }}
             </p>
-            <NextBlockActions :current="weak ? 'weak_point' : 'writing'" />
+            <NextBlockActions
+                :current="weak ? 'weak_point' : 'writing'"
+                :gained="xp"
+            />
         </Card>
     </template>
 

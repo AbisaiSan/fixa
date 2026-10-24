@@ -204,6 +204,13 @@ export const ptBR = {
         backToday: 'Voltar para Hoje',
         backPractice: 'Voltar para Praticar',
     },
+    // Meta cumprida (J5-F3).
+    celebration: {
+        title: 'Meta cumprida!',
+        streakOne: 'Sequência de 1 dia',
+        streak: 'Sequência de {n} dias',
+        xp: '{n} XP no total',
+    },
     streak: {
         one: 'dia de sequência',
         many: 'dias de sequência',

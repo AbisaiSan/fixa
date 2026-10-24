@@ -378,7 +378,10 @@ onBeforeUnmount(() => {
                     t('flashcards.xp', { n: xp })
                 }}
             </p>
-            <NextBlockActions :current="lesson ? 'vocabulary' : 'flashcards'" />
+            <NextBlockActions
+                :current="lesson ? 'vocabulary' : 'flashcards'"
+                :gained="xp"
+            />
         </Card>
     </template>
 

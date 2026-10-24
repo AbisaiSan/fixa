@@ -33,6 +33,7 @@ export type TodayPlan = {
 };
 
 export type NextBlockSummary = {
+    date: string | null;
     next: PlanBlock | null;
     goal: TodayPlan['goal'] | null;
     streak: { current: number };

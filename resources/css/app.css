@@ -237,3 +237,16 @@
         transform: none;
     }
 }
+
+/* Confete da meta cumprida (J5-F3). Com movimento reduzido, o componente nem desenha. */
+@keyframes fx-confetti {
+    from {
+        opacity: 1;
+        transform: translateY(-8px) rotate(0deg);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(140px) rotate(540deg);
+    }
+}

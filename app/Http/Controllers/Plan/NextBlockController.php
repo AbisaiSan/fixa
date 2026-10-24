@@ -37,6 +37,7 @@ class NextBlockController extends Controller
         }
 
         return response()->json([
+            'date' => $today['date'] ?? null,
             'next' => $next,
             'goal' => $today['goal'] ?? null,
             'streak' => ['current' => $today['streak']['current'] ?? 0],

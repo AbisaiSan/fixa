@@ -18,6 +18,7 @@ import Sheet from '@/components/fixa/Sheet.vue';
 import SidebarNav from '@/components/fixa/SidebarNav.vue';
 import Skeleton from '@/components/fixa/Skeleton.vue';
 import FreezeSlots from '@/components/fixa/FreezeSlots.vue';
+import GoalCelebration from '@/components/fixa/GoalCelebration.vue';
 import Icon from '@/components/fixa/Icon.vue';
 import ProgressRing from '@/components/fixa/ProgressRing.vue';
 import StatusChip from '@/components/fixa/StatusChip.vue';
@@ -229,6 +230,11 @@ const cardFlipped = ref(false);
                     <FreezeSlots :count="1" />
                     <FreezeSlots :count="0" />
                 </div>
+            </Card>
+
+            <Card>
+                <h2 class="mt-0 mb-4 type-subtitle">GoalCelebration</h2>
+                <GoalCelebration :streak="13" :xp-from="2700" :xp-to="2740" />
             </Card>
 
             <Card>

@@ -10,6 +10,7 @@ use App\Http\Controllers\Lessons\LessonController;
 use App\Http\Controllers\Lessons\LessonFileController;
 use App\Http\Controllers\Lessons\LessonGenerationController;
 use App\Http\Controllers\Lessons\LessonReviewController;
+use App\Http\Controllers\Plan\RushController;
 use App\Http\Controllers\Practice\AttemptController;
 use App\Http\Controllers\Practice\MistakeController;
 use App\Http\Controllers\Practice\PracticeItemReportController;
@@ -60,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('lessons.files.show');
     Route::get('praticar', [TodayController::class, 'practice'])->name('practice');
     Route::get('praticar/flashcards', [FlashcardSessionController::class, 'show'])->name('flashcards');
+    Route::post('praticar/corrida', [RushController::class, 'store'])->middleware('throttle:card-reviews')->name('rush.store');
     Route::post('praticar/flashcards/{card}/respostas', [CardReviewController::class, 'store'])
         ->middleware('throttle:card-reviews')
         ->name('cards.reviews.store');

@@ -25,6 +25,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $recalculated_at
  * @property Carbon|null $counted_at
  * @property Carbon|null $frozen_at
+ * @property Carbon|null $rush_started_at
+ * @property Carbon|null $rush_completed_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -41,6 +43,8 @@ class PlanDay extends Model
             'recalculated_at' => 'datetime',
             'counted_at' => 'datetime',
             'frozen_at' => 'datetime',
+            'rush_started_at' => 'datetime',
+            'rush_completed_at' => 'datetime',
         ];
     }
 

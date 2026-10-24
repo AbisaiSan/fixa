@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cards;
 use App\Domain\Cards\DailyQueue;
 use App\Domain\Cards\ReviewCard;
 use App\Domain\Cards\Scheduling\ReviewScheduler;
+use App\Domain\Plan\RushMode;
 use App\Http\Controllers\Controller;
 use App\Models\Card;
 use App\Models\Enrollment;
@@ -22,7 +23,7 @@ use Inertia\Response;
  */
 class FlashcardSessionController extends Controller
 {
-    public function show(Request $request, DailyQueue $queue, ReviewScheduler $scheduler): Response
+    public function show(Request $request, DailyQueue $queue, ReviewScheduler $scheduler, RushMode $rushMode): Response
     {
         /** @var User $user */
         $user = $request->user();
@@ -35,6 +36,10 @@ class FlashcardSessionController extends Controller
             : null;
 
         $rush = $request->query('modo') === 'corrida';
+
+        if ($rush) {
+            $rushMode->start($user);
+        }
 
         return Inertia::render('practice/Flashcards', [
             'mode' => $rush ? 'rush' : 'normal',

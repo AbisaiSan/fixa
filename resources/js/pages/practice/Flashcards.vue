@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import CardFormSheet from '@/components/cards/CardFormSheet.vue';
 import type { CardFields } from '@/components/cards/CardFormSheet.vue';
 import Button from '@/components/fixa/Button.vue';
@@ -22,6 +22,7 @@ import {
     pendingReviews,
 } from '@/lib/reviewOutbox';
 import type { SentReview } from '@/lib/reviewOutbox';
+import { postJson } from '@/lib/http';
 import { shortDate } from '@/lib/lessons';
 import type { SessionCard } from '@/types/lessons';
 
@@ -158,6 +159,22 @@ async function send(): Promise<void> {
     await flushReviews(onSent);
     pending.value = pendingReviews().length;
 }
+
+// Fim da corrida (J5-B5, PLA-04): depois de enviar as respostas, o servidor
+// confere a regra e conta o dia para a sequência.
+watch(done, async (finished) => {
+    if (!finished || !rush.value) {
+        return;
+    }
+
+    await send();
+
+    try {
+        await postJson('/praticar/corrida', {});
+    } catch {
+        // Sem conexão a corrida não conta agora; as respostas seguem na fila.
+    }
+});
 
 function next(): void {
     index.value += 1;

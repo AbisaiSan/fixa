@@ -4,6 +4,7 @@ namespace App\Domain\Plan;
 
 use App\Domain\Lessons\LessonStatus;
 use App\Domain\Practice\SessionKind;
+use App\Domain\Practice\SessionStatus;
 use App\Models\Card;
 use App\Models\Enrollment;
 use App\Models\Lesson;
@@ -90,8 +91,10 @@ final class GenerateWeeklyPlan
      */
     private function activities(User $user, Lesson $lesson): array
     {
+        // Escrita e leitura feitas não se repetem; o vocabulário sempre volta.
         $sessions = PracticeSession::forUser($user)
             ->where('source_lesson_id', $lesson->id)
+            ->where('status', '!=', SessionStatus::Completed)
             ->pluck('kind')
             ->all();
 

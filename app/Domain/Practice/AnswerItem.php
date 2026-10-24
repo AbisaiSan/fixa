@@ -2,6 +2,7 @@
 
 namespace App\Domain\Practice;
 
+use App\Domain\Plan\RecordPlanProgress;
 use App\Models\Attempt;
 use App\Models\PracticeItem;
 use App\Models\PracticeSession;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class AnswerItem
 {
-    public function __construct(private ItemCorrector $corrector, private MistakeBook $mistakes) {}
+    public function __construct(private ItemCorrector $corrector, private MistakeBook $mistakes, private RecordPlanProgress $plan) {}
 
     /**
      * @throws DailyLimitReached
@@ -47,15 +48,20 @@ final class AnswerItem
             ]);
             $attempt->save();
 
-            $this->advance($item, $now);
+            $session = $this->advance($item, $now);
             // Erros vão para o caderno (ERR-01).
             $this->mistakes->record($user, $item, $answer, $correction);
+
+            // Sessão concluída agora fecha o bloco do plano de hoje (J5-B4).
+            if ($session->wasChanged('status') && $session->status === SessionStatus::Completed) {
+                $this->plan->sessionCompleted($user, $session);
+            }
 
             return $attempt;
         });
     }
 
-    private function advance(PracticeItem $item, CarbonImmutable $now): void
+    private function advance(PracticeItem $item, CarbonImmutable $now): PracticeSession
     {
         $session = PracticeSession::withoutGlobalScopes()->lockForUpdate()->findOrFail($item->practice_session_id);
         $answered = Attempt::withoutGlobalScopes()
@@ -67,5 +73,7 @@ final class AnswerItem
             'status' => $answered >= $session->items()->count() ? SessionStatus::Completed : SessionStatus::InProgress,
             'completed_at' => $answered >= $session->items()->count() ? ($session->completed_at ?? $now) : null,
         ])->save();
+
+        return $session;
     }
 }

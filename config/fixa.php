@@ -94,6 +94,14 @@ return [
     ],
 
     /*
+    | Plano (ADR 0004). O bloco de flashcards fecha com a fila vazia ou com
+    | este número de cartões por minuto planejado (8 cartões em 3 minutos no protótipo).
+    */
+    'plan' => [
+        'cards_per_minute' => 3,
+    ],
+
+    /*
     | Antivírus dos arquivos enviados (UPL-03). "clamav" no Sail e em produção;
     | "fake" só nos testes, que não têm o clamd.
     */

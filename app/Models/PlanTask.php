@@ -24,6 +24,8 @@ use Illuminate\Support\Carbon;
  * @property int $minutes
  * @property bool $important
  * @property Carbon|null $completed_at
+ * @property Carbon|null $rescheduled_at
+ * @property Carbon|null $moved_from
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -45,6 +47,8 @@ class PlanTask extends Model
             'minutes' => 'integer',
             'important' => 'boolean',
             'completed_at' => 'datetime',
+            'rescheduled_at' => 'datetime',
+            'moved_from' => 'date',
         ];
     }
 

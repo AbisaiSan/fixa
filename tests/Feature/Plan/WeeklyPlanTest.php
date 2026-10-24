@@ -118,7 +118,7 @@ test('the hourly command plans for everyone without a plan, with nobody logged i
     $second = ($this->student)('Europe/Lisbon', 20);
     $this->generator->for($first);
 
-    $this->artisan('fixa:plan-week')->expectsOutput('Planos criados: 1.')->assertSuccessful();
+    $this->artisan('fixa:plan-week')->expectsOutput('Planos criados: 1. Dias recalculados: 2.')->assertSuccessful();
 
     expect(PlanDay::forUser($second)->count())->toBe(7)
         ->and(PlanDay::forUser($second)->first()->tasks()->sum('minutes'))->toBe(20)

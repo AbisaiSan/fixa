@@ -21,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon $date
  * @property Carbon $week_start
  * @property int $goal_minutes
+ * @property Carbon|null $recalculated_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -34,6 +35,7 @@ class PlanDay extends Model
             'date' => 'date',
             'week_start' => 'date',
             'goal_minutes' => 'integer',
+            'recalculated_at' => 'datetime',
         ];
     }
 

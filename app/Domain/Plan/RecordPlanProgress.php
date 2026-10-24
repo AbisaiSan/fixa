@@ -97,7 +97,8 @@ final class RecordPlanProgress
         $tasks = $day->tasks()->get();
         $counted = DayProgress::counted(
             goal: $day->goal_minutes,
-            planned: (int) $tasks->sum('minutes'),
+            // Bloco sem nada a fazer hoje não pesa, a não ser que tenha sido feito.
+            planned: (int) $tasks->filter(fn (PlanTask $task) => $task->skipped_at === null || $task->completed_at !== null)->sum('minutes'),
             done: (int) $tasks->whereNotNull('completed_at')->sum('minutes'),
             rush: $rush,
         );

@@ -26,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $completed_at
  * @property Carbon|null $rescheduled_at
  * @property Carbon|null $moved_from
+ * @property Carbon|null $skipped_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -49,6 +50,7 @@ class PlanTask extends Model
             'completed_at' => 'datetime',
             'rescheduled_at' => 'datetime',
             'moved_from' => 'date',
+            'skipped_at' => 'datetime',
         ];
     }
 

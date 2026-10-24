@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Cards\DailyQueue;
 use App\Domain\Lessons\WordCounter;
+use App\Domain\Plan\TodayPlan;
 use App\Domain\Practice\SessionKind;
 use App\Domain\Practice\SessionStatus;
 use App\Domain\Practice\WeakPointBuilder;
@@ -16,17 +17,20 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Hoje (J2-F6, fluxo A). Sem aula, convida a enviar a primeira; com aula,
- * leva à mais recente. O plano do dia chega na J5.
+ * Hoje (J2-F6, J5-B9, PLA-06). Sem aula, convida a enviar a primeira; com
+ * aula, mostra o plano do dia com o próximo bloco a 1 clique.
  */
 class TodayController extends Controller
 {
-    public function show(): Response
+    public function show(Request $request, TodayPlan $plan): Response
     {
+        /** @var User $user */
+        $user = $request->user();
         $lesson = Lesson::query()->latest('created_at')->latest('id')->first();
 
         return Inertia::render('app/Today', [
             'status' => $lesson === null ? 'empty' : 'ready',
+            'plan' => $plan->for($user),
             'latestLesson' => $lesson === null ? null : [
                 'ulid' => $lesson->ulid,
                 'title' => $lesson->title,

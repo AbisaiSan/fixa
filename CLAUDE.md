@@ -7,7 +7,7 @@ Plataforma pessoal de estudo de idiomas com IA (começando pelo inglês), basead
 - `docs/produto.md`: produto e regras de negócio. Os códigos de regra (MAT, REV, FLA, VOC, ATV, ERR, PLA, GAM, NIV, SEG, ACE, DAD, UPL, IAS, OPE) vêm daqui.
 - `docs/plano-desenvolvimento.md`: jornadas, tarefas (IDs como J2-B3), critérios de pronto e segurança por jornada.
 - `docs/versoes.md`: versões em uso por ambiente e avisos de segurança conferidos.
-- `docs/adr/`: decisões de arquitetura. Toda decisão nova vira um ADR curto e numerado.
+- `docs/adr/`: decisões de arquitetura. Toda decisão nova vira um ADR curto e numerado. O plano semanal, a sequência e o XP estão no ADR 0004.
 - `docs/design/prototipo/`: protótipo do Claude Design, somente leitura.
 
 ## Stack
@@ -29,7 +29,12 @@ npm run check:fix                    # corrige lint e formatação do frontend
 npm run types:check
 composer audit && npm audit
 gitleaks git                         # antes de cada commit
+./vendor/bin/sail artisan fixa:plan-week       # fecha a sequência, gera o plano e refaz o dia de quem faltou
+./vendor/bin/sail artisan fixa:send-reminders  # lembrete diário por e-mail
+./vendor/bin/sail artisan fixa:xp-rebuild      # recalcula o XP a partir do histórico, sem duplicar
 ```
+
+O agendador (`schedule:work`) roda no container pelo supervisord: plano de hora em hora e lembretes a cada 15 minutos. Mudou o `docker/8.5/supervisord.conf`? Reconstrua a imagem (`sail build --no-cache`). Na bateria, com a máquina ociosa, o macOS segura os processos e o Pest pode passar dos 300 s do Composer: rode o gate com `COMPOSER_PROCESS_TIMEOUT=0` no ambiente.
 
 Os comandos `npm` e o `composer test` rodam no host, não no container: o Vite+ tem binário nativo do macOS, e o Pest acessa o PostgreSQL do Sail por `127.0.0.1`.
 

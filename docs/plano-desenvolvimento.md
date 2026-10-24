@@ -299,9 +299,9 @@ O aluno abre o app e já vê o que fazer, e o plano se refaz quando ele falta. E
 
 ### Critérios de pronto
 
-- [ ] Faltar 1 e 2 dias refaz o plano e nunca passa de 1,5 vez a meta (teste)
-- [ ] Congelamento protege a sequência e o saldo respeita o limite de 2 (teste)
-- [ ] XP nunca diminui, verificado por teste de propriedade
+- [x] Faltar 1 e 2 dias refaz o plano e nunca passa de 1,5 vez a meta (teste)
+- [x] Congelamento protege a sequência e o saldo respeita o limite de 2 (teste)
+- [x] XP nunca diminui, verificado por teste de propriedade
 - [ ] Você abre o app e começa a estudar em 1 clique
 - [ ] Gate 3 atendido: você estuda 14 dias seguidos usando só a plataforma
 

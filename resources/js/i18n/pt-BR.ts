@@ -236,6 +236,28 @@ export const ptBR = {
             planned: 'Planejado',
         },
     },
+    // Progresso (J5-F5, protótipo tela 12). Sem ranking (GAM-05).
+    progress: {
+        streakTitle: 'Sequência',
+        record: 'Seu recorde: {n} dias',
+        recordOne: 'Seu recorde: 1 dia',
+        freezesInfo:
+            '{n} de {max} congelamentos. Você ganha 1 por semana. Ele protege a sequência sozinho num dia sem estudo.',
+        weekTitle: 'Meta da semana',
+        weekCount: '{n} de {goal} dias',
+        weekLabel: 'Dias estudados nesta semana',
+        dayStudied: '{day}: estudado',
+        dayOpen: '{day}: ainda não estudado',
+        levelTitle: 'Nível {n}',
+        xpTotal: '{n} XP',
+        levelBar: 'XP até o próximo nível',
+        levelLine: '{in} de {per} XP · faltam {left} XP para o nível {next}',
+        xpNote: 'Você ganha XP em cada cartão revisado e em cada atividade concluída. O XP nunca diminui.',
+        historyTitle: 'Últimas semanas',
+        historyRow: '{days} dias · {minutes} min',
+        historyRowOne: '1 dia · {minutes} min',
+        noRanking: 'Sem ranking: aqui você só se compara com você.',
+    },
     // Meta cumprida (J5-F3).
     celebration: {
         title: 'Meta cumprida!',

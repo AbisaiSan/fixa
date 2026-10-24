@@ -20,6 +20,7 @@ use App\Http\Controllers\Practice\PracticeItemReportController;
 use App\Http\Controllers\Practice\PracticeSessionController;
 use App\Http\Controllers\Practice\ReadingController;
 use App\Http\Controllers\Practice\ReadingWordController;
+use App\Http\Controllers\Progress\ProgressController;
 use App\Http\Controllers\TodayController;
 use App\Http\Controllers\Vocabulary\WordController;
 use App\Http\Requests\Lessons\StoreLessonRequest;
@@ -104,7 +105,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('vocabulario/{word}/reportes', [WordController::class, 'report'])->name('words.reports.store');
     Route::delete('vocabulario/{word}/reportes/{report}', [WordController::class, 'withdrawReport'])->name('words.reports.destroy');
     Route::post('vocabulario', [WordController::class, 'store'])->middleware('throttle:word-additions')->name('words.store');
-    Route::inertia('progresso', 'app/Progress', ['status' => 'empty'])->name('progress');
+    Route::get('progresso', [ProgressController::class, 'show'])->name('progress');
 });
 
 require __DIR__.'/settings.php';

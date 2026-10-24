@@ -60,7 +60,10 @@ final class GenerateWeeklyPlan
         return true;
     }
 
-    private function input(User $user, Enrollment $enrollment, CarbonImmutable $monday, CarbonImmutable $today): PlanInput
+    /**
+     * O que o aluno tem hoje para montar os dias de $today até domingo.
+     */
+    public function input(User $user, Enrollment $enrollment, CarbonImmutable $monday, CarbonImmutable $today): PlanInput
     {
         $lesson = Lesson::forUser($user)
             ->where('enrollment_id', $enrollment->id)

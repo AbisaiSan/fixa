@@ -11,6 +11,7 @@ use App\Domain\Lessons\LessonRejected;
 use App\Domain\Lessons\LessonReviewer;
 use App\Domain\Lessons\LessonStatus;
 use App\Domain\Lessons\WordCounter;
+use App\Domain\Plan\RefreshUpcomingPlan;
 use App\Domain\Practice\ActivityGenerator;
 use App\Domain\Practice\ReadingGenerator;
 use App\Models\Lesson;
@@ -39,7 +40,7 @@ class ProcessLesson implements ShouldQueue
 
     public function __construct(public int $lessonId) {}
 
-    public function handle(TextExtractor $extractor, LessonReviewer $reviewer, CardGenerator $cards, ActivityGenerator $activities, ReadingGenerator $reading): void
+    public function handle(TextExtractor $extractor, LessonReviewer $reviewer, CardGenerator $cards, ActivityGenerator $activities, ReadingGenerator $reading, RefreshUpcomingPlan $plan): void
     {
         $lesson = Lesson::withoutGlobalScopes()->find($this->lessonId);
 
@@ -65,6 +66,8 @@ class ProcessLesson implements ShouldQueue
 
             if ($lesson->status === LessonStatus::Validating) {
                 $lesson->transitionTo(LessonStatus::Ready);
+                // A aula entra no plano no mesmo dia (J5-B3, PLA-05).
+                $plan->for($lesson->user);
             }
         } catch (LessonRejected $exception) {
             $lesson->transitionTo(LessonStatus::Failed, $exception->reason);

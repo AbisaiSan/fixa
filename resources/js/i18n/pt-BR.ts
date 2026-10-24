@@ -114,6 +114,21 @@ export const ptBR = {
         afternoon: 'Boa tarde, {name}',
         evening: 'Boa noite, {name}',
     },
+    // Mensagens de retomada (J5-B8, GAM-05): todas aqui, sem culpa e sem
+    // contar dias perdidos. O servidor só manda o código.
+    resume: {
+        welcome_back:
+            'Bom te ver de volta. Refizemos sua semana para caber no seu ritmo.',
+        welcome_back_detail:
+            'Suas aulas, seus cartões e seu XP continuam todos aqui.',
+        freeze_used:
+            'Congelamento usado automaticamente. Sua sequência ficou protegida.',
+        plan_redone_title: 'Plano refeito para caber no seu ritmo',
+        plan_redone_body:
+            'Bom te ver de volta. O que ficou para trás foi para os próximos dias, sem passar de {max} minutos por dia.',
+        streak_restart: 'Sua sequência recomeça hoje',
+        see_plan: 'Ver plano',
+    },
     today: {
         emptyTitle: 'Vamos começar pela sua aula',
         emptyBody:

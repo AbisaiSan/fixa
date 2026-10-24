@@ -14,6 +14,7 @@ import SessionHeader from '@/components/fixa/SessionHeader.vue';
 import Sheet from '@/components/fixa/Sheet.vue';
 import Toast from '@/components/fixa/Toast.vue';
 import ReportSheet from '@/components/lessons/ReportSheet.vue';
+import NextBlockActions from '@/components/plan/NextBlockActions.vue';
 import { t } from '@/i18n';
 import { ptBR } from '@/i18n/pt-BR';
 import {
@@ -82,7 +83,7 @@ const remaining = computed(() => {
     });
 });
 
-// Fim de sessão (J3-F4): resumo, XP e o próximo passo, sem voltar à home.
+// Fim de sessão (J3-F4, J5-F2): resumo, XP e o próximo bloco do plano.
 // O XP segue o protótipo (2 por resposta e 10 por sessão concluída) e é
 // registrado de verdade na J5, a partir de card_reviews (GAM-03).
 const XP_PER_ANSWER = 2;
@@ -104,15 +105,6 @@ const summary = computed(() =>
 
 const xp = computed(
     () => answers.value.length * XP_PER_ANSWER + XP_PER_SESSION,
-);
-
-const nextStep = computed(() =>
-    props.lesson
-        ? {
-              label: t('flashcards.nextLesson'),
-              href: `/aulas/${props.lesson.ulid}`,
-          }
-        : { label: t('flashcards.nextVocabulary'), href: '/vocabulario' },
 );
 
 async function rate(rating: number): Promise<void> {
@@ -386,14 +378,7 @@ onBeforeUnmount(() => {
                     t('flashcards.xp', { n: xp })
                 }}
             </p>
-            <div class="flex w-full flex-col gap-2">
-                <Button block :href="nextStep.href" icon="arrow_forward">{{
-                    nextStep.label
-                }}</Button>
-                <Button variant="secondary" block href="/hoje">{{
-                    t('flashcards.backToday')
-                }}</Button>
-            </div>
+            <NextBlockActions :current="lesson ? 'vocabulary' : 'flashcards'" />
         </Card>
     </template>
 

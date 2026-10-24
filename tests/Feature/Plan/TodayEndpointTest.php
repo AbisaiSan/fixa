@@ -129,3 +129,30 @@ test('today never shows another student plan or lesson', function () {
             ->where('plan.blocks', [])
             ->where('plan.next', null));
 });
+
+test('the end of a block offers the next one of today plan, never the same (J5-F2)', function () {
+    $this->getJson(route('today.next', ['atual' => 'flashcards']))
+        ->assertOk()
+        ->assertJsonPath('next.kind', 'lesson')
+        ->assertJsonPath('next.activity', 'writing')
+        ->assertJsonPath('next.href', route('practice.writing', $this->writing))
+        ->assertJsonPath('goal.counted', false)
+        ->assertJsonPath('streak.current', 0);
+
+    $this->getJson(route('today.next', ['atual' => 'writing']))
+        ->assertOk()
+        ->assertJsonPath('next.kind', 'flashcards');
+});
+
+test('with nothing left today the next block is empty', function () {
+    $this->get(route('today'));
+    PlanTask::forUser($this->user)->update(['completed_at' => now()]);
+
+    $this->getJson(route('today.next', ['atual' => 'writing']))
+        ->assertOk()
+        ->assertJsonPath('next', null);
+});
+
+test('the next block only accepts known block names', function () {
+    $this->getJson(route('today.next', ['atual' => 'drop table']))->assertUnprocessable();
+});

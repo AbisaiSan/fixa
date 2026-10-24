@@ -198,6 +198,12 @@ export const ptBR = {
         tag_flashcards: 'Revisões primeiro',
         tag_weak_point: 'Do caderno de erros',
     },
+    // Fim de cada bloco (J5-F2, fluxo B): segue o plano sem voltar à home.
+    nextBlock: {
+        label: 'Próximo: {block}',
+        backToday: 'Voltar para Hoje',
+        backPractice: 'Voltar para Praticar',
+    },
     streak: {
         one: 'dia de sequência',
         many: 'dias de sequência',
@@ -481,8 +487,6 @@ export const ptBR = {
         statTotal: 'corretas',
         statPartial: 'quase',
         statWrong: 'para rever',
-        backPractice: 'Praticar mais um pouco',
-        backToday: 'Voltar para Hoje',
     },
     mistakes: {
         title: 'Caderno de erros',
@@ -618,8 +622,6 @@ export const ptBR = {
         backToday: 'Voltar para Hoje',
         summaryLabel: 'Suas respostas nesta sessão',
         xp: '+{n} XP',
-        nextLesson: 'Próximo: rever a revisão da aula',
-        nextVocabulary: 'Próximo: ver o vocabulário',
         pending:
             '{n} respostas guardadas no aparelho. Vão assim que a conexão voltar.',
         pendingOne:

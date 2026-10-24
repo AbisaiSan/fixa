@@ -10,6 +10,7 @@ use App\Http\Controllers\Lessons\LessonController;
 use App\Http\Controllers\Lessons\LessonFileController;
 use App\Http\Controllers\Lessons\LessonGenerationController;
 use App\Http\Controllers\Lessons\LessonReviewController;
+use App\Http\Controllers\Plan\NextBlockController;
 use App\Http\Controllers\Plan\ReminderUnsubscribeController;
 use App\Http\Controllers\Plan\RushController;
 use App\Http\Controllers\Practice\AttemptController;
@@ -36,6 +37,7 @@ Route::post('lembrete/cancelar/{user}', [ReminderUnsubscribeController::class, '
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('hoje', [TodayController::class, 'show'])->name('today');
+    Route::get('hoje/proximo', [NextBlockController::class, 'show'])->name('today.next');
     Route::get('aulas', [LessonController::class, 'index'])->name('lessons.index');
     Route::inertia('aulas/enviar', 'app/LessonUpload', ['limits' => [
         'max_megabytes' => StoreLessonRequest::MAX_FILE_KILOBYTES / 1024,

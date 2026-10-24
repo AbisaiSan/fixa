@@ -31,3 +31,10 @@ export type TodayPlan = {
     rush: { due: number; done: boolean };
     resume: 'welcome_back' | 'freeze_used' | null;
 };
+
+export type NextBlockSummary = {
+    next: PlanBlock | null;
+    goal: TodayPlan['goal'] | null;
+    streak: { current: number };
+    xp: TodayPlan['xp'] | null;
+};

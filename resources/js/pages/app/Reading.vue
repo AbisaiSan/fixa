@@ -7,6 +7,7 @@ import Icon from '@/components/fixa/Icon.vue';
 import ReportButton from '@/components/fixa/ReportButton.vue';
 import Sheet from '@/components/fixa/Sheet.vue';
 import ReportSheet from '@/components/lessons/ReportSheet.vue';
+import NextBlockActions from '@/components/plan/NextBlockActions.vue';
 import TargetText from '@/components/fixa/TargetText.vue';
 import { useTargetLang } from '@/composables/useTargetLang';
 import { t } from '@/i18n';
@@ -307,6 +308,12 @@ const score = computed(() => {
             />
         </Card>
         <p v-if="score" role="status" class="m-0 type-subtitle">{{ score }}</p>
+        <NextBlockActions
+            v-if="score"
+            current="reading"
+            fallback-href="/praticar"
+            :fallback-label="t('nextBlock.backPractice')"
+        />
     </section>
 
     <Sheet

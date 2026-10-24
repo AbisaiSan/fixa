@@ -25,6 +25,10 @@ use Carbon\CarbonImmutable;
  * mensagem de retomada. Antes de montar, fecha os dias que passaram, garante
  * o plano da semana e refaz o dia se o aluno faltou.
  */
+/**
+ * @phpstan-type Block array{ulid: string, kind: string, activity: string|null, minutes: int, count: int, done: bool, skipped: bool, moved_from: string|null, href: string|null, lesson: array{ulid: string, title: string, lesson_date: string}|null}
+ * @phpstan-type Today array{date: string, goal: array{minutes: int, done: int, planned: int, percent: int, counted: bool}, blocks: list<Block>, next: string|null, streak: array{current: int, freezes: int, max_freezes: int}, xp: array{total: int, level: int}, rush: array{due: int, done: bool}, resume: string|null}
+ */
 final class TodayPlan
 {
     public function __construct(
@@ -37,7 +41,7 @@ final class TodayPlan
     ) {}
 
     /**
-     * @return array<string, mixed>|null nulo sem matrícula ativa
+     * @return Today|null nulo sem matrícula ativa
      */
     public function for(User $user): ?array
     {
@@ -100,7 +104,7 @@ final class TodayPlan
      * em outro dia dá lugar à próxima da aula, e bloco sem nada a fazer hoje
      * fica de lado, sem pesar na meta.
      *
-     * @return array<string, mixed>
+     * @return Block
      */
     private function block(User $user, PlanTask $task): array
     {

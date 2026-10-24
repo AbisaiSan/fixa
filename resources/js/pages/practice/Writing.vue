@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import { computed, nextTick, onMounted, ref, useTemplateRef, watch } from 'vue';
 import Banner from '@/components/fixa/Banner.vue';
 import Button from '@/components/fixa/Button.vue';
+import NextBlockActions from '@/components/plan/NextBlockActions.vue';
 import Card from '@/components/fixa/Card.vue';
 import FeedbackPanel from '@/components/fixa/FeedbackPanel.vue';
 import Icon from '@/components/fixa/Icon.vue';
@@ -214,14 +215,7 @@ const summary = computed(() => {
                     t('feedback.xp', { n: xp })
                 }}
             </p>
-            <div class="flex w-full flex-col gap-2">
-                <Button block href="/praticar" icon="arrow_forward">{{
-                    t('writing.backPractice')
-                }}</Button>
-                <Button variant="secondary" block href="/hoje">{{
-                    t('writing.backToday')
-                }}</Button>
-            </div>
+            <NextBlockActions :current="weak ? 'weak_point' : 'writing'" />
         </Card>
     </template>
 

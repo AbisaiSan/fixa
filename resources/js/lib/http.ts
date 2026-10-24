@@ -22,6 +22,22 @@ export async function postJson<T>(url: string, body: unknown): Promise<T> {
     return (await response.json()) as T;
 }
 
+export async function getJson<T>(url: string): Promise<T> {
+    const response = await fetch(url, {
+        credentials: 'same-origin',
+        headers: {
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    });
+
+    if (!response.ok) {
+        throw new HttpError(response.status);
+    }
+
+    return (await response.json()) as T;
+}
+
 export class HttpError extends Error {
     constructor(public readonly status: number) {
         super(`HTTP ${status}`);

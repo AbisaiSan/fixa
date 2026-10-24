@@ -156,18 +156,37 @@ describe('Flashcards end of session', () => {
         vi.unstubAllGlobals();
     });
 
-    it('shows the summary, XP and the next step without going home', async () => {
+    it('shows the summary, XP and the next block of the plan without going home (J5-F2)', async () => {
         vi.stubGlobal(
             'fetch',
-            vi.fn(
-                async () =>
-                    new Response(
-                        JSON.stringify({
-                            card: 'x',
-                            interval_days: 2,
-                            preview: [0, 1, 2, 4],
-                        }),
-                    ),
+            vi.fn(async (url: string) =>
+                url.startsWith('/hoje/proximo')
+                    ? new Response(
+                          JSON.stringify({
+                              next: {
+                                  ulid: 'b2',
+                                  kind: 'lesson',
+                                  activity: 'writing',
+                                  minutes: 4,
+                                  count: 6,
+                                  done: false,
+                                  skipped: false,
+                                  moved_from: null,
+                                  href: '/praticar/escrita/01s',
+                                  lesson: null,
+                              },
+                              goal: null,
+                              streak: { current: 3 },
+                              xp: null,
+                          }),
+                      )
+                    : new Response(
+                          JSON.stringify({
+                              card: 'x',
+                              interval_days: 2,
+                              preview: [0, 1, 2, 4],
+                          }),
+                      ),
             ),
         );
         const wrapper = mount(Flashcards, {
@@ -192,9 +211,10 @@ describe('Flashcards end of session', () => {
         expect(wrapper.text()).toContain('Flashcards em dia');
         expect(stats).toEqual(['0Errei', '0Difícil', '1Bom', '1Fácil']);
         expect(wrapper.text()).toContain('+14 XP');
-        expect(wrapper.get('a[href="/aulas/01jaula"]').text()).toContain(
-            'Próximo: rever a revisão da aula',
+        expect(wrapper.get('a[href="/praticar/escrita/01s"]').text()).toContain(
+            'Próximo: escrita da aula',
         );
+        expect(wrapper.find('a[href="/hoje"]').exists()).toBe(true);
         await expectAccessible(wrapper.element);
     });
 });

@@ -13,13 +13,14 @@ use Illuminate\Support\Facades\DB;
  * Aula nova entra no plano no mesmo dia (J5-B3, PLA-05). Os blocos ainda
  * por fazer de hoje até domingo são montados de novo com a aula mais
  * recente. O que já foi feito e o que foi remanejado ficam como estão.
+ * Com a meta nova (J5-F4), refaz a partir de amanhã, que é quando ela vale.
  * Funciona sem aluno logado (fila).
  */
 final class RefreshUpcomingPlan
 {
     public function __construct(private GenerateWeeklyPlan $generator) {}
 
-    public function for(User $user, ?CarbonImmutable $now = null): void
+    public function for(User $user, ?CarbonImmutable $now = null, bool $fromTomorrow = false): void
     {
         $enrollment = $user->activeEnrollment;
 
@@ -30,9 +31,16 @@ final class RefreshUpcomingPlan
 
         $today = CarbonImmutable::parse(($now ?? CarbonImmutable::now())->setTimezone($enrollment->timezone)->toDateString());
         $monday = $today->startOfWeek(CarbonInterface::MONDAY);
-        $drafts = WeeklyPlanGenerator::generate($this->generator->input($user, $enrollment, $monday, $today));
+        $from = $fromTomorrow ? $today->addDay() : $today;
 
-        DB::transaction(function () use ($user, $enrollment, $drafts) {
+        // Domingo: amanhã já é a próxima semana, que nasce com a meta nova.
+        if ($from->startOfWeek(CarbonInterface::MONDAY)->notEqualTo($monday)) {
+            return;
+        }
+
+        $drafts = WeeklyPlanGenerator::generate($this->generator->input($user, $enrollment, $monday, $from));
+
+        DB::transaction(function () use ($user, $enrollment, $drafts, $fromTomorrow) {
             $days = PlanDay::forUser($user)
                 ->where('enrollment_id', $enrollment->id)
                 ->whereIn('date', array_map(fn (DayDraft $draft) => $draft->date, $drafts))
@@ -44,6 +52,10 @@ final class RefreshUpcomingPlan
                 $day = $days->get($draft->date);
 
                 if ($day !== null) {
+                    if ($fromTomorrow) {
+                        $day->forceFill(['goal_minutes' => $enrollment->daily_goal_minutes])->save();
+                    }
+
                     $this->rebuild($user, $day, $draft);
                 }
             }

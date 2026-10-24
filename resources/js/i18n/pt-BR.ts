@@ -204,6 +204,38 @@ export const ptBR = {
         backToday: 'Voltar para Hoje',
         backPractice: 'Voltar para Praticar',
     },
+    // Plano da semana (J5-F4, protótipo tela 11, fluxo C).
+    plan: {
+        title: 'Plano',
+        week: 'Semana de {from} a {to}',
+        generated: 'Gerado na segunda-feira · meta de {goal} min por dia',
+        daysLabel: 'Dias da semana',
+        today: 'hoje',
+        dayMinutes: '{n} min',
+        dayAria: '{day}: {state}',
+        plannedAria: '{n} minutos planejados',
+        nothing: 'Nada a fazer',
+        includesMoved: 'inclui remanejadas',
+        frozenNote:
+            'Congelamento usado automaticamente. Sua sequência ficou protegida neste dia.',
+        missedNote:
+            'Sem estudo neste dia. Tudo bem: o que era importante foi para os próximos dias.',
+        startDay: 'Começar o dia',
+        continueDay: 'Continuar o dia',
+        goalLabel: 'Meta diária',
+        goalUnit: 'min',
+        goalAria: '{n} minutos por dia',
+        goalNote:
+            'Dias com tarefas remanejadas podem chegar a {max} min (1,5 vez a meta). A mudança vale a partir de amanhã.',
+        goalSaved: 'Meta atualizada para {n} min por dia.',
+        states: {
+            done: 'Feito',
+            today: 'Hoje',
+            frozen: 'Protegido',
+            missed: 'Sem estudo',
+            planned: 'Planejado',
+        },
+    },
     // Meta cumprida (J5-F3).
     celebration: {
         title: 'Meta cumprida!',

@@ -3,6 +3,8 @@
 namespace App\Domain\Practice;
 
 use App\Domain\Plan\RecordPlanProgress;
+use App\Domain\Progress\XpLedger;
+use App\Domain\Progress\XpSource;
 use App\Models\Attempt;
 use App\Models\PracticeItem;
 use App\Models\PracticeSession;
@@ -17,7 +19,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class AnswerItem
 {
-    public function __construct(private ItemCorrector $corrector, private MistakeBook $mistakes, private RecordPlanProgress $plan) {}
+    public function __construct(private ItemCorrector $corrector, private MistakeBook $mistakes, private RecordPlanProgress $plan, private XpLedger $xp) {}
 
     /**
      * @throws DailyLimitReached
@@ -49,11 +51,14 @@ final class AnswerItem
             $attempt->save();
 
             $session = $this->advance($item, $now);
+            // XP proporcional do item e, na última resposta, o da sessão (GAM-03).
+            $this->xp->award($user, XpSource::Attempt, $attempt->id, $attempt->xp, $now);
             // Erros vão para o caderno (ERR-01).
             $this->mistakes->record($user, $item, $answer, $correction);
 
             // Sessão concluída agora fecha o bloco do plano de hoje (J5-B4).
             if ($session->wasChanged('status') && $session->status === SessionStatus::Completed) {
+                $this->xp->award($user, XpSource::Session, $session->id, $session->kind === SessionKind::Reading ? XpSource::READING_XP : XpSource::SESSION_XP, $now);
                 $this->plan->sessionCompleted($user, $session);
             }
 

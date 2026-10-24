@@ -4,6 +4,8 @@ namespace App\Domain\Plan;
 
 use App\Domain\Cards\DailyQueue;
 use App\Domain\Practice\SessionKind;
+use App\Domain\Progress\XpLedger;
+use App\Domain\Progress\XpSource;
 use App\Models\Card;
 use App\Models\CardReview;
 use App\Models\Lesson;
@@ -25,7 +27,7 @@ use Illuminate\Support\Collection;
  */
 final class RecordPlanProgress
 {
-    public function __construct(private GenerateWeeklyPlan $generator, private DailyQueue $queue) {}
+    public function __construct(private GenerateWeeklyPlan $generator, private DailyQueue $queue, private XpLedger $xp) {}
 
     public function cardReviewed(User $user): void
     {
@@ -135,6 +137,13 @@ final class RecordPlanProgress
     private function complete(PlanTask $task): void
     {
         $task->forceFill(['completed_at' => CarbonImmutable::now()])->save();
+
+        // Bloco de flashcards concluído vale como sessão (GAM-03).
+        if ($task->kind === TaskKind::Flashcards) {
+            /** @var User $user */
+            $user = $task->user;
+            $this->xp->award($user, XpSource::Flashcards, $task->id, XpSource::FLASHCARDS_XP);
+        }
     }
 
     private function cardsFor(PlanTask $task): int

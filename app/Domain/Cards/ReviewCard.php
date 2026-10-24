@@ -6,6 +6,8 @@ use App\Domain\Cards\Scheduling\CardState;
 use App\Domain\Cards\Scheduling\Rating;
 use App\Domain\Cards\Scheduling\ReviewScheduler;
 use App\Domain\Plan\RecordPlanProgress;
+use App\Domain\Progress\XpLedger;
+use App\Domain\Progress\XpSource;
 use App\Domain\Vocabulary\WordBook;
 use App\Models\Card;
 use App\Models\CardReview;
@@ -21,7 +23,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class ReviewCard
 {
-    public function __construct(private ReviewScheduler $scheduler, private WordBook $words, private RecordPlanProgress $plan) {}
+    public function __construct(private ReviewScheduler $scheduler, private WordBook $words, private RecordPlanProgress $plan, private XpLedger $xp) {}
 
     public function handle(User $user, Card $card, Rating $rating, ?int $durationMs = null, ?string $clientReviewId = null): CardReview
     {
@@ -67,6 +69,8 @@ final class ReviewCard
             ]))->save();
 
             $this->words->refreshState($card);
+            // 2 XP por cartão revisado (GAM-03).
+            $this->xp->award($user, XpSource::CardReview, $review->id, XpSource::CARD_REVIEW_XP, $now);
             // Cartões fecham os blocos de flashcards e de vocabulário de hoje (J5-B4).
             $this->plan->cardReviewed($user);
 

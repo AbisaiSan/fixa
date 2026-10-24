@@ -3,6 +3,8 @@
 namespace App\Domain\Plan;
 
 use App\Domain\Cards\DailyQueue;
+use App\Domain\Progress\XpLedger;
+use App\Domain\Progress\XpSource;
 use App\Models\CardReview;
 use App\Models\User;
 use Carbon\CarbonImmutable;
@@ -13,7 +15,7 @@ use Carbon\CarbonImmutable;
  */
 final class RushMode
 {
-    public function __construct(private RecordPlanProgress $progress, private DailyQueue $queue) {}
+    public function __construct(private RecordPlanProgress $progress, private DailyQueue $queue, private XpLedger $xp) {}
 
     public function start(User $user): void
     {
@@ -49,6 +51,7 @@ final class RushMode
         }
 
         $day->forceFill(['rush_completed_at' => $now])->save();
+        $this->xp->award($user, XpSource::Rush, $day->id, XpSource::FLASHCARDS_XP, $now);
         $this->progress->refreshCounted($day, rush: true);
 
         return true;

@@ -19,6 +19,14 @@ A PLA-01 manda gerar o plano toda segunda, e a PLA-02 define 3 blocos por dia, m
 - O plano guarda só tipo, minutos e a aula de origem, nunca conteúdo do aluno. O conteúdo de cada bloco é resolvido na hora de começar.
 - O comando `fixa:plan-week` roda **de hora em hora** e gera o plano de quem ainda não tem na semana corrente do próprio fuso. O agendador roda no container pelo `schedule:work` do supervisord.
 
+**Progresso e gamificação (J5-B4 a J5-B7)**
+
+- Bloco feito: escrita, leitura ou ponto fraco concluídos fecham o bloco do mesmo tipo do dia. Flashcards fecham com a fila vazia ou com 3 cartões por minuto planejado (8 cartões em 3 minutos no protótipo), configurável em `fixa.plan.cards_per_minute`.
+- O dia conta (GAM-01) ao fazer os minutos da meta, ou tudo o que estava planejado num dia mais leve, ou a corrida. A corrida só conta com o início gravado pelo servidor, ao menos 1 cartão respondido e os 5 minutos cumpridos (ou a fila de vencidos zerada).
+- Congelamento (GAM-02): o aluno começa com 1, ganha 1 a cada segunda e guarda até 2. Só é gasto quando há sequência para proteger.
+- XP (GAM-03), como no protótipo: 2 por cartão, o do item (10, 6 ou 2; 4 ou 1 na escolha), 10 por bloco de flashcards, corrida, escrita ou ponto fraco concluídos e 20 pela leitura. O registro `xp_events` só aceita inserção, uma vez por origem, e não tem chave estrangeira para a origem: apagar uma aula não tira XP. `fixa:xp-rebuild` recalcula a partir do histórico sem duplicar.
+- Nível a cada 400 XP e meta semanal de 5 dias estudados (GAM-04), como no protótipo.
+
 ## Consequências
 
 - Mudar a proporção ou o rodízio é mudar a regra pura `WeeklyPlanGenerator`, coberta por testes de unidade.

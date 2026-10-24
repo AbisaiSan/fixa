@@ -175,6 +175,10 @@ export const ptBR = {
         rushTitle: 'Modo corrida · 5 min',
         rushBody: 'Só flashcards vencidos. Conta para a sequência.',
         rushDone: 'Corrida feita hoje. Já conta para a sequência.',
+        allDoneTitle: 'Tudo em dia por hoje',
+        allDoneBody:
+            'Você fez tudo o que havia para hoje. Os próximos cartões e atividades voltam amanhã.',
+        loadingPlan: 'Carregando o plano de hoje',
         latestShort: 'Sua última aula · {date}',
         latestReview: 'Revisão',
     },

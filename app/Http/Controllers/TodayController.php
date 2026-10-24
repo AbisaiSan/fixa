@@ -30,7 +30,9 @@ class TodayController extends Controller
 
         return Inertia::render('app/Today', [
             'status' => $lesson === null ? 'empty' : 'ready',
-            'plan' => $plan->for($user),
+            // Adiado (J5-F7): a tela abre na hora, com esqueleto, e o plano chega
+            // em seguida. Uma falha vira o estado de erro com "Tentar de novo".
+            'plan' => Inertia::defer(fn () => $plan->for($user), rescue: true),
             'latestLesson' => $lesson === null ? null : [
                 'ulid' => $lesson->ulid,
                 'title' => $lesson->title,

@@ -4,17 +4,37 @@ import { expectAccessible } from '@/test/axe';
 import type { TodayPlan } from '@/types/plan';
 import Today from './Today.vue';
 
+// As props da página que o <Deferred> lê; cada teste põe o próprio plano.
+const shared = vi.hoisted(() => ({
+    props: {} as Record<string, unknown>,
+    rescued: false,
+}));
+
 vi.mock('@inertiajs/vue3', async (importOriginal) => {
     const original = await importOriginal<typeof import('@inertiajs/vue3')>();
+    const { defineComponent } = await import('vue');
 
     return {
         ...original,
         Head: { render: () => null },
+        // O <Deferred> real lê a página interna do Inertia; aqui, as props compartilhadas.
+        Deferred: defineComponent({
+            props: { data: { type: String, required: true } },
+            setup(props, { slots }) {
+                return () =>
+                    shared.rescued
+                        ? slots.rescue?.({ reloading: false })
+                        : shared.props[props.data] === undefined
+                          ? slots.fallback?.({})
+                          : slots.default?.({ reloading: false });
+            },
+        }),
         usePage: () => ({
             props: {
                 auth: { user: { name: 'Marina Souza' } },
                 targetLang: { code: 'en' },
                 aiLimit: null,
+                ...shared.props,
             },
             url: '/hoje',
         }),
@@ -81,15 +101,79 @@ const latestLesson = {
     status: 'ready' as const,
 };
 
+function mountToday(
+    props: {
+        status: 'ready';
+        latestLesson: typeof latestLesson;
+        plan?: TodayPlan;
+    },
+    attach = true,
+) {
+    shared.props = 'plan' in props ? { plan: props.plan } : {};
+
+    return mount(Today, {
+        props,
+        attachTo: attach ? document.body : undefined,
+    });
+}
+
 describe('Today', () => {
     afterEach(() => {
         document.body.innerHTML = '';
+        shared.props = {};
+        shared.rescued = false;
+    });
+
+    it('shows an error with retry when the plan fails to load (J5-F7)', async () => {
+        shared.rescued = true;
+        const wrapper = mount(Today, {
+            props: { status: 'ready', latestLesson },
+            attachTo: document.body,
+        });
+
+        expect(wrapper.text()).toContain('Não conseguimos carregar.');
+        expect(wrapper.text()).toContain('Tentar de novo');
+        await expectAccessible(wrapper.element);
+    });
+
+    it('shows a skeleton while the plan is loading (J5-F7)', async () => {
+        const wrapper = mountToday({ status: 'ready', latestLesson });
+
+        expect(wrapper.get('[aria-busy="true"]').text()).toContain(
+            'Carregando o plano de hoje',
+        );
+        await expectAccessible(wrapper.element);
+    });
+
+    it('says everything is done for today when nothing is left (J5-F7)', async () => {
+        const base = plan();
+        const wrapper = mountToday({
+            status: 'ready',
+            latestLesson,
+            plan: plan({
+                goal: {
+                    minutes: 10,
+                    done: 3,
+                    planned: 3,
+                    percent: 30,
+                    counted: false,
+                },
+                blocks: [base.blocks[0]!, base.blocks[2]!],
+                next: null,
+            }),
+        });
+
+        expect(wrapper.text()).toContain('Tudo em dia por hoje');
+        expect(wrapper.text()).toContain('Praticar mais um pouco');
+        expect(wrapper.text()).not.toContain('Começar');
+        await expectAccessible(wrapper.element);
     });
 
     it('shows the goal ring, the 3 blocks and starts the next one in 1 click (PLA-06)', async () => {
-        const wrapper = mount(Today, {
-            props: { status: 'ready', latestLesson, plan: plan() },
-            attachTo: document.body,
+        const wrapper = mountToday({
+            status: 'ready',
+            latestLesson,
+            plan: plan(),
         });
 
         expect(wrapper.get('[role="img"]').attributes('aria-label')).toBe(
@@ -118,23 +202,20 @@ describe('Today', () => {
     });
 
     it('celebrates the goal with the streak and offers more practice', async () => {
-        const wrapper = mount(Today, {
-            props: {
-                status: 'ready',
-                latestLesson,
-                plan: plan({
-                    goal: {
-                        minutes: 10,
-                        done: 10,
-                        planned: 10,
-                        percent: 100,
-                        counted: true,
-                    },
-                    next: null,
-                    streak: { current: 13, freezes: 1, max_freezes: 2 },
-                }),
-            },
-            attachTo: document.body,
+        const wrapper = mountToday({
+            status: 'ready',
+            latestLesson,
+            plan: plan({
+                goal: {
+                    minutes: 10,
+                    done: 10,
+                    planned: 10,
+                    percent: 100,
+                    counted: true,
+                },
+                next: null,
+                streak: { current: 13, freezes: 1, max_freezes: 2 },
+            }),
         });
 
         expect(wrapper.text()).toContain('Meta cumprida!');
@@ -146,16 +227,13 @@ describe('Today', () => {
     });
 
     it('welcomes back without counting the missed days (GAM-05)', async () => {
-        const wrapper = mount(Today, {
-            props: {
-                status: 'ready',
-                latestLesson,
-                plan: plan({
-                    resume: 'welcome_back',
-                    streak: { current: 0, freezes: 0, max_freezes: 2 },
-                }),
-            },
-            attachTo: document.body,
+        const wrapper = mountToday({
+            status: 'ready',
+            latestLesson,
+            plan: plan({
+                resume: 'welcome_back',
+                streak: { current: 0, freezes: 0, max_freezes: 2 },
+            }),
         });
 
         expect(wrapper.text()).toContain('Bom te ver de volta.');
@@ -166,8 +244,8 @@ describe('Today', () => {
 
     it('shows a moved task with the day it came from', () => {
         const base = plan();
-        const wrapper = mount(Today, {
-            props: {
+        const wrapper = mountToday(
+            {
                 status: 'ready',
                 latestLesson,
                 plan: plan({
@@ -182,7 +260,8 @@ describe('Today', () => {
                     ],
                 }),
             },
-        });
+            false,
+        );
 
         expect(wrapper.text()).toContain('Remanejada de quarta');
     });

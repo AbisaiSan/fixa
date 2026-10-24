@@ -10,6 +10,7 @@ use App\Http\Controllers\Lessons\LessonController;
 use App\Http\Controllers\Lessons\LessonFileController;
 use App\Http\Controllers\Lessons\LessonGenerationController;
 use App\Http\Controllers\Lessons\LessonReviewController;
+use App\Http\Controllers\Plan\ReminderUnsubscribeController;
 use App\Http\Controllers\Plan\RushController;
 use App\Http\Controllers\Practice\AttemptController;
 use App\Http\Controllers\Practice\MistakeController;
@@ -24,6 +25,14 @@ use Illuminate\Support\Facades\Route;
 
 // Sem página pública de apresentação por enquanto: quem entra vai para Hoje.
 Route::get('/', fn () => redirect()->route(auth()->check() ? 'today' : 'login'))->name('home');
+
+// Cancelar o lembrete diário pelo link assinado do e-mail, sem login (J5-B10).
+Route::get('lembrete/cancelar/{user}', [ReminderUnsubscribeController::class, 'show'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('reminders.unsubscribe');
+Route::post('lembrete/cancelar/{user}', [ReminderUnsubscribeController::class, 'destroy'])
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('reminders.unsubscribe.confirm');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('hoje', [TodayController::class, 'show'])->name('today');

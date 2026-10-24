@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Domain\Plan\ReminderRule;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
 use App\Models\Enrollment;
@@ -40,9 +41,11 @@ class SettingsController extends Controller
                 'upcoming' => config('fixa.upcoming_languages'),
             ],
             'timezones' => config('fixa.timezones'),
+            'reminderHours' => ReminderRule::HOURS,
             'preferences' => [
                 'theme' => $user->theme,
                 'notify_daily_reminder' => $user->notify_daily_reminder,
+                'daily_reminder_hour' => $user->daily_reminder_hour,
                 'notify_weekly_summary' => $user->notify_weekly_summary,
                 'notify_streak' => $user->notify_streak,
             ],

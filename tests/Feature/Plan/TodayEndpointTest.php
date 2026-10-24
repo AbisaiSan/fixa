@@ -29,6 +29,10 @@ beforeEach(function () {
         'content' => ['instruction' => 'Escolha.', 'sentence' => 'I have lived here ___ 2019.', 'options' => ['since', 'for'], 'answer' => 0, 'accepted' => ['since'], 'corrected' => 'since', 'why' => 'Since marca o início.'],
     ])->save();
     $this->actingAs($this->user);
+    $this->todayFlashcards = fn (): string => PlanTask::forUser($this->user)
+        ->where('plan_day_id', PlanDay::forUser($this->user)->whereDate('date', '2026-10-26')->value('id'))
+        ->where('kind', TaskKind::Flashcards)
+        ->value('ulid');
 });
 
 test('today shows the plan with the next block one click away (PLA-06)', function () {
@@ -47,7 +51,7 @@ test('today shows the plan with the next block one click away (PLA-06)', functio
             ->where('plan.blocks.1.activity', 'writing')
             ->where('plan.blocks.1.href', route('practice.writing', $this->writing))
             ->where('plan.blocks.1.lesson.title', 'Present Perfect')
-            ->where('plan.next', fn (string $ulid) => $ulid === PlanTask::forUser($this->user)->where('kind', TaskKind::Flashcards)->value('ulid'))
+            ->where('plan.next', fn (string $ulid) => $ulid === ($this->todayFlashcards)())
             ->where('plan.streak.current', 0)
             ->where('plan.streak.freezes', 1)
             ->where('plan.streak.max_freezes', 2)
@@ -73,7 +77,7 @@ test('the ring follows the done blocks and the next block moves on', function ()
             ->where('plan.goal.done', 4)
             ->where('plan.goal.percent', 40)
             ->where('plan.xp.total', 14)
-            ->where('plan.next', PlanTask::forUser($this->user)->where('kind', TaskKind::Flashcards)->value('ulid')));
+            ->where('plan.next', fn (string $ulid) => $ulid === ($this->todayFlashcards)()));
 });
 
 test('coming back after missing days shows the welcome back message, never a count of days (GAM-05)', function () {

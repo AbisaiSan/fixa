@@ -25,6 +25,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Role $role
  * @property string $theme
  * @property bool $notify_daily_reminder
+ * @property int $daily_reminder_hour
+ * @property Carbon|null $daily_reminder_sent_on
  * @property bool $notify_weekly_summary
  * @property bool $notify_streak
  * @property-read Enrollment|null $activeEnrollment
@@ -110,6 +112,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'two_factor_confirmed_at' => 'datetime',
             'role' => Role::class,
             'notify_daily_reminder' => 'boolean',
+            'daily_reminder_hour' => 'integer',
+            'daily_reminder_sent_on' => 'date',
             'notify_weekly_summary' => 'boolean',
             'notify_streak' => 'boolean',
         ];

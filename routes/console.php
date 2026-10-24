@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Plano da semana e recálculo depois da falta: de hora em hora, para pegar a virada do dia no fuso de cada aluno (J5-B1, J5-B2, GAM-06).
 Schedule::command('fixa:plan-week')->hourly()->withoutOverlapping();
+
+// Lembrete diário por e-mail, na hora escolhida no fuso de cada aluno (J5-B10).
+Schedule::command('fixa:send-reminders')->everyFifteenMinutes()->withoutOverlapping();

@@ -23,6 +23,7 @@ type Preferences = {
     notify_daily_reminder: boolean;
     notify_weekly_summary: boolean;
     notify_streak: boolean;
+    daily_reminder_hour: number;
 };
 
 const props = defineProps<{
@@ -35,6 +36,7 @@ const props = defineProps<{
     goalRange: { min: number; max: number; step: number };
     languages: { available: string[]; upcoming: string[] };
     timezones: string[];
+    reminderHours: number[];
     preferences: Preferences;
     twoFactor: {
         enabled: boolean;
@@ -91,6 +93,14 @@ function capitalize(text: string): string {
 // Preferências da conta: salvam na hora, como no protótipo.
 const preferences = ref<Preferences>({ ...props.preferences });
 const { updateAppearance } = useAppearance();
+
+// Lembrete diário (J5-F6): hora no fuso do aluno, de 6h a 22h.
+const reminderHourOptions = computed(() =>
+    props.reminderHours.map((hour) => ({
+        value: String(hour),
+        label: t('settings.reminderHourOption', { n: hour }),
+    })),
+);
 
 function savePreferences(changes: Partial<Preferences>): void {
     preferences.value = { ...preferences.value, ...changes };
@@ -276,8 +286,23 @@ const themes: { value: Appearance; label: string; icon: string }[] = [
                     "
                 />
                 <p class="m-0 text-[13.5px] text-ink2">
-                    {{ t('settings.dailyReminderHint') }}
+                    {{
+                        t('settings.dailyReminderHint', {
+                            n: preferences.daily_reminder_hour,
+                        })
+                    }}
                 </p>
+                <Select
+                    v-if="preferences.notify_daily_reminder"
+                    id="settings-reminder-hour"
+                    class="mt-3 max-w-60"
+                    :label="t('settings.reminderHour')"
+                    :options="reminderHourOptions"
+                    :model-value="String(preferences.daily_reminder_hour)"
+                    @update:model-value="
+                        savePreferences({ daily_reminder_hour: Number($event) })
+                    "
+                />
             </div>
             <div>
                 <Switch

@@ -36,6 +36,8 @@ gitleaks git                         # antes de cada commit
 
 O agendador (`schedule:work`) roda no container pelo supervisord: plano de hora em hora e lembretes a cada 15 minutos. Mudou o `docker/8.5/supervisord.conf`? Reconstrua a imagem (`sail build --no-cache`). Na bateria, com a máquina ociosa, o macOS segura os processos e o Pest pode passar dos 300 s do Composer: rode o gate com `COMPOSER_PROCESS_TIMEOUT=0` no ambiente.
 
+Acesso pelo celular: Tailscale com `tailscale serve --bg 8080` e assets compilados (`npm run build`), passo a passo no ADR 0005. `TRUSTED_PROXIES` no `.env` confia só na rede do Docker.
+
 Os comandos `npm` e o `composer test` rodam no host, não no container: o Vite+ tem binário nativo do macOS, e o Pest acessa o PostgreSQL do Sail por `127.0.0.1`.
 
 ## Estrutura

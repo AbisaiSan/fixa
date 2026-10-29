@@ -345,7 +345,9 @@ function submit(): void {
                 </TabsContent>
             </TabsRoot>
 
-            <div class="grid gap-4 md:grid-cols-[1.4fr_1fr_1fr]">
+            <div
+                class="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]"
+            >
                 <TextField
                     v-model="form.title"
                     :label="t('upload.titleLabel')"

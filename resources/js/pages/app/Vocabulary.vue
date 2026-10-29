@@ -325,7 +325,7 @@ const practiceHref = computed(() =>
         </template>
 
         <div
-            class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]"
+            class="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]"
         >
             <section
                 class="flex-col gap-4"

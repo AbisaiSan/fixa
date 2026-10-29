@@ -220,7 +220,7 @@ const steps = computed(() => [
 
             <div
                 v-if="plan"
-                class="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+                class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
             >
                 <div class="flex flex-col gap-4">
                     <Card
@@ -528,7 +528,9 @@ const steps = computed(() => [
                 <h2 id="today-steps" class="m-0 type-label text-ink2">
                     {{ t('today.stepsLabel') }}
                 </h2>
-                <ol class="m-0 grid list-none gap-3 p-0 md:grid-cols-3">
+                <ol
+                    class="m-0 grid list-none grid-cols-1 gap-3 p-0 md:grid-cols-3"
+                >
                     <li
                         v-for="step in steps"
                         :key="step.n"

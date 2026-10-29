@@ -140,7 +140,7 @@ const themes: { value: Appearance; label: string; icon: string }[] = [
         </div>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-2">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card
             as="section"
             aria-labelledby="settings-study"

@@ -15,7 +15,7 @@ const { title = '', description = '' } = defineProps<{
 <template>
     <Head :title="title" />
 
-    <div class="grid min-h-dvh bg-bg text-ink lg:grid-cols-2">
+    <div class="grid min-h-dvh grid-cols-1 bg-bg text-ink lg:grid-cols-2">
         <aside
             class="relative hidden flex-col justify-between overflow-hidden bg-prit p-14 lg:flex"
             aria-hidden="true"

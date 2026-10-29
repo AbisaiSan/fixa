@@ -179,7 +179,7 @@ const entries = computed<Entry[]>(() => {
             {{ t('practice.weakPointNone') }}
         </p>
         <p class="m-0 text-ink2">{{ t('practice.intro') }}</p>
-        <ul class="m-0 grid list-none gap-3 p-0 md:grid-cols-2">
+        <ul class="m-0 grid list-none grid-cols-1 gap-3 p-0 md:grid-cols-2">
             <li v-for="entry in entries" :key="entry.key">
                 <component
                     :is="entry.href ? Link : 'div'"

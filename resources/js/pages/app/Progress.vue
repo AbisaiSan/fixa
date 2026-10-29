@@ -57,7 +57,7 @@ function dayName(date: string): string {
     <PageState :status="status">
         <div
             v-if="streak && week && level && history"
-            class="grid gap-4 lg:grid-cols-2"
+            class="grid grid-cols-1 gap-4 lg:grid-cols-2"
         >
             <div class="flex flex-col gap-4">
                 <Card

@@ -232,7 +232,9 @@ const ticks = computed(() => {
         </li>
     </ol>
 
-    <div class="grid gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+    <div
+        class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
+    >
         <Card
             v-if="day"
             as="section"

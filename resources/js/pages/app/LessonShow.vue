@@ -384,7 +384,7 @@ const regenerationHint = computed(() => {
         >
 
         <div
-            class="grid items-start gap-6 lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]"
+            class="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]"
         >
             <div class="flex flex-col gap-6">
                 <Card

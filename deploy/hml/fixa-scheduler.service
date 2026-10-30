@@ -1,0 +1,15 @@
+[Unit]
+Description=Fixa, agendador (homologação)
+After=network.target postgresql.service redis-server.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/fixa
+# Plano de hora em hora e lembretes a cada 15 minutos, como no Sail.
+ExecStart=/usr/bin/php8.5 artisan schedule:work
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

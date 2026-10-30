@@ -38,6 +38,8 @@ O agendador (`schedule:work`) roda no container pelo supervisord: plano de hora 
 
 Acesso pelo celular: Tailscale com `tailscale serve --bg 8080` e assets compilados (`npm run build`), passo a passo no ADR 0005. `TRUSTED_PROXIES` no `.env` confia só na rede do Docker.
 
+Homologação: VM da Oracle atrás do Cloudflare Tunnel e Access (ADR 0006). `deploy/hml/provision.sh` prepara a VM, `deploy/hml/deploy.sh` publica o commit atual pelo atalho `ssh fixa-hml`. Passo a passo em `plan-hml/`.
+
 Os comandos `npm` e o `composer test` rodam no host, não no container: o Vite+ tem binário nativo do macOS, e o Pest acessa o PostgreSQL do Sail por `127.0.0.1`.
 
 ## Estrutura
